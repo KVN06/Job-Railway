@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class CompanyController extends Controller
 {
     public function create() {
-        return view('Company-form');
+        return view('company-form');
     }
 
     public function agg_company(Request $request) {
