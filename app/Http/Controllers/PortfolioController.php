@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 class PortfolioController extends Controller
 {
+    public function __construct()
+    {
+        // Asegurar que solo usuarios autenticados accedan a estas rutas
+        $this->middleware('auth');
+    }
     // Mostrar formulario para crear un nuevo portafolio
     public function create()
     {
@@ -26,8 +31,18 @@ class PortfolioController extends Controller
     ]);
 
     // Crear nuevo portafolio
+    $user = Auth::user();
+    if (!$user) {
+        return redirect()->route('login');
+    }
+
+    if (!$user->unemployed) {
+        // Si el usuario no tiene perfil desempleado, redirigimos al formulario para crearlo
+        return redirect()->route('unemployed-form')->with('error', 'Por favor completa tu perfil de desempleado antes de agregar un portafolio.');
+    }
+
     $portfolio = new Portfolio();
-    $portfolio->unemployed_id = Auth::user()->unemployed->id;
+    $portfolio->unemployed_id = $user->unemployed->id;
     $portfolio->title = $request->title;
     $portfolio->description = $request->description;
     $portfolio->url_proyect = $request->url_proyect;
@@ -48,7 +63,16 @@ class PortfolioController extends Controller
     // Mostrar todos los portafolios del usuario desempleado actual
     public function list()
     {
-        $portfolios = Portfolio::where('unemployed_id', Auth::user()->unemployed->id)->get();
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        if (!$user->unemployed) {
+            return redirect()->route('unemployed-form')->with('error', 'Por favor completa tu perfil de desempleado para ver tus portafolios.');
+        }
+
+        $portfolios = Portfolio::where('unemployed_id', $user->unemployed->id)->get();
         return view('portfolio.list', compact('portfolios'));
     }
 
