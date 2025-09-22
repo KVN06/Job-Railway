@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class UnemployedController extends Controller
 {
     public function create() {
-        return view('Unemployed-form');
+        return view('unemployed-form');
     }
 
     public function agg_unemployed(Request $request) {
