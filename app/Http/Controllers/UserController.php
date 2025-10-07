@@ -12,7 +12,7 @@ use App\Models\Unemployed;
 class UserController extends Controller
 {
     public function create() {
-        return view('register');
+        return view('auth.register');
     }
 
     public function agg_user(Request $request) {

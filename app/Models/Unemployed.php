@@ -1,133 +1,64 @@
 <?php
+
 namespace App\Models;
-use Illuminate\Database\Eloquent\Model;
+
+use App\Models\Concerns\AppliesApiScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\User;
-use App\Models\JobApplication;
-use App\Models\Portfolio;
-use App\Models\Favorite;
-use App\Models\TrainingUser;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Unemployed extends Model
 {
-    public function user()
+    use HasFactory;
+    use AppliesApiScopes;
+
+    protected $fillable = [
+        'user_id',
+        'profession',
+        'experience',
+        'location',
+    ];
+
+    protected array $allowIncluded = ['user'];
+
+    protected array $allowFilter = ['profession', 'experience', 'location'];
+
+    protected array $allowSort = ['profession', 'experience', 'location', 'created_at'];
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    use HasFactory;
 
-    public function JobApplications()
+    public function jobApplications(): HasMany
     {
         return $this->hasMany(JobApplication::class);
     }
 
-    public function Portfolios()
+    public function portfolios(): HasMany
     {
         return $this->hasMany(Portfolio::class);
     }
 
-    public function favorites()
+    public function favorites(): HasMany
     {
-    return $this->hasMany(Favorite::class);
+        return $this->hasMany(Favorite::class);
     }
 
-    public function favoriteJobOffers()
+    public function favoriteJobOffers(): MorphToMany
     {
-    return $this->morphedByMany(JobOffer::class, 'favoritable', 'favorites');
+        return $this->morphedByMany(JobOffer::class, 'favoritable', 'favorites')->withTimestamps();
     }
 
-    public function favoriteClassifieds()
+    public function favoriteClassifieds(): MorphToMany
     {
-    return $this->morphedByMany(Classified::class, 'favoritable', 'favorites');
+        return $this->morphedByMany(Classified::class, 'favoritable', 'favorites')->withTimestamps();
     }
-        
 
-    public function TrainingUsers()
+    public function trainingUsers(): HasMany
     {
         return $this->hasMany(TrainingUser::class);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    protected $allowIncluded = ['user']; 
-    protected $allowFilter = ['user_id', 'profession', 'experience', 'location'];
-    protected $allowSort = ['user_id', 'profession', 'experience', 'location'];
-
-    public function scopeIncluded(Builder $query)
-    {
-        if (empty($this->allowIncluded) || empty(request('included'))) { 
-            return;
-        }
-        $relations  = explode(',', request('included')); 
-        $allowIncluded = collect($this->allowIncluded); 
-        foreach ($relations as $key => $relationship) { 
-            if (!$allowIncluded->contains($relationship)) {
-                unset($relations[$key]);
-            }
-        }
-        $query->with($relations); 
-    }
-
-    public function scopeFilter(Builder $query)
-    {
-        if (empty($this->allowFilter) || empty(request('filter'))) {
-            return;
-        }
-        $filters = request('filter');
-        $allowFilter = collect($this->allowFilter);
-        foreach ($filters as $filter => $value) {
-            if ($allowFilter->contains($filter)) {
-                $query->where($filter, 'LIKE', '%' . $value . '%');
-            }
-        }
-    }
-
-
-        public function scopeSort(Builder $query)
-    {
-    if (empty($this->allowSort) || empty(request('sort'))) {
-            return;
-        }
-        $sortFields = explode(',', request('sort'));
-        $allowSort = collect($this->allowSort);
-        foreach ($sortFields as $sortField) {
-            $direction = 'asc';
-            if(substr($sortField, 0,1)=='-'){ 
-                $direction = 'desc';
-                $sortField = substr($sortField,1);
-            }
-            if ($allowSort->contains($sortField)) {
-                $query->orderBy($sortField, $direction);
-            }
-        }
-    }
-
-
-    public function scopeGetOrPaginate(Builder $query)
-    {
-        if (request('perPage')) {
-            $perPage = intval(request('perPage'));
-            if($perPage){
-                return $query->paginate($perPage);
-            }
-            }
-            return $query->get();
     }
 }

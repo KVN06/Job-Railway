@@ -2,13 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreJobOfferRequest;
+use App\Http\Requests\UpdateJobOfferRequest;
+use App\Models\Category;
 use App\Models\JobOffer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 
 class JobOfferController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show']);
+        $this->authorizeResource(JobOffer::class, 'jobOffer', [
+            'except' => ['index', 'show'],
+        ]);
+    }
+
     public function index(Request $request) {
         $query = JobOffer::with(['company', 'categories']);
 
@@ -35,33 +46,31 @@ class JobOfferController extends Controller
         return view('job-offers.index', compact('jobOffers', 'categories'));
     }
 
-    // Guardar desde AJAX personalizado
-    public function agg_job_offer(Request $request) {
-        $offer = new JobOffer();
-        $offer->company_id = $request->company_id;
-        $offer->title = $request->title;
-        $offer->description = $request->description;
-        $offer->salary = $request->salary;
-        $offer->location = $request->location;
-        $offer->geolocation = $request->geolocation;
-        $offer->save();
-
-        return $offer;
-    }
-
     public function create()
     {
+        $this->authorize('create', JobOffer::class);
+
         $categories = Category::all();
         return view('job-offers.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreJobOfferRequest $request)
     {
-        $jobOffer = new JobOffer($request->except('offer_type')); // Excluir campo eliminado
-        $jobOffer->company_id = Auth::user()->company->id;
-        $jobOffer->save();
+        $validated = $request->validated();
+        $company = $request->user()->company;
 
-        $jobOffer->categories()->attach($request->categories);
+        $jobOffer = DB::transaction(function () use ($company, $validated) {
+            $categories = $validated['categories'] ?? [];
+            unset($validated['categories']);
+
+            $jobOffer = $company->jobOffers()->create($validated);
+
+            if (!empty($categories)) {
+                $jobOffer->categories()->sync($categories);
+            }
+
+            return $jobOffer;
+        });
 
         return redirect()->route('job-offers.index')
                          ->with('success', 'Oferta laboral creada exitosamente.');
@@ -85,10 +94,17 @@ class JobOfferController extends Controller
         return view('job-offers.edit', compact('jobOffer', 'categories'));
     }
 
-    public function update(Request $request, JobOffer $jobOffer)
+    public function update(UpdateJobOfferRequest $request, JobOffer $jobOffer)
     {
-        $jobOffer->update($request->except('offer_type')); // Excluir campo eliminado
-        $jobOffer->categories()->sync($request->categories);
+        $validated = $request->validated();
+        $categories = $validated['categories'] ?? null;
+        unset($validated['categories']);
+
+        $jobOffer->update($validated);
+
+        if ($categories !== null) {
+            $jobOffer->categories()->sync($categories);
+        }
 
         return redirect()->route('job-offers.show', $jobOffer)
                          ->with('success', 'Oferta laboral actualizada exitosamente.');

@@ -5,7 +5,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Título dinámico de la página -->
-    <title>@yield('Layaout.1')</title>
+    <title>@yield('Layout.1')</title>
 
     <!-- CSS principal compilado con Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])

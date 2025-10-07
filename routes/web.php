@@ -15,8 +15,9 @@ use App\Http\Controllers\NotificationController;
 
 
 // Rutas públicas
-Route::view('/login', 'login')->name('login');
-Route::view('/', 'home')->middleware('auth')->name('home');
+Route::view('/', 'pages.landing')->name('landing');
+Route::view('/login', 'auth.login')->name('login');
+Route::view('/home', 'pages.home')->middleware('auth')->name('home');
 
 // Usuario
 Route::get('/register', [UserController::class, 'create'])->name('register');
@@ -29,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/messages', [MessageController::class, 'index'])->name('messages');
     Route::get('/message/create', [MessageController::class, 'create'])->name('message-form');
     Route::post('/message/send', [MessageController::class, 'send_message'])->name('send-message');
-    
+
     // Notificaciones
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
