@@ -25,6 +25,12 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
+
+        if (! Schema::hasColumn('companies', 'nit')) {
+            Schema::table('companies', function (Blueprint $table) {
+                $table->string('nit')->nullable()->after('email');
+            });
+        }
     }
 
     /**
