@@ -17,6 +17,7 @@ class Company extends Model
         'user_id',
         'name',
         'email',
+        'nit',
         'logo',
         'company_name',
         'description',
