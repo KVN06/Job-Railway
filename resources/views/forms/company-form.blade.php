@@ -1,82 +1,199 @@
-@extends('layouts.new-user') 
-<!-- Usa una plantilla base llamada 'new-user' -->
+@extends('layouts.new-user')
 
 @section('content')
-<form action="{{ route('agg-company') }}" method="POST" class="relative">
-    @csrf
 
-    <div class="decorative-pattern fixed inset-0 pointer-events-none"></div>
+    @php
+        $company = $company ?? null;
+    @endphp
 
-    <main class="container mx-auto py-12 px-6">
-        <section class="relative gradient-primary text-white rounded-2xl p-8 mb-10 overflow-hidden animate-fade-in-up">
-            <div class="absolute top-0 right-0 w-48 h-48 bg-white opacity-5 rounded-full -mr-24 -mt-24"></div>
-            <div class="absolute bottom-0 left-0 w-36 h-36 bg-white opacity-5 rounded-full -ml-18 -mb-18"></div>
-
-            <div class="max-w-2xl mx-auto text-center relative z-10">
-                <div class="mb-4">
-                    <i class="fas fa-building text-4xl mb-3 opacity-90"></i>
+    {{-- Mensajes de error --}}
+    @if ($errors->any())
+        <div class="mb-6 p-6 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-700 rounded-xl shadow-soft max-w-2xl mx-auto animate-fade-in-up">
+            <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-red-600"></i>
                 </div>
-                <h1 class="text-2xl md:text-3xl font-bold mb-3 leading-tight">Registrar nueva empresa</h1>
-                <p class="text-base md:text-lg opacity-90 leading-relaxed">Completa la información para que tu organización pueda gestionar ofertas y procesos de selección.</p>
+                <div>
+                    <p class="font-semibold mb-2 text-red-800">¡Oops! Algo salió mal.</p>
+                    <ul class="space-y-1 text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li class="flex items-center">
+                                <i class="fas fa-dot-circle mr-2 text-xs text-red-500"></i>
+                                {{ $error }}
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
-        </section>
+        </div>
+    @endif
 
-        <section class="max-w-3xl mx-auto">
-            <div class="card-enhanced rounded-2xl bg-white shadow-xl shadow-blue-200/50 border border-slate-200/70 p-8 space-y-8 animate-slide-in">
-                <header class="flex items-center gap-4">
-                    <span class="flex h-12 w-12 items-center justify-center rounded-2xl gradient-primary text-white text-2xl shadow-lg shadow-blue-500/40">
-                        <i class="fas fa-id-badge"></i>
-                    </span>
-                    <div>
-                        <h2 class="text-xl font-semibold text-slate-900">Datos principales</h2>
-                        <p class="text-sm text-slate-500">Estos campos nos ayudan a identificar y presentar tu empresa dentro de la plataforma.</p>
-                    </div>
-                </header>
+    <div class="max-w-2xl mx-auto animate-fade-in-up">
+        <div class="card-enhanced p-8 hover-lift">
+            <!-- Header del formulario -->
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-building text-2xl text-white"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Formulario de Empresa</h1>
+                <p class="text-gray-600">Registra tu empresa en nuestra plataforma</p>
+            </div>
 
-                <div class="grid grid-cols-1 gap-6">
-                    <div class="space-y-2">
-                        <label for="company_name" class="text-sm font-medium text-slate-600">Nombre de la empresa</label>
+            <form action="{{ route('agg-company') }}" method="POST">
+                @csrf
+
+                <!-- Nombre de la Empresa -->
+                <div class="mb-6">
+                    <label for="name" class="block text-gray-700 font-medium mb-2 flex items-center">
+                        <i class="fas fa-building mr-2 text-blue-500"></i>
+                        Nombre de la Empresa
+                        <span class="text-red-500 ml-1">*</span>
+                    </label>
+                    <div class="relative">
                         <input
                             type="text"
-                            id="company_name"
-                            name="company_name"
-                            value="{{ old('company_name') }}"
-                            class="input-field"
-                            placeholder="Ej. Industrias Innovadoras S.A.S."
+                            id="name"
+                            name="name"
+                            value="{{ old('name', optional($company)->name) }}"
+                            placeholder="Ej: Tech Solutions S.A.S."
                             required
+                            autofocus
+                            class="w-full border-2 border-gray-200 rounded-xl py-4 pl-12 pr-4 text-gray-800 placeholder-gray-400
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:border-blue-300"
                         >
-                        @error('company_name')
-                            <p class="text-sm text-red-500">{{ $message }}</p>
-                        @enderror
+                        <div class="absolute top-4 left-4 text-gray-400">
+                            <i class="fas fa-city"></i>
+                        </div>
                     </div>
+                    @error('name')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                    <div class="space-y-2">
-                        <label for="description" class="text-sm font-medium text-slate-600">Descripción</label>
+                <!-- Email -->
+                <div class="mb-6">
+                    <label for="email" class="block text-gray-700 font-medium mb-2 flex items-center">
+                        <i class="fas fa-envelope mr-2 text-blue-500"></i>
+                        Correo Electrónico
+                        <span class="text-red-500 ml-1">*</span>
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ old('email', optional($company)->email) }}"
+                            placeholder="contacto@empresa.com"
+                            required
+                            class="w-full border-2 border-gray-200 rounded-xl py-4 pl-12 pr-4 text-gray-800 placeholder-gray-400
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:border-blue-300"
+                        >
+                        <div class="absolute top-4 left-4 text-gray-400">
+                            <i class="fas fa-at"></i>
+                        </div>
+                    </div>
+                    @error('email')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- NIT -->
+                <div class="mb-6">
+                    <label for="nit" class="block text-gray-700 font-medium mb-2 flex items-center">
+                        <i class="fas fa-id-card mr-2 text-blue-500"></i>
+                        NIT
+                        <span class="text-red-500 ml-1">*</span>
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="text"
+                            id="nit"
+                            name="nit"
+                            value="{{ old('nit', optional($company)->nit) }}"
+                            placeholder="Ej: 900123456-7"
+                            required
+                            class="w-full border-2 border-gray-200 rounded-xl py-4 pl-12 pr-4 text-gray-800 placeholder-gray-400
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:border-blue-300"
+                        >
+                        <div class="absolute top-4 left-4 text-gray-400">
+                            <i class="fas fa-hashtag"></i>
+                        </div>
+                    </div>
+                    @error('nit')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Sitio Web (Opcional) -->
+                <div class="mb-6">
+                    <label for="website" class="block text-gray-700 font-medium mb-2 flex items-center">
+                        <i class="fas fa-globe mr-2 text-blue-500"></i>
+                        Sitio Web
+                        <span class="text-gray-400 text-sm ml-2">(Opcional)</span>
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="url"
+                            id="website"
+                            name="website"
+                            value="{{ old('website', optional($company)->website) }}"
+                            placeholder="https://www.empresa.com"
+                            class="w-full border-2 border-gray-200 rounded-xl py-4 pl-12 pr-4 text-gray-800 placeholder-gray-400
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:border-blue-300"
+                        >
+                        <div class="absolute top-4 left-4 text-gray-400">
+                            <i class="fas fa-link"></i>
+                        </div>
+                    </div>
+                    @error('website')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-8">
+                    <label for="description" class="block text-gray-700 font-medium mb-2 flex items-center">
+                        <i class="fas fa-align-left mr-2 text-blue-500"></i>
+                        Descripción
+                        <span class="text-red-500 ml-1">*</span>
+                    </label>
+                    <div class="relative">
                         <textarea
                             id="description"
                             name="description"
-                            rows="4"
-                            class="input-field resize-none"
-                            placeholder="Describe el propósito, productos o servicios que ofrece tu empresa"
-                            required>{{ old('description') }}</textarea>
-                        @error('description')
-                            <p class="text-sm text-red-500">{{ $message }}</p>
-                        @enderror
+                            rows="5"
+                            placeholder="Describe tu empresa, servicios que ofrece, valores corporativos y cultura organizacional..."
+                            required
+                            class="w-full border-2 border-gray-200 rounded-xl py-4 pl-12 pr-4 text-gray-800 placeholder-gray-400
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:border-blue-300 resize-none"
+                        >{{ old('description', optional($company)->description) }}</textarea>
+                        <div class="absolute top-4 left-4 text-gray-400">
+                            <i class="fas fa-file-text"></i>
+                        </div>
                     </div>
+                    @error('description')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <p class="text-sm text-slate-500 flex items-center gap-2"><i class="fas fa-shield-alt text-blue-500"></i> Recuerda verificar la información antes de enviarla.</p>
-                    <button
-                        type="submit"
-                        class="btn-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 hover-lift"
-                    >
-                        <i class="fas fa-paper-plane"></i>
-                        Registrar empresa
-                    </button>
-                </div>
-            </div>
-        </section>
-    </main>
-</form>
+                <!-- Nota de campos obligatorios -->
+                <p class="text-sm text-gray-500 mb-6 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Los campos marcados con <span class="text-red-500 mx-1">*</span> son obligatorios
+                </p>
+
+                <!-- Botón de envío -->
+                <button
+                    type="submit"
+                    class="w-full btn-primary text-white font-semibold py-4 rounded-xl shadow-soft
+                           focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 hover-lift mb-6"
+                >
+                    <i class="fas fa-check-circle mr-2"></i>
+                    {{ optional($company)->exists ? 'ACTUALIZAR EMPRESA' : 'REGISTRAR EMPRESA' }}
+                </button>
+
+            </form>
+        </div>
+    </div>
+
 @endsection
