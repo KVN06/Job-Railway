@@ -2,561 +2,607 @@
 
 @section('content')
 
-@if(auth()->user()->type === 'company')
+@if(auth()->check() && auth()->user()->type === 'company')
 
-    {{-- Home para empresa --}}
-    @if(session('success'))
-        <div class="max-w-7xl mx-auto mt-6 px-4 animate-fade-in-up">
-            <x-alert type="success">
-                {{ session('success') }}
-            </x-alert>
-        </div>
-    @endif
+    <main class="container mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-12">
+        @php
+            $authUser = auth()->user();
+            $company = $authUser?->company;
+            $jobOffers = $company ? $company->jobOffers()->withCount('jobApplications')->get() : collect();
+            $totalOffers = $jobOffers->count();
+            $activeOffers = $jobOffers->where('status', 'active')->count();
+            $applicationsCount = $jobOffers->sum('job_applications_count');
+            $activityRate = $totalOffers > 0 ? round(($activeOffers / $totalOffers) * 100) : 0;
+            $hasStatsData = $totalOffers > 0 || $applicationsCount > 0;
+        @endphp
 
-    <main class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <!-- Hero Section Mejorado -->
-        <x-card variant="gradient" class="mb-10 overflow-hidden relative">
-            @php
-                $authUser = auth()->user();
-                $company = $authUser?->company;
-            @endphp
+        <!-- HERO PRINCIPAL -->
+        <section>
+            <x-card variant="gradient" class="relative overflow-hidden">
+                <div class="absolute -top-20 -right-12 w-72 h-72 bg-white/10 blur-3xl rounded-full"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/10 blur-3xl rounded-full"></div>
 
+                <div class="relative z-10 flex flex-col lg:flex-row items-center lg:items-start gap-10">
+                    <div class="flex-1 text-center lg:text-left space-y-6">
+                        <div class="inline-flex items-center px-4 py-2 rounded-full bg-white/10 border border-white/30 text-white/90 text-sm uppercase tracking-wide">
+                            <i class="fas fa-rocket mr-2"></i>
+                            Panel de empresa
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight">
+                            Impulsa el crecimiento de <span class="text-white/80">{{ $company?->name ?? $authUser->name }}</span>
+                        </h1>
+                        <p class="text-white/80 text-lg max-w-2xl">
+                            Centraliza tus vacantes, sigue el progreso de los candidatos y toma decisiones con datos en tiempo real. Te ayudamos a crear equipos excepcionales.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 sm:items-center">
+                            <x-button
+                                href="{{ route('job-offers.create') }}"
+                                variant="primary"
+                                size="lg"
+                                icon="fas fa-plus-circle"
+                                class="bg-white text-blue-700 hover:bg-gray-100 shadow-xl"
+                            >
+                                Publicar nueva oferta
+                            </x-button>
+                            <x-button
+                                href="{{ route('job-offers.index') }}"
+                                variant="primary"
+                                size="lg"
+                                icon="fas fa-list-check"
+                                class="bg-white/10 border border-white/40 text-white hover:bg-white/20"
+                            >
+                                Administrar vacantes
+                            </x-button>
+                        </div>
+
+                        @unless($company)
+                            <div class="max-w-xl">
+                                <x-alert variant="warning" icon="fas fa-circle-info" class="mt-6 bg-white/10 text-white border-white/30">
+                                    Completa la información de tu empresa para desbloquear las estadísticas y agilizar la publicación de ofertas.
+                                    <a href="{{ route('company-form') }}" class="underline font-semibold">Completar perfil empresarial</a>.
+                                </x-alert>
+                            </div>
+                        @endunless
+                    </div>
+
+                    <div class="w-full max-w-sm">
+                        <div class="bg-white/10 border border-white/20 rounded-3xl p-7 backdrop-blur">
+                            <p class="text-white/70 text-sm uppercase tracking-widest mb-6">Resumen rápido</p>
+                            <div class="space-y-5">
+                                <div class="flex items-center justify-between text-white">
+                                    <div>
+                                        <p class="text-sm text-white/70">Ofertas activas</p>
+                                        <p class="text-3xl font-bold">{{ $activeOffers }}</p>
+                                    </div>
+                                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/15"><i class="fas fa-briefcase"></i></span>
+                                </div>
+                                <div class="flex items-center justify-between text-white">
+                                    <div>
+                                        <p class="text-sm text-white/70">Postulaciones recibidas</p>
+                                        <p class="text-3xl font-bold">{{ $applicationsCount }}</p>
+                                    </div>
+                                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/15"><i class="fas fa-users"></i></span>
+                                </div>
+                                <div class="flex items-center justify-between text-white">
+                                    <div>
+                                        <p class="text-sm text-white/70">Tasa de actividad</p>
+                                        <p class="text-3xl font-bold">{{ $activityRate }}%</p>
+                                    </div>
+                                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/15"><i class="fas fa-chart-line"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </x-card>
+        </section>
+
+        <!-- ESTADÍSTICAS PRINCIPALES -->
+        <section>
             @if ($company)
-            <!-- Estadísticas Mejoradas con datos dinámicos -->
-            <section class="mb-12">
-                <div class="mb-8 text-center">
-                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                        <i class="fas fa-chart-bar mr-2 text-blue-600"></i>
-                        Resumen de Actividad
-                    </h2>
-                    <p class="text-gray-600">Tu desempeño en tiempo real</p>
-                </div>
-
-                @php
-                    $totalOffers = $company->jobOffers()->count();
-                    $activeOffers = $company->jobOffers()->where('status', 'active')->count();
-                    $applicationsCount = $company->jobOffers()->withCount('jobApplications')->get()->sum('job_applications_count');
-                    $activityRate = $totalOffers > 0 ? round(($activeOffers / $totalOffers) * 100) : 0;
-                @endphp
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
-                    <!-- Ofertas Activas -->
-                    <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                        <div class="text-center">
-                            <div class="w-18 h-18 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                                <i class="fas fa-briefcase text-3xl text-white"></i>
+                @if ($hasStatsData)
+                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 animate-fade-in-up">
+                        <x-card hover class="group">
+                            <div class="flex flex-col items-center text-center space-y-4">
+                                <span class="inline-flex w-16 h-16 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 group-hover:scale-110 transition">
+                                    <i class="fas fa-bullseye"></i>
+                                </span>
+                                <p class="text-4xl font-extrabold text-gray-900">{{ $activeOffers }}</p>
+                                <p class="text-gray-600 font-semibold">Ofertas activas</p>
+                                <x-badge variant="success" size="sm" icon="fas fa-check-circle">Publicadas</x-badge>
                             </div>
-                            <div class="text-5xl font-bold bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent mb-2">
-                                {{ $activeOffers }}
+                        </x-card>
+
+                        <x-card hover class="group">
+                            <div class="flex flex-col items-center text-center space-y-4">
+                                <span class="inline-flex w-16 h-16 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-700 group-hover:scale-110 transition">
+                                    <i class="fas fa-user-group"></i>
+                                </span>
+                                <p class="text-4xl font-extrabold text-gray-900">{{ $applicationsCount }}</p>
+                                <p class="text-gray-600 font-semibold">Postulaciones totales</p>
+                                <x-badge variant="primary" size="sm" icon="fas fa-user-plus">Candidatos</x-badge>
                             </div>
-                            <div class="text-gray-600 font-semibold mb-3">Ofertas Activas</div>
-                            <x-badge variant="success" icon="fas fa-check-circle" size="sm">
-                                Publicadas
-                            </x-badge>
+                        </x-card>
+
+                        <x-card hover class="group">
+                            <div class="flex flex-col items-center text-center space-y-4">
+                                <span class="inline-flex w-16 h-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 group-hover:scale-110 transition">
+                                    <i class="fas fa-file-signature"></i>
+                                </span>
+                                <p class="text-4xl font-extrabold text-gray-900">{{ $totalOffers }}</p>
+                                <p class="text-gray-600 font-semibold">Vacantes creadas</p>
+                                <x-badge variant="success" size="sm" icon="fas fa-history">Historial</x-badge>
+                            </div>
+                        </x-card>
+
+                        <x-card hover class="group">
+                            <div class="flex flex-col items-center text-center space-y-4">
+                                <span class="inline-flex w-16 h-16 items-center justify-center rounded-2xl bg-gray-100 text-gray-700 group-hover:scale-110 transition">
+                                    <i class="fas fa-percent"></i>
+                                </span>
+                                <p class="text-4xl font-extrabold text-gray-900">{{ $activityRate }}%</p>
+                                <p class="text-gray-600 font-semibold">Tasa de actividad</p>
+                                <x-badge variant="{{ $activityRate >= 70 ? 'success' : ($activityRate >= 40 ? 'warning' : 'danger') }}" size="sm" icon="fas fa-chart-pie">
+                                    {{ $activityRate >= 70 ? 'Excelente' : ($activityRate >= 40 ? 'Buena' : 'Mejorable') }}
+                                </x-badge>
+                            </div>
+                        </x-card>
+                    </div>
+                @else
+                    <x-card class="text-center py-14 animate-fade-in-up">
+                        <div class="max-w-2xl mx-auto space-y-6">
+                            <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 text-blue-600 text-2xl">
+                                <i class="fas fa-paper-plane"></i>
+                            </span>
+                            <h3 class="text-2xl font-bold text-gray-900">Aún no tienes actividad registrada</h3>
+                            <p class="text-gray-600">
+                                Publica tu primera oferta para comenzar a recibir postulaciones y desbloquear estadísticas detalladas.
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                <x-button href="{{ route('job-offers.create') }}" variant="primary" icon="fas fa-plus-circle" size="lg">
+                                    Publicar primera oferta
+                                </x-button>
+                            </div>
                         </div>
                     </x-card>
-
-                    <!-- Aplicaciones Recibidas -->
-                    <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                        <div class="text-center">
-                            <div class="w-18 h-18 bg-gradient-to-br from-indigo-900 to-indigo-800 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                                <i class="fas fa-users text-3xl text-white"></i>
-                            </div>
-                            <div class="text-5xl font-bold bg-gradient-to-r from-indigo-900 to-indigo-700 bg-clip-text text-transparent mb-2">
-                                {{ $applicationsCount }}
-                            </div>
-                            <div class="text-gray-600 font-semibold mb-3">Postulaciones Totales</div>
-                            <x-badge variant="primary" icon="fas fa-user-plus" size="sm">
-                                Candidatos
-                            </x-badge>
-                        </div>
-                    </x-card>
-
-                    <!-- Total de Ofertas -->
-                    <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                        <div class="text-center">
-                            <div class="w-18 h-18 bg-gradient-to-br from-slate-700 to-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                                <i class="fas fa-file-alt text-3xl text-white"></i>
-                            </div>
-                            <div class="text-5xl font-bold bg-gradient-to-r from-slate-700 to-slate-600 bg-clip-text text-transparent mb-2">
-                                {{ $totalOffers }}
-                            </div>
-                            <div class="text-gray-600 font-semibold mb-3">Total de Ofertas</div>
-                            <x-badge variant="success" icon="fas fa-chart-line" size="sm">
-                                Historial
-                            </x-badge>
-                        </div>
-                    </x-card>
-
-                    <!-- Tasa de Actividad -->
-                    <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                        <div class="text-center">
-                            <div class="w-18 h-18 bg-gradient-to-br from-gray-700 to-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                                <i class="fas fa-percentage text-3xl text-white"></i>
-                            </div>
-                            <div class="text-5xl font-bold bg-gradient-to-r from-gray-700 to-gray-600 bg-clip-text text-transparent mb-2">
-                                {{ $activityRate }}%
-                            </div>
-                            <div class="text-gray-600 font-semibold mb-3">Tasa de Actividad</div>
-                            <x-badge variant="{{ $activityRate >= 70 ? 'success' : ($activityRate >= 40 ? 'warning' : 'danger') }}" icon="fas fa-chart-pie" size="sm">
-                                {{ $activityRate >= 70 ? 'Excelente' : ($activityRate >= 40 ? 'Buena' : 'Mejorable') }}
-                            </x-badge>
-                        </div>
-                    </x-card>
-                </div>
-            </section>
+                @endif
             @else
-            <section class="mb-12">
                 <div class="max-w-3xl mx-auto">
                     <x-alert variant="info" icon="fas fa-info-circle">
                         Completa el registro de tu empresa para visualizar estadísticas de ofertas y postulaciones.
                         <a href="{{ route('company-form') }}" class="underline font-semibold">Ir al formulario de empresa</a>.
                     </x-alert>
                 </div>
-            </section>
             @endif
-                        </div>
-                        <div class="text-5xl font-bold bg-gradient-to-r from-indigo-900 to-indigo-700 bg-clip-text text-transparent mb-2">
-                            {{ auth()->user()->company->jobOffers()->withCount('jobApplications')->get()->sum('job_applications_count') ?? 0 }}
-                        </div>
-                        <div class="text-gray-600 font-semibold mb-3">Postulaciones Totales</div>
-                        <x-badge variant="primary" icon="fas fa-user-plus" size="sm">
-                            Candidatos
-                        </x-badge>
-                    </div>
-                </x-card>
-
-                <!-- Total de Ofertas -->
-                <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                    <div class="text-center">
-                        <div class="w-18 h-18 bg-gradient-to-br from-slate-700 to-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                            <i class="fas fa-file-alt text-3xl text-white"></i>
-                        </div>
-                        <div class="text-5xl font-bold bg-gradient-to-r from-slate-700 to-slate-600 bg-clip-text text-transparent mb-2">
-                            {{ auth()->user()->company->jobOffers()->count() ?? 0 }}
-                        </div>
-                        <div class="text-gray-600 font-semibold mb-3">Total de Ofertas</div>
-                        <x-badge variant="success" icon="fas fa-chart-line" size="sm">
-                            Historial
-                        </x-badge>
-                    </div>
-                </x-card>
-
-                <!-- Tasa de Actividad -->
-                <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                    <div class="text-center">
-                        <div class="w-18 h-18 bg-gradient-to-br from-gray-700 to-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                            <i class="fas fa-percentage text-3xl text-white"></i>
-                        </div>
-                        @php
-                            $totalOffers = auth()->user()->company->jobOffers()->count();
-                            $activeOffers = auth()->user()->company->jobOffers()->where('status', 'active')->count();
-                            $activityRate = $totalOffers > 0 ? round(($activeOffers / $totalOffers) * 100) : 0;
-                        @endphp
-                        <div class="text-5xl font-bold bg-gradient-to-r from-gray-700 to-gray-600 bg-clip-text text-transparent mb-2">
-                            {{ $activityRate }}%
-                        </div>
-                        <div class="text-gray-600 font-semibold mb-3">Tasa de Actividad</div>
-                        <x-badge variant="{{ $activityRate >= 70 ? 'success' : ($activityRate >= 40 ? 'warning' : 'danger') }}" icon="fas fa-chart-pie" size="sm">
-                            {{ $activityRate >= 70 ? 'Excelente' : ($activityRate >= 40 ? 'Buena' : 'Mejorable') }}
-                        </x-badge>
-                    </div>
-                </x-card>
-            </div>
         </section>
 
-        <!-- Acciones Rápidas Mejoradas -->
-        <section class="mb-12">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                    <span class="bg-gradient-to-r from-blue-800 to-purple-700 bg-clip-text text-transparent">
-                        <i class="fas fa-bolt mr-2"></i>Acciones Rápidas
-                    </span>
-                </h2>
-                <p class="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
-                    Gestiona tus procesos de reclutamiento de forma eficiente y profesional
-                </p>
-                <div class="w-32 h-1.5 bg-gradient-to-r from-blue-800 to-purple-700 mx-auto mt-5 rounded-full"></div>
+        <!-- ACCIONES -->
+        <section class="space-y-8">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900">Acciones recomendadas</h2>
+                    <p class="text-gray-600 mt-2 max-w-xl">Mantén tu pipeline activo con estos atajos para publicar, gestionar y seguir a tus candidatos.</p>
+                </div>
+                <x-badge variant="primary" icon="fas fa-bolt">Optimiza tu tiempo</x-badge>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Publicar Oferta -->
-                <x-card variant="enhanced" hover class="group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:shadow-2xl animate-fade-in-up">
-                    <a href="{{ route('job-offers.create') }}" class="block">
-                        <div class="text-center relative">
-                            <!-- Badge flotante -->
-                            <div class="absolute -top-3 -right-3 z-10">
-                                <x-badge variant="success" icon="fas fa-star" size="sm">
-                                    Popular
-                                </x-badge>
-                            </div>
-
-                            <div class="w-24 h-24 bg-gradient-to-br from-blue-900 to-blue-800 rounded-3xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl">
-                                <i class="fas fa-file-medical text-4xl text-white"></i>
-                            </div>
-                            <h3 class="font-bold text-xl mb-3 text-gray-800 group-hover:text-blue-900 transition-colors">
-                                Publicar Oferta
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-5 leading-relaxed px-2">
-                                Crea y publica una nueva oferta laboral en minutos
-                            </p>
-                            <div class="flex items-center justify-center text-blue-900 font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                                <span>Crear ahora</span>
-                                <i class="fas fa-arrow-right ml-2"></i>
-                            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <x-card hover class="relative overflow-hidden border border-blue-100 bg-blue-50">
+                    <div class="absolute -top-6 -right-6 w-28 h-28 bg-blue-200/60 rounded-full blur-2xl"></div>
+                    <div class="relative z-10 space-y-5">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 text-white">
+                            <i class="fas fa-file-circle-plus"></i>
                         </div>
-                    </a>
-                </x-card>
-
-                <!-- Gestionar Postulaciones -->
-                <x-card variant="enhanced" hover class="group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:shadow-2xl animate-fade-in-up" style="animation-delay: 0.1s;">
-                    <a href="{{ \Illuminate\Support\Facades\Route::has('job-applications.index-company') ? route('job-applications.index-company') : route('job-offers.index') }}" class="block">
-                        <div class="text-center">
-                            <div class="w-24 h-24 bg-gradient-to-br from-indigo-900 to-indigo-800 rounded-3xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl">
-                                <i class="fas fa-clipboard-check text-4xl text-white"></i>
-                            </div>
-                            <h3 class="font-bold text-xl mb-3 text-gray-800 group-hover:text-indigo-900 transition-colors">
-                                Gestionar Postulaciones
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-5 leading-relaxed px-2">
-                                Revisa y actualiza las postulaciones recibidas
-                            </p>
-                            <div class="flex items-center justify-center text-indigo-900 font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                                <span>Ver postulaciones</span>
-                                <i class="fas fa-arrow-right ml-2"></i>
-                            </div>
-                        </div>
-                    </a>
-                </x-card>
-
-                <!-- Ver Ofertas Publicadas -->
-                <x-card variant="enhanced" hover class="group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:shadow-2xl animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <a href="{{ route('job-offers.index') }}" class="block">
-                        <div class="text-center">
-                            <div class="w-24 h-24 bg-gradient-to-br from-slate-700 to-slate-600 rounded-3xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl">
-                                <i class="fas fa-list-ul text-4xl text-white"></i>
-                            </div>
-                            <h3 class="font-bold text-xl mb-3 text-gray-800 group-hover:text-slate-700 transition-colors">
-                                Mis Ofertas
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-5 leading-relaxed px-2">
-                                Administra todas tus ofertas laborales publicadas
-                            </p>
-                            <div class="flex items-center justify-center text-slate-700 font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                                <span>Ver ofertas</span>
-                                <i class="fas fa-arrow-right ml-2"></i>
-                            </div>
-                        </div>
-                    </a>
-                </x-card>
-
-                <!-- Perfil de Empresa -->
-                <x-card variant="default" class="opacity-75 hover:opacity-90 transition-opacity animate-fade-in-up" style="animation-delay: 0.3s;">
-                    <div class="text-center h-full flex flex-col justify-between">
                         <div>
-                            <div class="w-24 h-24 bg-gradient-to-br from-gray-600 to-gray-500 rounded-3xl flex items-center justify-center mb-6 mx-auto shadow-lg">
-                                <i class="fas fa-building text-4xl text-white"></i>
-                            </div>
-                            <h3 class="font-bold text-xl mb-3 text-gray-600">
-                                Perfil de Empresa
-                            </h3>
-                            <p class="text-sm text-gray-500 mb-5 px-2">
-                                Gestiona la información de tu empresa
-                            </p>
+                            <h3 class="text-xl font-bold text-blue-900">Publicar oferta</h3>
+                            <p class="text-blue-900/80 mt-2">Define requisitos, beneficios y recibe candidatos en minutos.</p>
                         </div>
-                        <x-badge variant="default" icon="fas fa-clock">
-                            Próximamente
-                        </x-badge>
+                        <ul class="space-y-2 text-sm text-blue-900/70">
+                            <li class="flex items-center gap-2"><i class="fas fa-check"></i> Plantillas prearmadas</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check"></i> Visibilidad inmediata</li>
+                        </ul>
+                        <x-button href="{{ route('job-offers.create') }}" variant="primary" icon="fas fa-arrow-right" class="bg-blue-600 hover:bg-blue-700">
+                            Crear oferta
+                        </x-button>
+                    </div>
+                </x-card>
+
+                <x-card hover class="relative overflow-hidden border border-indigo-100 bg-indigo-50">
+                    <div class="absolute -top-6 -right-6 w-28 h-28 bg-indigo-200/60 rounded-full blur-2xl"></div>
+                    <div class="relative z-10 space-y-5">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white">
+                            <i class="fas fa-users-gear"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-900">Revisar postulaciones</h3>
+                            <p class="text-indigo-900/80 mt-2">Clasifica candidatos, deja notas internas y coordina entrevistas.</p>
+                        </div>
+                        <ul class="space-y-2 text-sm text-indigo-900/70">
+                            <li class="flex items-center gap-2"><i class="fas fa-check"></i> Filtros avanzados</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check"></i> Trazabilidad de estados</li>
+                        </ul>
+                        <x-button
+                            href="{{ \Illuminate\Support\Facades\Route::has('job-applications.index-company') ? route('job-applications.index-company') : route('job-offers.index') }}"
+                            variant="primary"
+                            icon="fas fa-arrow-right"
+                            class="bg-indigo-600 hover:bg-indigo-700"
+                        >
+                            Gestionar postulaciones
+                        </x-button>
+                    </div>
+                </x-card>
+
+                <x-card hover class="relative overflow-hidden border border-purple-100 bg-purple-50">
+                    <div class="absolute -top-6 -right-6 w-28 h-28 bg-purple-200/60 rounded-full blur-2xl"></div>
+                    <div class="relative z-10 space-y-5">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-600 text-white">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-purple-900">Perfil de empresa</h3>
+                            <p class="text-purple-900/80 mt-2">Refuerza tu marca empleadora con una presentación atractiva.</p>
+                        </div>
+                        <ul class="space-y-2 text-sm text-purple-900/70">
+                            <li class="flex items-center gap-2"><i class="fas fa-check"></i> Información centralizada</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check"></i> Imagen destacada</li>
+                        </ul>
+                        <x-button href="{{ route('company-form') }}" variant="primary" icon="fas fa-arrow-right" class="bg-purple-600 hover:bg-purple-700">
+                            Actualizar perfil
+                        </x-button>
                     </div>
                 </x-card>
             </div>
         </section>
 
-        <!-- Tips y Recomendaciones -->
-        <section class="mb-12 animate-fade-in-up" style="animation-delay: 0.4s;">
-            <x-card variant="enhanced" class="border-l-4 border-blue-600">
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0">
-                        <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-lightbulb text-2xl text-blue-600"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-star text-yellow-500 mr-2"></i>
-                            Consejos para atraer mejores candidatos
-                        </h3>
-                        <ul class="space-y-2 text-gray-700">
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-green-600 mr-3 mt-1 flex-shrink-0"></i>
-                                <span><strong>Descripciones claras:</strong> Detalla responsabilidades y requisitos específicos</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-green-600 mr-3 mt-1 flex-shrink-0"></i>
-                                <span><strong>Salario competitivo:</strong> Ofrece rangos salariales atractivos y beneficios</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-green-600 mr-3 mt-1 flex-shrink-0"></i>
-                                <span><strong>Respuesta rápida:</strong> Responde a las aplicaciones en menos de 48 horas</span>
-                            </li>
+        <!-- INSIGHTS -->
+        <section class="space-y-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900">Ideas para fortalecer tu atracción de talento</h2>
+                    <p class="text-gray-600 mt-2 max-w-3xl">Incorpora estas mejores prácticas y recursos recomendados para atraer candidatos más calificados y cerrar vacantes con rapidez.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <x-card hover>
+                    <div class="space-y-3">
+                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600"><i class="fas fa-pen-nib"></i></span>
+                        <h3 class="text-xl font-bold text-gray-900">Historias de impacto</h3>
+                        <p class="text-gray-600">Incluye testimonios de tu equipo y describe desafíos reales para captar perfiles alineados con tu cultura.</p>
+                        <ul class="text-sm text-gray-500 space-y-2">
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-emerald-500"></i> Humaniza tu propuesta de valor</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-emerald-500"></i> Muestra oportunidades de desarrollo</li>
                         </ul>
+                    </div>
+                </x-card>
+
+                <x-card hover>
+                    <div class="space-y-3">
+                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-100 text-amber-600"><i class="fas fa-hourglass-half"></i></span>
+                        <h3 class="text-xl font-bold text-gray-900">Tiempo de respuesta</h3>
+                        <p class="text-gray-600">Configura recordatorios internos para contactar candidatos en menos de 48 horas y mejorar la experiencia.</p>
+                        <ul class="text-sm text-gray-500 space-y-2">
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-amber-500"></i> Automatiza correos de seguimiento</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-amber-500"></i> Etiqueta perfiles prioritarios</li>
+                        </ul>
+                    </div>
+                </x-card>
+
+                <x-card hover class="bg-gray-900 text-white overflow-hidden relative">
+                    <div class="absolute -top-10 -right-10 w-36 h-36 bg-white/10 rounded-full blur-3xl"></div>
+                    <div class="space-y-4 relative z-10">
+                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/20 text-white"><i class="fas fa-graduation-cap"></i></span>
+                        <h3 class="text-xl font-bold">Recursos de capacitación</h3>
+                        <p class="text-white/80">Fortalece a tu equipo con talleres y cursos en habilidades digitales, liderazgo y metodología ágil.</p>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="px-3 py-1 bg-white/10 rounded-full">Metodologías ágiles</span>
+                            <span class="px-3 py-1 bg-white/10 rounded-full">Entrevistas efectivas</span>
+                            <span class="px-3 py-1 bg-white/10 rounded-full">Onboarding</span>
+                        </div>
+                        <x-button href="{{ route('training.index') }}" variant="outline" icon="fas fa-arrow-right" class="border-white/40 text-white hover:bg-white hover:text-gray-900">
+                            Explorar capacitaciones
+                        </x-button>
+                    </div>
+                </x-card>
+            </div>
+        </section>
+
+    </main>
+@elseif(auth()->check() && auth()->user()->type === 'unemployed')
+
+    <main class="container mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-12">
+        @php
+            $user = auth()->user();
+            $unemployedProfile = $user?->unemployed;
+            $totalActiveOffers = \App\Models\JobOffer::active()->count();
+            $totalCompanies = \App\Models\Company::count();
+            $myApplications = $unemployedProfile?->jobApplications()->count() ?? 0;
+            $applicationStatusCounts = $unemployedProfile
+                ? $unemployedProfile->jobApplications()
+                    ->selectRaw('status, COUNT(*) as total')
+                    ->groupBy('status')
+                    ->pluck('total', 'status')
+                : collect();
+            $applicationStats = [
+                'pending' => (int) ($applicationStatusCounts['pending'] ?? 0),
+                'reviewed' => (int) ($applicationStatusCounts['reviewed'] ?? 0),
+                'accepted' => (int) ($applicationStatusCounts['accepted'] ?? 0),
+                'rejected' => (int) ($applicationStatusCounts['rejected'] ?? 0),
+            ];
+            $featuredJobs = \App\Models\JobOffer::with('company')->active()->latest()->take(3)->get();
+            $recommendedTrainings = \App\Models\Training::latest()->take(3)->get();
+            $recommendedCategories = \App\Models\Category::inRandomOrder()->take(6)->get();
+        @endphp
+
+        <!-- HERO -->
+        <section>
+            <x-card variant="gradient" class="mb-4 overflow-hidden relative">
+                <div class="absolute top-0 right-0 w-72 h-72 bg-white opacity-5 rounded-full -mr-36 -mt-36 animate-pulse-slow"></div>
+                <div class="absolute bottom-0 left-0 w-56 h-56 bg-white opacity-5 rounded-full -ml-28 -mb-28 animate-pulse-slow" style="animation-delay: 1s;"></div>
+                <div class="absolute top-1/2 right-1/4 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl"></div>
+
+                <div class="max-w-4xl mx-auto text-center relative z-10 py-6 space-y-8">
+                    <div class="opacity-90">
+                        <p class="text-lg md:text-xl font-medium">
+                            <i class="fas fa-hand-wave mr-2"></i>
+                            Hola, <span class="font-bold">{{ $user->name }}</span>
+                        </p>
+                    </div>
+
+                    <i class="fas fa-rocket text-7xl text-white animate-bounce-slow"></i>
+
+                    <div class="space-y-4">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                            Tu próxima oportunidad laboral
+                        </h1>
+                        <p class="text-xl md:text-2xl opacity-90 leading-relaxed max-w-3xl mx-auto">
+                            Conectamos talento con empresas líderes. Descubre vacantes, fortalece tu perfil y da el siguiente paso en tu carrera.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <x-button
+                            href="{{ route('job-offers.index') }}"
+                            variant="primary"
+                            size="lg"
+                            icon="fas fa-search"
+                            class="transform hover:scale-105 transition-transform duration-300 shadow-xl bg-white text-blue-800 hover:bg-gray-100"
+                        >
+                            Explorar empleos
+                        </x-button>
+                        <x-button
+                            href="{{ route('training.index') }}"
+                            variant="primary"
+                            size="lg"
+                            icon="fas fa-graduation-cap"
+                            class="bg-white/20 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-blue-800 transform hover:scale-105 transition-all duration-300"
+                        >
+                            Ver capacitaciones
+                        </x-button>
                     </div>
                 </div>
             </x-card>
         </section>
 
-    </main>
-@elseif(auth()->user()->type === 'unemployed')
-
-    {{-- Home para desempleado mejorado --}}
-    <main class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <!-- Hero Section Mejorado -->
-        <x-card variant="gradient" class="mb-10 overflow-hidden relative">
-            <!-- Elementos decorativos animados -->
-            <div class="absolute top-0 right-0 w-72 h-72 bg-white opacity-5 rounded-full -mr-36 -mt-36 animate-pulse-slow"></div>
-            <div class="absolute bottom-0 left-0 w-56 h-56 bg-white opacity-5 rounded-full -ml-28 -mb-28 animate-pulse-slow" style="animation-delay: 1s;"></div>
-            <div class="absolute top-1/2 right-1/4 w-80 h-80 bg-white opacity-3 rounded-full blur-3xl"></div>
-
-            <div class="max-w-4xl mx-auto text-center relative z-10 py-4">
-                <!-- Saludo personalizado -->
-                <div class="mb-4 opacity-90">
-                    <p class="text-lg md:text-xl font-medium">
-                        <i class="fas fa-hand-wave mr-2"></i>
-                        Hola, <span class="font-bold">{{ auth()->user()->name }}</span>
-                    </p>
-                </div>
-
-                <!-- Icono animado -->
-                <div class="mb-8">
-                    <i class="fas fa-rocket text-8xl text-white animate-bounce-slow inline-block"></i>
-                </div>
-
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-5 leading-tight">
-                    Tu Próxima Oportunidad Laboral
-                </h1>
-                <p class="text-xl md:text-2xl mb-10 opacity-90 leading-relaxed max-w-3xl mx-auto">
-                    Conectamos talento con empresas líderes. Encuentra el trabajo de tus sueños
-                </p>
-
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <x-button
-                        href="{{ route('job-offers.index') }}"
-                        variant="primary"
-                        size="lg"
-                        icon="fas fa-search"
-                        class="transform hover:scale-105 transition-transform duration-300 shadow-xl bg-white text-blue-800 hover:bg-gray-100"
-                    >
-                        Explorar Empleos
-                    </x-button>
-                    <x-button
-                        href="{{ route('training.index') }}"
-                        variant="primary"
-                        size="lg"
-                        icon="fas fa-graduation-cap"
-                        class="bg-white bg-opacity-20 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-blue-800 transform hover:scale-105 transition-all duration-300"
-                    >
-                        Ver Capacitaciones
-                    </x-button>
-                </div>
-            </div>
-        </x-card>
-
-        <!-- Estadísticas de la Plataforma -->
-        <section class="mb-12">
-            <div class="mb-8 text-center">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                    <i class="fas fa-chart-line mr-2 text-blue-600"></i>
-                    La Plataforma en Números
-                </h2>
-                <p class="text-gray-600">Tu puerta al éxito profesional</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up">
-                <!-- Empleos Disponibles -->
-                <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                    <div class="text-center">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <i class="fas fa-briefcase text-2xl text-white"></i>
-                        </div>
-                        @php
-                            $totalJobs = \App\Models\JobOffer::where('status', 'active')->count();
-                        @endphp
-                        <div class="text-5xl font-bold bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent mb-2">
-                            {{ number_format($totalJobs) }}{{ $totalJobs > 100 ? '+' : '' }}
-                        </div>
-                        <div class="text-gray-600 font-semibold mb-3">Empleos Disponibles</div>
-                        <x-badge variant="success" icon="fas fa-plus-circle" size="sm">
-                            Activos ahora
-                        </x-badge>
+        <!-- RESUMEN RÁPIDO -->
+        <section>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <x-card hover class="text-center space-y-4 py-8">
+                    <div class="inline-flex w-16 h-16 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 text-2xl">
+                        <i class="fas fa-briefcase"></i>
                     </div>
+                    <p class="text-4xl font-extrabold text-gray-900">{{ $totalActiveOffers }}</p>
+                    <p class="text-gray-600 font-semibold">Ofertas activas</p>
+                    <x-badge variant="primary" size="sm" icon="fas fa-bullhorn">Actualizado</x-badge>
                 </x-card>
 
-                <!-- Empresas Registradas -->
-                <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                    <div class="text-center">
-                        <div class="w-14 h-14 bg-gradient-to-br from-indigo-900 to-indigo-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <i class="fas fa-building text-2xl text-white"></i>
-                        </div>
-                        @php
-                            $totalCompanies = \App\Models\Company::count();
-                        @endphp
-                        <div class="text-5xl font-bold bg-gradient-to-r from-indigo-900 to-indigo-700 bg-clip-text text-transparent mb-2">
-                            {{ number_format($totalCompanies) }}{{ $totalCompanies > 50 ? '+' : '' }}
-                        </div>
-                        <div class="text-gray-600 font-semibold mb-3">Empresas Confiables</div>
-                        <x-badge variant="primary" icon="fas fa-shield-check" size="sm">
-                            Verificadas
-                        </x-badge>
+                <x-card hover class="text-center space-y-4 py-8">
+                    <div class="inline-flex w-16 h-16 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600 text-2xl">
+                        <i class="fas fa-building"></i>
                     </div>
+                    <p class="text-4xl font-extrabold text-gray-900">{{ number_format($totalCompanies) }}{{ $totalCompanies > 50 ? '+' : '' }}</p>
+                    <p class="text-gray-600 font-semibold">Empresas confiables</p>
+                    <x-badge variant="success" size="sm" icon="fas fa-shield-check">Verificadas</x-badge>
                 </x-card>
 
-                <!-- Tus Postulaciones -->
-                <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                    <div class="text-center">
-                        <div class="w-14 h-14 bg-gradient-to-br from-slate-700 to-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <i class="fas fa-file-import text-2xl text-white"></i>
-                        </div>
-                        @php
-                            $myApplications = auth()->user()->unemployed->jobApplications()->count() ?? 0;
-                        @endphp
-                        <div class="text-5xl font-bold bg-gradient-to-r from-slate-700 to-slate-600 bg-clip-text text-transparent mb-2">
-                            {{ $myApplications }}
-                        </div>
-                        <div class="text-gray-600 font-semibold mb-3">Mis Postulaciones</div>
-                        <x-badge variant="success" icon="fas fa-paper-plane" size="sm">
-                            Enviadas
-                        </x-badge>
+                <x-card hover class="text-center space-y-4 py-8">
+                    <div class="inline-flex w-16 h-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 text-2xl">
+                        <i class="fas fa-file-import"></i>
                     </div>
+                    <p class="text-4xl font-extrabold text-gray-900">{{ $myApplications }}</p>
+                    <p class="text-gray-600 font-semibold">Mis postulaciones</p>
+                    <x-badge variant="warning" size="sm" icon="fas fa-paper-plane">Seguimiento</x-badge>
                 </x-card>
             </div>
         </section>
 
-        <!-- Acciones Rápidas para Desempleados -->
-        <section class="mb-12">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                    <span class="bg-gradient-to-r from-blue-800 to-purple-700 bg-clip-text text-transparent">
-                        <i class="fas fa-rocket mr-2"></i>Impulsa Tu Carrera
-                    </span>
-                </h2>
-                <p class="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
-                    Herramientas y recursos para encontrar tu empleo ideal
-                </p>
-                <div class="w-32 h-1.5 bg-gradient-to-r from-blue-800 to-purple-700 mx-auto mt-5 rounded-full"></div>
+        @if($featuredJobs->isNotEmpty())
+        <!-- OPORTUNIDADES DESTACADAS -->
+        <section class="space-y-6">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900">Oportunidades que podrían interesarte</h2>
+                    <p class="text-gray-600 mt-2 max-w-2xl">Explora las últimas vacantes activas publicadas por empresas verificadas.</p>
+                </div>
+                <x-button href="{{ route('job-offers.index') }}" variant="outline" icon="fas fa-arrow-trend-up">
+                    Ver todas las ofertas
+                </x-button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Buscar Empleos -->
-                <x-card variant="enhanced" hover class="group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:shadow-2xl animate-fade-in-up">
-                    <a href="{{ route('job-offers.index') }}" class="block">
-                        <div class="text-center relative">
-                            <!-- Badge flotante -->
-                            <div class="absolute -top-3 -right-3 z-10">
-                                <x-badge variant="success" icon="fas fa-fire" size="sm">
-                                    Nuevos
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                @foreach($featuredJobs as $job)
+                    <x-card hover class="flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <p class="text-sm font-semibold text-blue-600 uppercase tracking-wide">{{ optional($job->company)->name ?? 'Empresa confidencial' }}</p>
+                                    <h3 class="text-xl font-bold text-gray-900">{{ $job->title }}</h3>
+                                </div>
+                                <x-badge variant="primary" size="sm" icon="fas fa-location-dot">
+                                    {{ $job->location ?? 'Remoto' }}
                                 </x-badge>
                             </div>
-
-                            <div class="w-24 h-24 bg-gradient-to-br from-blue-900 to-blue-800 rounded-3xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl">
-                                <i class="fas fa-search text-4xl text-white"></i>
-                            </div>
-                            <h3 class="font-bold text-xl mb-3 text-gray-800 group-hover:text-blue-900 transition-colors">
-                                Buscar Empleos
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-5 leading-relaxed px-2">
-                                Explora miles de oportunidades laborales disponibles
-                            </p>
-                            <div class="flex items-center justify-center text-blue-900 font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                                <span>Explorar ahora</span>
-                                <i class="fas fa-arrow-right ml-2"></i>
-                            </div>
+                            <p class="text-gray-600 leading-relaxed">{{ \Illuminate\Support\Str::limit(strip_tags($job->description), 140) }}</p>
                         </div>
-                    </a>
+
+                        <div class="mt-6 flex items-center justify-between text-sm text-gray-500">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-wallet text-green-500"></i>
+                                <span>{{ $job->salary_formatted }}</span>
+                            </div>
+                            <x-button href="{{ route('job-offers.show', $job) }}" variant="primary" size="sm" icon="fas fa-arrow-right">
+                                Detalles
+                            </x-button>
+                        </div>
+                    </x-card>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
+        <!-- ACCIONES PARA TU BÚSQUEDA -->
+        <section class="space-y-8">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900">Impulsa tu perfil profesional</h2>
+                    <p class="text-gray-600 mt-2 max-w-xl">Aprovecha estos recursos para posicionarte mejor frente a los reclutadores.</p>
+                </div>
+                <x-badge variant="primary" icon="fas fa-sparkles">Tu crecimiento</x-badge>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <x-card hover class="relative overflow-hidden border border-blue-100 bg-blue-50">
+                    <div class="absolute -top-6 -right-6 w-28 h-28 bg-blue-200/60 rounded-full blur-2xl"></div>
+                    <div class="relative z-10 space-y-5">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 text-white">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-900">Explorar empleos</h3>
+                            <p class="text-blue-900/80 mt-2">Filtra por ubicación, modalidad y rango salarial para encontrar el rol ideal.</p>
+                        </div>
+                        <x-button href="{{ route('job-offers.index') }}" variant="primary" icon="fas fa-arrow-right" class="bg-blue-600 hover:bg-blue-700">
+                            Ver ofertas
+                        </x-button>
+                    </div>
                 </x-card>
 
-                <!-- Portafolio -->
-                <x-card variant="enhanced" hover class="group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:shadow-2xl animate-fade-in-up" style="animation-delay: 0.1s;">
-                    <a href="{{ route('portfolios.index') }}" class="block">
-                        <div class="text-center">
-                            <div class="w-24 h-24 bg-gradient-to-br from-indigo-900 to-indigo-800 rounded-3xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl">
-                                <i class="fas fa-briefcase text-4xl text-white"></i>
-                            </div>
-                            <h3 class="font-bold text-xl mb-3 text-gray-800 group-hover:text-indigo-900 transition-colors">
-                                Mi Portafolio
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-5 leading-relaxed px-2">
-                                Gestiona tus proyectos, experiencia y logros profesionales
-                            </p>
-                            <div class="flex items-center justify-center text-indigo-900 font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                                <span>Ver portafolio</span>
-                                <i class="fas fa-arrow-right ml-2"></i>
-                            </div>
+                <x-card hover class="relative overflow-hidden border border-emerald-100 bg-emerald-50">
+                    <div class="absolute -top-6 -right-6 w-28 h-28 bg-emerald-200/60 rounded-full blur-2xl"></div>
+                    <div class="relative z-10 space-y-5">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-600 text-white">
+                            <i class="fas fa-id-card-clip"></i>
                         </div>
-                    </a>
+                        <div>
+                            <h3 class="text-xl font-bold text-emerald-900">Optimiza tu portafolio</h3>
+                            <p class="text-emerald-900/80 mt-2">Presenta proyectos, logros y certificaciones en un solo lugar.</p>
+                        </div>
+                        <x-button href="{{ route('portfolios.index') }}" variant="primary" icon="fas fa-arrow-right" class="bg-emerald-600 hover:bg-emerald-700">
+                            Gestionar portafolio
+                        </x-button>
+                    </div>
                 </x-card>
 
-                <!-- Capacitaciones -->
-                <x-card variant="enhanced" hover class="group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:shadow-2xl animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <a href="{{ route('training.index') }}" class="block">
-                        <div class="text-center">
-                            <div class="w-24 h-24 bg-gradient-to-br from-slate-700 to-slate-600 rounded-3xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl">
-                                <i class="fas fa-graduation-cap text-4xl text-white"></i>
-                            </div>
-                            <h3 class="font-bold text-xl mb-3 text-gray-800 group-hover:text-slate-700 transition-colors">
-                                Capacitaciones
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-5 leading-relaxed px-2">
-                                Mejora tus habilidades con cursos y formaciones
-                            </p>
-                            <div class="flex items-center justify-center text-slate-700 font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                                <span>Ver cursos</span>
-                                <i class="fas fa-arrow-right ml-2"></i>
-                            </div>
+                <x-card hover class="relative overflow-hidden border border-purple-100 bg-purple-50">
+                    <div class="absolute -top-6 -right-6 w-28 h-28 bg-purple-200/60 rounded-full blur-2xl"></div>
+                    <div class="relative z-10 space-y-5">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-600 text-white">
+                            <i class="fas fa-graduation-cap"></i>
                         </div>
-                    </a>
+                        <div>
+                            <h3 class="text-xl font-bold text-purple-900">Capacítate y crece</h3>
+                            <p class="text-purple-900/80 mt-2">Suma nuevas habilidades digitales y blandas para destacar en entrevistas.</p>
+                        </div>
+                        <x-button href="{{ route('training.index') }}" variant="primary" icon="fas fa-arrow-right" class="bg-purple-600 hover:bg-purple-700">
+                            Ver capacitaciones
+                        </x-button>
+                    </div>
                 </x-card>
             </div>
         </section>
 
-        <!-- Sección de Estado de Aplicaciones -->
-        @if(auth()->user()->unemployed && auth()->user()->unemployed->jobApplications()->count() > 0)
-        <section class="mb-12 animate-fade-in-up" style="animation-delay: 0.3s;">
-            <x-card variant="enhanced" class="border-l-4 border-green-600">
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0">
-                        <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-clipboard-list text-2xl text-green-600"></i>
+        @if($recommendedTrainings->isNotEmpty())
+        <!-- CAPACITACIONES RECOMENDADAS -->
+        <section class="space-y-6">
+            <h2 class="text-3xl font-bold text-gray-900">Formaciones recomendadas para ti</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                @foreach($recommendedTrainings as $training)
+                    @php
+                        $startDate = $training->start_date ? \Illuminate\Support\Carbon::parse($training->start_date)->format('d/m/Y') : null;
+                        $endDate = $training->end_date ? \Illuminate\Support\Carbon::parse($training->end_date)->format('d/m/Y') : null;
+                    @endphp
+                    <x-card hover class="flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="space-y-1">
+                                <p class="text-sm font-semibold text-indigo-600 uppercase tracking-wide">{{ $training->provider ?? 'Capacitación' }}</p>
+                                <h3 class="text-xl font-bold text-gray-900">{{ $training->title }}</h3>
+                            </div>
+                            <p class="text-gray-600 leading-relaxed">{{ \Illuminate\Support\Str::limit(strip_tags($training->description), 140) }}</p>
                         </div>
+                        <div class="mt-6 space-y-3 text-sm text-gray-500">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-calendar"></i>
+                                <span>{{ $startDate ? 'Inicio ' . $startDate : 'Inicio flexible' }}{{ $endDate ? ' · Finaliza ' . $endDate : '' }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-link"></i>
+                                <span>{{ $training->link ? 'Modalidad virtual' : 'Consulta disponibilidad' }}</span>
+                            </div>
+                            <x-button href="{{ $training->link ?? route('training.index') }}" variant="primary" size="sm" icon="fas fa-arrow-up-right-from-square">
+                                Conocer más
+                            </x-button>
+                        </div>
+                    </x-card>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
+        @if($recommendedCategories->isNotEmpty())
+        <!-- CATEGORÍAS DESTACADAS -->
+        <section class="space-y-4">
+            <h2 class="text-3xl font-bold text-gray-900">Explora categorías populares</h2>
+            <p class="text-gray-600">Descubre áreas con alta demanda y filtra las oportunidades que se ajustan a tu perfil.</p>
+            <div class="flex flex-wrap gap-3">
+                @foreach($recommendedCategories as $category)
+                    <span class="px-4 py-2 rounded-full bg-gray-100 text-gray-700 text-sm font-semibold flex items-center gap-2">
+                        <i class="fas fa-hashtag text-gray-500"></i>
+                        {{ $category->name }}
+                    </span>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
+        @if($myApplications > 0)
+        <!-- ESTADO DE POSTULACIONES -->
+        <section>
+            <x-card variant="enhanced" class="border-l-4 border-green-600">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div class="space-y-2">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
+                            <i class="fas fa-clipboard-list mr-2"></i>
+                            Seguimiento activo
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900">Estado de tus postulaciones</h3>
+                        <p class="text-gray-600">Mantén un panorama claro de cada etapa y prioriza tus seguimientos.</p>
                     </div>
-                    <div class="flex-grow">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-chart-pie text-blue-600 mr-2"></i>
-                            Estado de Tus Postulaciones
-                        </h3>
-                        @php
-                            $applications = auth()->user()->unemployed->jobApplications;
-                            $pending = $applications->where('status', 'pending')->count();
-                            $reviewed = $applications->where('status', 'reviewed')->count();
-                            $accepted = $applications->where('status', 'accepted')->count();
-                            $rejected = $applications->where('status', 'rejected')->count();
-                        @endphp
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                            <div class="text-center p-3 bg-yellow-50 rounded-lg">
-                                <div class="text-2xl font-bold text-yellow-700">{{ $pending }}</div>
-                                <div class="text-xs text-gray-600">Pendientes</div>
-                            </div>
-                            <div class="text-center p-3 bg-blue-50 rounded-lg">
-                                <div class="text-2xl font-bold text-blue-700">{{ $reviewed }}</div>
-                                <div class="text-xs text-gray-600">En Revisión</div>
-                            </div>
-                            <div class="text-center p-3 bg-green-50 rounded-lg">
-                                <div class="text-2xl font-bold text-green-700">{{ $accepted }}</div>
-                                <div class="text-xs text-gray-600">Aceptadas</div>
-                            </div>
-                            <div class="text-center p-3 bg-red-50 rounded-lg">
-                                <div class="text-2xl font-bold text-red-700">{{ $rejected }}</div>
-                                <div class="text-xs text-gray-600">Rechazadas</div>
-                            </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 flex-1">
+                        <div class="text-center p-4 bg-yellow-50 rounded-xl">
+                            <p class="text-2xl font-extrabold text-yellow-700">{{ $applicationStats['pending'] }}</p>
+                            <p class="text-xs uppercase tracking-wide text-yellow-700">Pendientes</p>
+                        </div>
+                        <div class="text-center p-4 bg-blue-50 rounded-xl">
+                            <p class="text-2xl font-extrabold text-blue-700">{{ $applicationStats['reviewed'] }}</p>
+                            <p class="text-xs uppercase tracking-wide text-blue-700">En revisión</p>
+                        </div>
+                        <div class="text-center p-4 bg-green-50 rounded-xl">
+                            <p class="text-2xl font-extrabold text-green-700">{{ $applicationStats['accepted'] }}</p>
+                            <p class="text-xs uppercase tracking-wide text-green-700">Aceptadas</p>
+                        </div>
+                        <div class="text-center p-4 bg-red-50 rounded-xl">
+                            <p class="text-2xl font-extrabold text-red-700">{{ $applicationStats['rejected'] }}</p>
+                            <p class="text-xs uppercase tracking-wide text-red-700">Rechazadas</p>
                         </div>
                     </div>
                 </div>
@@ -564,41 +610,34 @@
         </section>
         @endif
 
-        <!-- Tips para Candidatos -->
-        <section class="mb-12 animate-fade-in-up" style="animation-delay: 0.4s;">
-            <x-card variant="enhanced" class="border-l-4 border-purple-600">
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0">
-                        <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-lightbulb text-2xl text-purple-600"></i>
-                        </div>
+        <!-- CONSEJOS -->
+        <section>
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Consejos para destacar en tu búsqueda</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <x-card hover>
+                    <div class="space-y-3">
+                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-100 text-purple-600"><i class="fas fa-id-badge"></i></span>
+                        <h3 class="text-xl font-bold text-gray-900">Perfil completo</h3>
+                        <p class="text-gray-600">Actualiza tu portafolio con proyectos recientes y resultados cuantificables.</p>
                     </div>
-                    <div class="flex-grow">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-star text-yellow-500 mr-2"></i>
-                            Consejos para Destacar en tu Búsqueda
-                        </h3>
-                        <ul class="space-y-2 text-gray-700">
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-purple-600 mr-3 mt-1 flex-shrink-0"></i>
-                                <span><strong>Perfil completo:</strong> Asegúrate de tener tu portafolio actualizado con proyectos recientes</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-purple-600 mr-3 mt-1 flex-shrink-0"></i>
-                                <span><strong>Personaliza aplicaciones:</strong> Adapta tu CV y carta a cada oferta específica</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-purple-600 mr-3 mt-1 flex-shrink-0"></i>
-                                <span><strong>Capacítate continuamente:</strong> Aprovecha las formaciones disponibles para mejorar habilidades</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-purple-600 mr-3 mt-1 flex-shrink-0"></i>
-                                <span><strong>Sé proactivo:</strong> Aplica regularmente y mantén un seguimiento de tus postulaciones</span>
-                            </li>
-                        </ul>
+                </x-card>
+
+                <x-card hover>
+                    <div class="space-y-3">
+                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-100 text-amber-600"><i class="fas fa-paper-plane"></i></span>
+                        <h3 class="text-xl font-bold text-gray-900">Personaliza tus aplicaciones</h3>
+                        <p class="text-gray-600">Adapta tu CV y carta de presentación resaltando logros relevantes.</p>
                     </div>
-                </div>
-            </x-card>
+                </x-card>
+
+                <x-card hover>
+                    <div class="space-y-3">
+                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-green-100 text-green-600"><i class="fas fa-comments"></i></span>
+                        <h3 class="text-xl font-bold text-gray-900">Prepárate para entrevistas</h3>
+                        <p class="text-gray-600">Practica tus respuestas y prepara ejemplos concretos de tus experiencias.</p>
+                    </div>
+                </x-card>
+            </div>
         </section>
 
     </main>
