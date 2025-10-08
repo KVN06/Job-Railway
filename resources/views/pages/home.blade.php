@@ -16,87 +16,105 @@
     <main class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <!-- Hero Section Mejorado -->
         <x-card variant="gradient" class="mb-10 overflow-hidden relative">
-            <!-- Elementos decorativos animados -->
-            <div class="absolute top-0 right-0 w-72 h-72 bg-white opacity-5 rounded-full -mr-36 -mt-36 animate-pulse-slow"></div>
-            <div class="absolute bottom-0 left-0 w-56 h-56 bg-white opacity-5 rounded-full -ml-28 -mb-28 animate-pulse-slow" style="animation-delay: 1s;"></div>
-            <div class="absolute top-1/2 left-1/2 w-96 h-96 bg-white opacity-3 rounded-full -ml-48 -mt-48 blur-3xl"></div>
+            @php
+                $authUser = auth()->user();
+                $company = $authUser?->company;
+            @endphp
 
-            <div class="max-w-4xl mx-auto text-center relative z-10 py-4">
-                <!-- Saludo personalizado -->
-                <div class="mb-4 opacity-90">
-                    <p class="text-lg md:text-xl font-medium">
-                        <i class="fas fa-sun mr-2"></i>
-                        Bienvenido de vuelta, <span class="font-bold">{{ auth()->user()->name }}</span>
-                    </p>
+            @if ($company)
+            <!-- Estadísticas Mejoradas con datos dinámicos -->
+            <section class="mb-12">
+                <div class="mb-8 text-center">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                        <i class="fas fa-chart-bar mr-2 text-blue-600"></i>
+                        Resumen de Actividad
+                    </h2>
+                    <p class="text-gray-600">Tu desempeño en tiempo real</p>
                 </div>
 
-                <!-- Icono animado -->
-                <div class="mb-8">
-                    <i class="fas fa-briefcase text-8xl text-white animate-bounce-slow inline-block"></i>
-                </div>
+                @php
+                    $totalOffers = $company->jobOffers()->count();
+                    $activeOffers = $company->jobOffers()->where('status', 'active')->count();
+                    $applicationsCount = $company->jobOffers()->withCount('jobApplications')->get()->sum('job_applications_count');
+                    $activityRate = $totalOffers > 0 ? round(($activeOffers / $totalOffers) * 100) : 0;
+                @endphp
 
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-5 leading-tight">
-                    Panel de Control Empresarial
-                </h1>
-                <p class="text-xl md:text-2xl mb-10 opacity-90 leading-relaxed max-w-3xl mx-auto">
-                    Gestiona tus ofertas, revisa candidatos y haz crecer tu equipo con los mejores talentos
-                </p>
-
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <x-button
-                        href="{{ route('job-offers.create') }}"
-                        variant="primary"
-                        size="lg"
-                        icon="fas fa-plus-circle"
-                        class="transform hover:scale-105 transition-transform duration-300 shadow-xl bg-white text-blue-800 hover:bg-gray-100"
-                    >
-                        Publicar Nueva Oferta
-                    </x-button>
-                    <x-button
-                        href="{{ route('job-offers.index') }}"
-                        variant="primary"
-                        size="lg"
-                        icon="fas fa-list-alt"
-                        class="bg-white bg-opacity-20 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-blue-800 transform hover:scale-105 transition-all duration-300"
-                    >
-                        Ver Mis Ofertas
-                    </x-button>
-                </div>
-            </div>
-        </x-card>
-
-        <!-- Estadísticas Mejoradas con datos dinámicos -->
-        <section class="mb-12">
-            <div class="mb-8 text-center">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                    <i class="fas fa-chart-bar mr-2 text-blue-600"></i>
-                    Resumen de Actividad
-                </h2>
-                <p class="text-gray-600">Tu desempeño en tiempo real</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
-                <!-- Ofertas Activas -->
-                <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                    <div class="text-center">
-                        <div class="w-18 h-18 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                            <i class="fas fa-briefcase text-3xl text-white"></i>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+                    <!-- Ofertas Activas -->
+                    <x-card hover class="transform hover:scale-105 transition-all duration-300">
+                        <div class="text-center">
+                            <div class="w-18 h-18 bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+                                <i class="fas fa-briefcase text-3xl text-white"></i>
+                            </div>
+                            <div class="text-5xl font-bold bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent mb-2">
+                                {{ $activeOffers }}
+                            </div>
+                            <div class="text-gray-600 font-semibold mb-3">Ofertas Activas</div>
+                            <x-badge variant="success" icon="fas fa-check-circle" size="sm">
+                                Publicadas
+                            </x-badge>
                         </div>
-                        <div class="text-5xl font-bold bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent mb-2">
-                            {{ auth()->user()->company->jobOffers()->where('status', 'active')->count() ?? 0 }}
-                        </div>
-                        <div class="text-gray-600 font-semibold mb-3">Ofertas Activas</div>
-                        <x-badge variant="success" icon="fas fa-check-circle" size="sm">
-                            Publicadas
-                        </x-badge>
-                    </div>
-                </x-card>
+                    </x-card>
 
-                <!-- Aplicaciones Recibidas -->
-                <x-card hover class="transform hover:scale-105 transition-all duration-300">
-                    <div class="text-center">
-                        <div class="w-18 h-18 bg-gradient-to-br from-indigo-900 to-indigo-800 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                            <i class="fas fa-users text-3xl text-white"></i>
+                    <!-- Aplicaciones Recibidas -->
+                    <x-card hover class="transform hover:scale-105 transition-all duration-300">
+                        <div class="text-center">
+                            <div class="w-18 h-18 bg-gradient-to-br from-indigo-900 to-indigo-800 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+                                <i class="fas fa-users text-3xl text-white"></i>
+                            </div>
+                            <div class="text-5xl font-bold bg-gradient-to-r from-indigo-900 to-indigo-700 bg-clip-text text-transparent mb-2">
+                                {{ $applicationsCount }}
+                            </div>
+                            <div class="text-gray-600 font-semibold mb-3">Postulaciones Totales</div>
+                            <x-badge variant="primary" icon="fas fa-user-plus" size="sm">
+                                Candidatos
+                            </x-badge>
+                        </div>
+                    </x-card>
+
+                    <!-- Total de Ofertas -->
+                    <x-card hover class="transform hover:scale-105 transition-all duration-300">
+                        <div class="text-center">
+                            <div class="w-18 h-18 bg-gradient-to-br from-slate-700 to-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+                                <i class="fas fa-file-alt text-3xl text-white"></i>
+                            </div>
+                            <div class="text-5xl font-bold bg-gradient-to-r from-slate-700 to-slate-600 bg-clip-text text-transparent mb-2">
+                                {{ $totalOffers }}
+                            </div>
+                            <div class="text-gray-600 font-semibold mb-3">Total de Ofertas</div>
+                            <x-badge variant="success" icon="fas fa-chart-line" size="sm">
+                                Historial
+                            </x-badge>
+                        </div>
+                    </x-card>
+
+                    <!-- Tasa de Actividad -->
+                    <x-card hover class="transform hover:scale-105 transition-all duration-300">
+                        <div class="text-center">
+                            <div class="w-18 h-18 bg-gradient-to-br from-gray-700 to-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+                                <i class="fas fa-percentage text-3xl text-white"></i>
+                            </div>
+                            <div class="text-5xl font-bold bg-gradient-to-r from-gray-700 to-gray-600 bg-clip-text text-transparent mb-2">
+                                {{ $activityRate }}%
+                            </div>
+                            <div class="text-gray-600 font-semibold mb-3">Tasa de Actividad</div>
+                            <x-badge variant="{{ $activityRate >= 70 ? 'success' : ($activityRate >= 40 ? 'warning' : 'danger') }}" icon="fas fa-chart-pie" size="sm">
+                                {{ $activityRate >= 70 ? 'Excelente' : ($activityRate >= 40 ? 'Buena' : 'Mejorable') }}
+                            </x-badge>
+                        </div>
+                    </x-card>
+                </div>
+            </section>
+            @else
+            <section class="mb-12">
+                <div class="max-w-3xl mx-auto">
+                    <x-alert variant="info" icon="fas fa-info-circle">
+                        Completa el registro de tu empresa para visualizar estadísticas de ofertas y postulaciones.
+                        <a href="{{ route('company-form') }}" class="underline font-semibold">Ir al formulario de empresa</a>.
+                    </x-alert>
+                </div>
+            </section>
+            @endif
                         </div>
                         <div class="text-5xl font-bold bg-gradient-to-r from-indigo-900 to-indigo-700 bg-clip-text text-transparent mb-2">
                             {{ auth()->user()->company->jobOffers()->withCount('jobApplications')->get()->sum('job_applications_count') ?? 0 }}
