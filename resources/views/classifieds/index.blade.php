@@ -386,7 +386,7 @@ function toggleFavorite(button, type, id) {
     // Mostrar estado de carga
     button.style.opacity = '0.5';
     button.style.pointerEvents = 'none';
-    
+
     fetch("{{ route('favorites.toggle') }}", {
         method: 'POST',
         headers: {
@@ -406,7 +406,7 @@ function toggleFavorite(button, type, id) {
         if (data.error) {
             throw new Error(data.error);
         }
-        
+
         // Actualizar estado visual
         if (data.isFavorite) {
             button.classList.remove('bg-gray-100', 'text-gray-400', 'hover:bg-blue-50', 'hover:text-blue-700');
@@ -418,7 +418,7 @@ function toggleFavorite(button, type, id) {
     })
     .catch(error => {
         console.error('Error al cambiar favorito:', error);
-        
+
         // Mostrar mensaje de error específico
         if (error.message.includes('403')) {
             alert('Solo los candidatos pueden marcar favoritos.');
