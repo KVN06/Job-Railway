@@ -62,18 +62,6 @@
                         >
                             Nueva capacitación
                         </x-button>
-
-                        @if($recentTrainings->isNotEmpty())
-                            <x-button
-                                href="#training-insights"
-                                variant="primary"
-                                size="lg"
-                                icon="fas fa-lightbulb"
-                                class="bg-white/10 border border-white/40 text-white hover:bg-white/20"
-                            >
-                                Recomendaciones destacadas
-                            </x-button>
-                        @endif
                     </div>
                 </div>
 
