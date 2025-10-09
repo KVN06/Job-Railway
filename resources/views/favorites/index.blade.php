@@ -16,7 +16,7 @@
 
 <div class="container mx-auto px-4 py-10 space-y-12">
     <!-- Hero -->
-    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 text-white shadow-2xl">
+    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#102347] via-[#123468] to-[#0b1a31] text-white shadow-2xl">
         <div class="absolute inset-0 opacity-20">
             <div class="absolute -right-20 -top-16 w-72 h-72 bg-white/30 rounded-full blur-3xl"></div>
             <div class="absolute right-10 bottom-0 w-60 h-60 bg-white/20 rounded-full blur-2xl"></div>
@@ -25,17 +25,17 @@
         <div class="relative z-10 px-8 py-12 lg:px-12">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
                 <div class="max-w-2xl space-y-4">
-                    <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur px-4 py-2 rounded-full text-sm font-medium uppercase tracking-wide">
+                    <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur px-4 py-2 rounded-full text-sm font-medium uppercase tracking-wide border border-white/20">
                         <i class="fas fa-star text-yellow-300"></i>
                         Favoritos personales
                     </div>
                     <h1 class="text-4xl lg:text-5xl font-bold leading-tight">
                         Sigue de cerca tus oportunidades favoritas
                     </h1>
-                    <p class="text-white/80 text-lg leading-relaxed">
+                    <p class="text-white/70 text-lg leading-relaxed">
                         Centralizamos en un solo espacio todas tus ofertas laborales y clasificados guardados para que los retomes cuando quieras.
                     </p>
-                    <div class="flex flex-wrap items-center gap-4 text-white/80 text-sm">
+                    <div class="flex flex-wrap items-center gap-4 text-white/70 text-sm">
                         <div class="inline-flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-lime-300"></span>
                             Actividad reciente ·
@@ -44,7 +44,7 @@
                             </span>
                         </div>
                         <span class="hidden lg:inline text-white/60">•</span>
-                        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-white hover:text-lime-200 transition-colors">
+                        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-white hover:text-[#9fd3ff] transition-colors">
                             <i class="fas fa-arrow-left"></i>
                             Volver al panel principal
                         </a>
@@ -52,21 +52,21 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full lg:w-auto">
-                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 shadow-xl">
-                        <p class="text-white/70 text-sm mb-2">Total guardados</p>
-                        <p class="text-3xl font-semibold" data-count-target="total" data-format="number">
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 shadow-xl border border-white/10">
+                        <p class="text-white/60 text-sm mb-2">Total guardados</p>
+                        <p class="text-3xl font-semibold text-white" data-count-target="total" data-format="number">
                             {{ number_format($totalFavorites) }}
                         </p>
                     </div>
-                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 shadow-xl">
-                        <p class="text-white/70 text-sm mb-2">Ofertas de trabajo</p>
-                        <p class="text-3xl font-semibold" data-count-target="joboffer" data-format="number">
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 shadow-xl border border-white/10">
+                        <p class="text-white/60 text-sm mb-2">Ofertas de trabajo</p>
+                        <p class="text-3xl font-semibold text-white" data-count-target="joboffer" data-format="number">
                             {{ number_format($jobOfferCount) }}
                         </p>
                     </div>
-                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 shadow-xl">
-                        <p class="text-white/70 text-sm mb-2">Clasificados</p>
-                        <p class="text-3xl font-semibold" data-count-target="classified" data-format="number">
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 shadow-xl border border-white/10">
+                        <p class="text-white/60 text-sm mb-2">Clasificados</p>
+                        <p class="text-3xl font-semibold text-white" data-count-target="classified" data-format="number">
                             {{ number_format($classifiedCount) }}
                         </p>
                     </div>
@@ -74,11 +74,11 @@
             </div>
 
             <div class="mt-10 flex flex-wrap gap-4">
-                <a href="{{ route('job-offers.index') }}" class="inline-flex items-center gap-3 bg-white text-blue-700 font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+                <a href="{{ route('job-offers.index') }}" class="inline-flex items-center gap-3 bg-white text-[#102347] font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
                     <i class="fas fa-briefcase"></i>
                     Explorar más ofertas
                 </a>
-                <a href="{{ route('classifieds.index') }}" class="inline-flex items-center gap-3 bg-blue-500/40 text-white font-semibold px-6 py-3 rounded-xl border border-white/30 hover:bg-white/20 transition-all">
+                <a href="{{ route('classifieds.index') }}" class="inline-flex items-center gap-3 bg-white/10 text-white font-semibold px-6 py-3 rounded-xl border border-white/30 hover:bg-white/20 transition-all">
                     <i class="fas fa-bullhorn"></i>
                     Ver clasificados disponibles
                 </a>
@@ -88,12 +88,12 @@
 
     <!-- Navegación rápida -->
     <section class="flex flex-wrap gap-4 items-center">
-        <a href="#job-offers" class="group inline-flex items-center gap-3 px-5 py-3 rounded-xl border border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 transition-all">
-            <i class="fas fa-briefcase group-hover:scale-110 transition-transform"></i>
+        <a href="#job-offers" class="group inline-flex items-center gap-3 px-5 py-3 rounded-xl border border-[#c5d4f4] text-[#1a2f5b] bg-[#e9efff] hover:bg-white transition-all">
+            <i class="fas fa-briefcase group-hover:scale-110 transition-transform text-[#204180]"></i>
             <span>Ofertas de trabajo</span>
         </a>
-        <a href="#classifieds" class="group inline-flex items-center gap-3 px-5 py-3 rounded-xl border border-purple-200 text-purple-700 bg-purple-50 hover:bg-purple-100 transition-all">
-            <i class="fas fa-bullhorn group-hover:scale-110 transition-transform"></i>
+        <a href="#classifieds" class="group inline-flex items-center gap-3 px-5 py-3 rounded-xl border border-[#cfd7ea] text-[#1f315b] bg-[#eef3ff] hover:bg-white transition-all">
+            <i class="fas fa-bullhorn group-hover:scale-110 transition-transform text-[#274378]"></i>
             <span>Clasificados guardados</span>
         </a>
     </section>
@@ -103,14 +103,14 @@
         <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
-                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-100 text-blue-600">
+                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ebf1ff] text-[#204180]">
                         <i class="fas fa-briefcase"></i>
                     </span>
                     Tus ofertas laborales favoritas
                 </h2>
                 <p class="text-gray-500 mt-1">Retoma las vacantes que guardaste para aplicarlas en el mejor momento.</p>
             </div>
-            <span class="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold"
+            <span class="inline-flex items-center gap-2 bg-[#eaf1ff] border border-[#cadeff] text-[#1f315b] px-4 py-2 rounded-full text-sm font-semibold"
                   data-count-target="joboffer" data-singular="favorita" data-plural="favoritas" data-prefix="" data-format="label">
                 {{ $jobOfferCount }} favorita{{ $jobOfferCount === 1 ? '' : 's' }}
             </span>
@@ -124,7 +124,7 @@
                             <div class="flex items-start justify-between gap-4">
                                 <div class="space-y-3">
                                     <div class="flex items-center gap-3">
-                                        <span class="inline-flex items-center gap-2 px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-700">
+                                        <span class="inline-flex items-center gap-2 px-3 py-1 text-sm font-semibold rounded-full bg-[#e2ecff] text-[#1f315b]">
                                             <i class="fas fa-building"></i>
                                             {{ $jobOffer->company->name }}
                                         </span>
@@ -142,7 +142,7 @@
                                         {{ Str::limit(strip_tags($jobOffer->description), 200) }}
                                     </p>
                                     <div class="flex flex-wrap gap-2">
-                                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
+                                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f2f6ff] text-[#1f315b] text-xs font-semibold">
                                             <i class="fas fa-map-marker-alt"></i>
                                             {{ $jobOffer->location ?? 'Ubicación no disponible' }}
                                         </span>
@@ -155,8 +155,8 @@
                                     </div>
                                 </div>
 
-                                <button onclick="toggleFavorite(this, 'joboffer', {{ $jobOffer->id }}, true)"
-                                        class="favorite-btn w-12 h-12 rounded-full border border-red-200 flex items-center justify-center transition-all duration-300 hover-lift bg-red-100 text-red-600 hover:bg-red-200"
+                <button onclick="toggleFavorite(this, 'joboffer', {{ $jobOffer->id }}, true)"
+                    class="favorite-btn w-12 h-12 rounded-full border border-[#b8c7e6] flex items-center justify-center transition-all duration-300 hover-lift bg-[#e4ecff] text-[#1f315b] hover:bg-[#d7e4ff]"
                                         title="Quitar de favoritos">
                                     <i class="fas fa-heart text-lg"></i>
                                 </button>
@@ -164,15 +164,15 @@
                         </div>
 
                         <div class="lg:w-72 space-y-4">
-                            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5">
-                                <p class="text-xs uppercase tracking-wide text-blue-600 mb-1 font-semibold">Salario estimado</p>
-                                <p class="text-2xl font-bold text-blue-900">{{ $jobOffer->salary_formatted ?? 'A convenir' }}</p>
-                                <span class="inline-flex items-center gap-1 text-xs text-blue-500 mt-2">
+                            <div class="bg-[#f1f5ff] border border-[#d5e1ff] rounded-2xl p-5">
+                                <p class="text-xs uppercase tracking-wide text-[#1f3b6d] mb-1 font-semibold">Salario estimado</p>
+                                <p class="text-2xl font-bold text-[#0d2344]">{{ $jobOffer->salary_formatted ?? 'A convenir' }}</p>
+                                <span class="inline-flex items-center gap-1 text-xs text-[#3964a6] mt-2">
                                     <i class="fas fa-info-circle"></i>
                                     Puede variar según experiencia
                                 </span>
                             </div>
-                            <a href="{{ route('job-offers.show', $jobOffer->id) }}" class="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl border border-blue-200 text-blue-700 font-semibold hover:bg-blue-50 transition-all">
+                            <a href="{{ route('job-offers.show', $jobOffer->id) }}" class="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl border border-[#c7d6f6] text-[#1f315b] font-semibold hover:bg-[#f2f6ff] transition-all">
                                 <i class="fas fa-eye"></i>
                                 Ver detalles
                             </a>
@@ -182,7 +182,7 @@
             @endforeach
         </div>
 
-        <div class="card-enhanced p-10 text-center space-y-4 {{ $jobOfferCount > 0 ? 'hidden' : '' }}" data-empty-state="joboffer">
+    <div class="card-enhanced p-10 text-center space-y-4 {{ $jobOfferCount > 0 ? 'hidden' : '' }}" data-empty-state="joboffer">
             <div class="flex justify-center">
                 <div class="w-20 h-20 rounded-3xl bg-blue-50 text-blue-600 flex items-center justify-center text-4xl">
                     <i class="fas fa-briefcase"></i>
@@ -190,7 +190,7 @@
             </div>
             <h3 class="text-2xl font-semibold text-gray-700">Aún no has guardado ofertas</h3>
             <p class="text-gray-500 max-w-xl mx-auto">Explora las últimas vacantes y guarda las que quieras comparar con calma o revisar más tarde.</p>
-            <a href="{{ route('job-offers.index') }}" class="btn-primary inline-flex items-center gap-3 px-6 py-3 rounded-xl text-white font-semibold hover-lift">
+            <a href="{{ route('job-offers.index') }}" class="btn-primary inline-flex items-center gap-3 px-6 py-3 rounded-xl text-white font-semibold hover-lift bg-[#1f315b] hover:bg-[#1a2b4f]">
                 <i class="fas fa-search"></i>
                 Descubrir ofertas
             </a>
@@ -202,14 +202,14 @@
         <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
-                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-purple-100 text-purple-600">
+                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#eef3ff] text-[#1f315b]">
                         <i class="fas fa-bullhorn"></i>
                     </span>
                     Clasificados guardados
                 </h2>
                 <p class="text-gray-500 mt-1">Mantén cerca los servicios o anuncios que planeas revisar con detalle.</p>
             </div>
-            <span class="inline-flex items-center gap-2 bg-purple-50 border border-purple-200 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold"
+            <span class="inline-flex items-center gap-2 bg-[#eef3ff] border border-[#cfd7ea] text-[#1f315b] px-4 py-2 rounded-full text-sm font-semibold"
                   data-count-target="classified" data-singular="favorito" data-plural="favoritos" data-prefix="" data-format="label">
                 {{ $classifiedCount }} favorito{{ $classifiedCount === 1 ? '' : 's' }}
             </span>
@@ -223,7 +223,7 @@
                             <div class="flex items-start justify-between gap-4">
                                 <div class="space-y-3">
                                     <div class="flex items-center gap-3 flex-wrap">
-                                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-semibold">
+                                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e2ecff] text-[#1f315b] text-sm font-semibold">
                                             {{ $classified->company?->business_name ?? $classified->company?->name ?? $classified->unemployed?->name ?? 'Publicación individual' }}
                                         </span>
                                         <span class="text-sm text-gray-500 flex items-center gap-2">
@@ -240,7 +240,7 @@
                                         {{ Str::limit(strip_tags($classified->description), 220) }}
                                     </p>
                                     <div class="flex flex-wrap gap-2">
-                                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-semibold">
+                                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f2f6ff] text-[#1f315b] text-xs font-semibold">
                                             <i class="fas fa-map-marker-alt"></i>
                                             {{ $classified->location ?? 'Ubicación no disponible' }}
                                         </span>
@@ -251,7 +251,7 @@
                                             </span>
                                         @endforeach
                                         @if($classified->salary)
-                                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold">
+                                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fff4e6] text-[#9a6a2a] text-xs font-semibold">
                                                 <i class="fas fa-dollar-sign"></i>
                                                 ${{ number_format($classified->salary, 0, ',', '.') }}
                                             </span>
@@ -259,8 +259,8 @@
                                     </div>
                                 </div>
 
-                                <button onclick="toggleFavorite(this, 'classified', {{ $classified->id }}, true)"
-                                        class="favorite-btn w-12 h-12 rounded-full border border-red-200 flex items-center justify-center transition-all duration-300 hover-lift bg-red-100 text-red-600 hover:bg-red-200"
+                <button onclick="toggleFavorite(this, 'classified', {{ $classified->id }}, true)"
+                    class="favorite-btn w-12 h-12 rounded-full border border-[#b8c7e6] flex items-center justify-center transition-all duration-300 hover-lift bg-[#e4ecff] text-[#1f315b] hover:bg-[#d7e4ff]"
                                         title="Quitar de favoritos">
                                     <i class="fas fa-heart text-lg"></i>
                                 </button>
@@ -268,13 +268,13 @@
                         </div>
 
                         <div class="lg:w-72 space-y-4">
-                            <div class="bg-purple-50 border border-purple-100 rounded-2xl p-5">
-                                <p class="text-xs uppercase tracking-wide text-purple-600 mb-1 font-semibold">Contacto</p>
-                                <p class="text-base text-purple-900">
+                            <div class="bg-[#f1f5ff] border border-[#d5e1ff] rounded-2xl p-5">
+                                <p class="text-xs uppercase tracking-wide text-[#1f3b6d] mb-1 font-semibold">Contacto</p>
+                                <p class="text-base text-[#0d2344]">
                                     {{ $classified->contact_email ?? $classified->contact_phone ?? 'Ver detalles para más información' }}
                                 </p>
                             </div>
-                            <a href="{{ route('classifieds.show', $classified->id) }}" class="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl border border-purple-200 text-purple-700 font-semibold hover:bg-purple-50 transition-all">
+                            <a href="{{ route('classifieds.show', $classified->id) }}" class="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl border border-[#c7d6f6] text-[#1f315b] font-semibold hover:bg-[#f2f6ff] transition-all">
                                 <i class="fas fa-eye"></i>
                                 Ver detalles del clasificado
                             </a>
@@ -284,15 +284,15 @@
             @endforeach
         </div>
 
-        <div class="card-enhanced p-10 text-center space-y-4 {{ $classifiedCount > 0 ? 'hidden' : '' }}" data-empty-state="classified">
+    <div class="card-enhanced p-10 text-center space-y-4 {{ $classifiedCount > 0 ? 'hidden' : '' }}" data-empty-state="classified">
             <div class="flex justify-center">
-                <div class="w-20 h-20 rounded-3xl bg-purple-50 text-purple-600 flex items-center justify-center text-4xl">
+                <div class="w-20 h-20 rounded-3xl bg-[#eef3ff] text-[#1f315b] flex items-center justify-center text-4xl">
                     <i class="fas fa-bullhorn"></i>
                 </div>
             </div>
             <h3 class="text-2xl font-semibold text-gray-700">Sin clasificados favoritos por ahora</h3>
             <p class="text-gray-500 max-w-xl mx-auto">Guarda los anuncios que más te llamen la atención para hacer seguimiento o contactarte cuando te quede mejor.</p>
-            <a href="{{ route('classifieds.index') }}" class="inline-flex items-center gap-3 px-6 py-3 rounded-xl border border-purple-200 text-purple-700 font-semibold hover:bg-purple-50 transition-all">
+            <a href="{{ route('classifieds.index') }}" class="inline-flex items-center gap-3 px-6 py-3 rounded-xl border border-[#c7d6f6] text-[#1f315b] font-semibold hover:bg-[#eef3ff] transition-all">
                 <i class="fas fa-search"></i>
                 Explorar clasificados
             </a>
