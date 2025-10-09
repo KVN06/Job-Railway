@@ -52,7 +52,13 @@
                             {{-- Formulario de postulación movido al sidebar --}}
                         @endif
 
-                        @if(auth()->user()?->isCompany() && auth()->user()->company->id === $jobOffer->company_id)
+                        @php
+                            $canManageOffer = auth()->user()?->isCompany()
+                                && auth()->user()?->company
+                                && auth()->user()->company->id === $jobOffer->company_id;
+                        @endphp
+
+                        @if($canManageOffer)
                             <div class="flex space-x-2">
                                 <a href="{{ route('job-offers.edit', $jobOffer->id) }}" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors">
                                     Editar

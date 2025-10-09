@@ -126,7 +126,10 @@
                             <!-- Botón de favoritos -->
                             @if(auth()->user()?->unemployed)
                                 @php
-                                    $isFavorite = auth()->user()->unemployed->favoriteJobOffers->contains($jobOffer);
+                                    $isFavorite = auth()->user()->unemployed
+                                        ->favoriteJobOffers()
+                                        ->where('favoritable_id', $jobOffer->id)
+                                        ->exists();
                                 @endphp
                                 <button onclick="toggleFavorite(this, 'joboffer', {{ $jobOffer->id }})"
                                     class="favorite-btn mb-4 w-full h-12 rounded-xl flex items-center justify-center transition-all duration-300 hover-lift {{ $isFavorite ? 'bg-red-100 text-red-600 border-2 border-red-300' : 'bg-white text-gray-400 border-2 border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200' }}">
@@ -155,7 +158,13 @@
                         </div>
 
                         <!-- Botones de acción para empresas -->
-                        @if(auth()->user()?->isCompany())
+                        @php
+                            $canManageOffer = auth()->user()?->isCompany()
+                                && auth()->user()?->company
+                                && auth()->user()->company->id === $jobOffer->company_id;
+                        @endphp
+
+                        @if($canManageOffer)
                             <div class="space-y-2">
                                 <x-button
                                     href="{{ route('job-offers.edit', $jobOffer->id) }}"
