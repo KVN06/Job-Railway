@@ -63,7 +63,7 @@
                                     </div>
                                 </div>
                                 <button onclick="toggleFavorite(this, 'joboffer', {{ $jobOffer->id }}, true)"
-                                        class="favorite-btn w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover-lift bg-blue-100 text-blue-800 hover:bg-gray-100 hover:text-gray-400" 
+                                        class="favorite-btn w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover-lift bg-blue-100 text-blue-800 hover:bg-gray-100 hover:text-gray-400"
                                         title="Quitar de favoritos">
                                     <i class="fas fa-heart text-lg"></i>
                                 </button>
@@ -134,7 +134,7 @@
                                     </div>
                                 </div>
                                 <button onclick="toggleFavorite(this, 'classified', {{ $classified->id }}, true)"
-                                        class="favorite-btn w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover-lift bg-blue-100 text-blue-800 hover:bg-gray-100 hover:text-gray-400" 
+                                        class="favorite-btn w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover-lift bg-blue-100 text-blue-800 hover:bg-gray-100 hover:text-gray-400"
                                         title="Quitar de favoritos">
                                     <i class="fas fa-heart text-lg"></i>
                                 </button>

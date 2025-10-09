@@ -10,14 +10,14 @@
                     <i class="fas fa-arrow-left mr-2"></i>
                     Volver a clasificados
                 </a>
-                
+
                 <!-- Botón de favoritos -->
                 @auth
                     @if(auth()->user()->unemployed)
                         @php
                             $isOwner = auth()->user()->unemployed->id === $classified->unemployed_id;
                         @endphp
-                        
+
                         @if(!$isOwner)
                 <button onclick="toggleFavorite(this, 'classified', {{ $classified->id }})"
                     class="favorite-btn w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover-lift border {{ $isFavorite ? 'bg-red-100 text-red-600 border-red-200' : 'bg-gray-100 text-gray-400 border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200' }}">
@@ -41,7 +41,7 @@
                             <i class="fas fa-bullhorn text-blue-700 mr-3"></i>
                             {{ $classified->title }}
                         </h1>
-                        
+
                         <div class="flex items-center mb-4">
                             @if($classified->company)
                                 <div class="w-12 h-12 gradient-primary rounded-full flex items-center justify-center mr-3">
@@ -61,7 +61,7 @@
                                 </div>
                             @endif
                         </div>
-                        
+
                         <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4">
                             <div class="flex items-center">
                                 <i class="fas fa-map-marker-alt text-blue-700 mr-2"></i>
@@ -80,7 +80,7 @@
                             @php
                                 $isOwner = auth()->user()->unemployed->id === $classified->unemployed_id;
                             @endphp
-                            
+
                             @if(!$isOwner)
                                 <button onclick="toggleFavorite(this, 'classified', {{ $classified->id }})"
                                     class="favorite-btn w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover-lift border {{ $isFavorite ? 'bg-red-100 text-red-600 border-red-200' : 'bg-gray-100 text-gray-400 border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200' }}">
@@ -238,10 +238,10 @@
                     $canContact = !((auth()->user()?->company && auth()->user()->company->id === $classified->company_id) ||
                                    (auth()->user()?->unemployed && auth()->user()->unemployed->id === $classified->unemployed_id));
                 @endphp
-                
+
                 @if($canContact)
                     <div class="bg-white rounded-lg shadow-sm p-6">
-                        <a href="{{ route('message-form') }}?to={{ $classified->company ? 'company_' . $classified->company_id : 'unemployed_' . $classified->unemployed_id }}" 
+                        <a href="{{ route('message-form') }}?to={{ $classified->company ? 'company_' . $classified->company_id : 'unemployed_' . $classified->unemployed_id }}"
                            class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors font-semibold text-center block">
                             Contactar
                         </a>
@@ -340,14 +340,14 @@ function initMap() {
     // Coordenadas fijas de Popayán, Cauca, Colombia
     let lat = 2.4448;
     let lng = -76.6147;
-    
+
     @if($classified->geolocation)
         // Si hay geolocalización específica, intentar usarla
         try {
             const coords = "{{ $classified->geolocation }}".split(',');
             const parsedLat = parseFloat(coords[0]);
             const parsedLng = parseFloat(coords[1]);
-            
+
             // Solo usar las coordenadas si son válidas
             if (!isNaN(parsedLat) && !isNaN(parsedLng) && parsedLat !== 0 && parsedLng !== 0) {
                 lat = parsedLat;

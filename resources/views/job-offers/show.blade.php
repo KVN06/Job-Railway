@@ -226,14 +226,14 @@ function initMap() {
     // Coordenadas fijas de Popayán, Cauca, Colombia
     let lat = 2.4448;
     let lng = -76.6147;
-    
+
     @if($jobOffer->geolocation)
         // Si hay geolocalización específica, intentar usarla
         try {
             const coords = "{{ $jobOffer->geolocation }}".split(',');
             const parsedLat = parseFloat(coords[0]);
             const parsedLng = parseFloat(coords[1]);
-            
+
             // Solo usar las coordenadas si son válidas
             if (!isNaN(parsedLat) && !isNaN(parsedLng) && parsedLat !== 0 && parsedLng !== 0) {
                 lat = parsedLat;

@@ -52,11 +52,11 @@
                                         Oferta Laboral
                                     </div>
                                 </div>
-                                
+
                                 <p class="text-gray-600 text-lg leading-relaxed mb-4">
                                     {{ Str::limit($jobOffer->description, 200) }}
                                 </p>
-                                
+
                                 <div class="flex items-center space-x-6 text-sm text-gray-500">
                                     <div class="flex items-center">
                                         <svg class="w-4 h-4 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
@@ -74,9 +74,9 @@
                                     @endif
                                 </div>
                             </div>
-                            
+
                             <button onclick="toggleFavorite(this, 'joboffer', {{ $jobOffer->id }}, true)"
-                                    class="ml-6 p-3 text-yellow-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300 z-10 group" 
+                                    class="ml-6 p-3 text-yellow-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300 z-10 group"
                                     title="Quitar de favoritos">
                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22L12 18.56L5.82 22L7 14.14l-5-4.87l6.91-1.01L12 2z"/>
@@ -134,11 +134,11 @@
                                         Clasificado
                                     </div>
                                 </div>
-                                
+
                                 <p class="text-gray-600 text-lg leading-relaxed mb-4">
                                     {{ Str::limit($classified->description, 200) }}
                                 </p>
-                                
+
                                 <div class="flex items-center space-x-6 text-sm text-gray-500">
                                     <div class="flex items-center">
                                         <svg class="w-4 h-4 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
@@ -164,9 +164,9 @@
                                     @endif
                                 </div>
                             </div>
-                            
+
                             <button onclick="toggleFavorite(this, 'classified', {{ $classified->id }}, true)"
-                                    class="ml-6 p-3 text-yellow-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300 z-10 group" 
+                                    class="ml-6 p-3 text-yellow-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300 z-10 group"
                                     title="Quitar de favoritos">
                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22L12 18.56L5.82 22L7 14.14l-5-4.87l6.91-1.01L12 2z"/>
