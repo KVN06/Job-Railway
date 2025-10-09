@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TrainingUser;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 
 class Training extends Model
@@ -18,7 +19,13 @@ class Training extends Model
         'provider',
         'start_date',
         'end_date',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
 
     public function TrainingUsers()

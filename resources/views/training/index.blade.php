@@ -185,32 +185,34 @@
                                 @endif
                             </div>
 
-                            <div class="space-y-3">
-                                <div class="flex flex-col gap-2">
-                                    <x-button
-                                        href="{{ route('training.edit', $item->id) }}"
-                                        variant="secondary"
-                                        size="sm"
-                                        icon="fas fa-edit"
-                                        class="w-full"
-                                    >
-                                        Editar capacitación
-                                    </x-button>
-                                    <form action="{{ route('training.destroy', $item->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro que deseas eliminar esta capacitación?')">
-                                        @csrf
-                                        @method('DELETE')
+                            @if(auth()->check() && auth()->id() === $item->user_id)
+                                <div class="space-y-3">
+                                    <div class="flex flex-col gap-2">
                                         <x-button
-                                            type="submit"
-                                            variant="danger"
+                                            href="{{ route('training.edit', $item->id) }}"
+                                            variant="secondary"
                                             size="sm"
-                                            icon="fas fa-trash"
+                                            icon="fas fa-edit"
                                             class="w-full"
                                         >
-                                            Eliminar
+                                            Editar capacitación
                                         </x-button>
-                                    </form>
+                                        <form action="{{ route('training.destroy', $item->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro que deseas eliminar esta capacitación?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-button
+                                                type="submit"
+                                                variant="danger"
+                                                size="sm"
+                                                icon="fas fa-trash"
+                                                class="w-full"
+                                            >
+                                                Eliminar
+                                            </x-button>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </x-card>
@@ -221,9 +223,11 @@
                     </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Sin capacitaciones por ahora</h3>
                     <p class="text-gray-600 mb-6">Comienza a registrar talleres, webinars o formaciones internas para compartir con tu equipo.</p>
-                    <x-button href="{{ route('training.create') }}" variant="primary" icon="fas fa-plus" size="lg">
-                        Agregar primera capacitación
-                    </x-button>
+                    @auth
+                        <x-button href="{{ route('training.create') }}" variant="primary" icon="fas fa-plus" size="lg">
+                            Agregar primera capacitación
+                        </x-button>
+                    @endauth
                 </x-card>
             @endforelse
         </div>
