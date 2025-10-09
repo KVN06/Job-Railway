@@ -101,6 +101,6 @@ Route::middleware(['auth'])->group(function () {
 
 // corrigiendo esto
 // Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
-Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
-Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->middleware('auth')->name('favorites.toggle');
+Route::get('/favorites', [FavoriteController::class, 'index'])->middleware('auth')->name('favorites.index');
 Route::post('/favorites/classifieds/{classified}/toggle', [FavoriteController::class, 'toggleClassified'])->middleware(['auth'])->name('favorites.classifieds.toggle');

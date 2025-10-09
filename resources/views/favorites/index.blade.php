@@ -166,46 +166,78 @@
     @push('scripts')
     <script>
     function toggleFavorite(button, type, id, removeElement = false) {
-        // Evitar que el clic del botón propague al enlace padre
-        event.stopPropagation();
-        
-        // Si estamos en la vista de favoritos, mostrar confirmación antes de quitar
-        if (removeElement) {
-            if (!confirm('¿Estás seguro de que deseas quitar este elemento de tus favoritos?')) {
-                return; // Si el usuario cancela, no hacer nada
-            }
+        const currentEvent = window.event;
+        if (currentEvent) {
+            currentEvent.stopPropagation();
         }
-        
+
+        if (removeElement && !confirm('¿Estás seguro de que deseas quitar este elemento de tus favoritos?')) {
+            return;
+        }
+
+        button.style.opacity = '0.6';
+        button.style.pointerEvents = 'none';
+
         fetch("{{ route('favorites.toggle') }}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content,
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
             },
+            credentials: 'same-origin',
             body: JSON.stringify({ type, id }),
         })
-        .then(response => response.json())
+        .then(async response => {
+            const contentType = response.headers.get('content-type') || '';
+            const payload = contentType.includes('application/json')
+                ? await response.json().catch(() => ({}))
+                : {};
+
+            if (!response.ok || payload.error) {
+                const error = new Error(payload.error || 'No se pudo cambiar el estado de favorito.');
+                error.status = response.status;
+                throw error;
+            }
+
+            return payload;
+        })
         .then(data => {
             if (removeElement && !data.isFavorite) {
-                // Agregar una animación suave antes de remover el elemento
-                button.closest('.card-enhanced').style.transition = 'all 0.3s ease-out';
-                button.closest('.card-enhanced').style.transform = 'translateX(100%)';
-                button.closest('.card-enhanced').style.opacity = '0';
-                
-                setTimeout(() => {
-                    button.closest('.card-enhanced').remove();
-                    
-                    // Verificar si ya no hay más elementos favoritos
-                    const container = document.querySelector('.grid.grid-cols-1');
-                    if (container && container.children.length === 0) {
-                        location.reload(); // Recargar para mostrar el mensaje de "no hay favoritos"
-                    }
-                }, 300);
+                const card = button.closest('.card-enhanced');
+
+                if (card) {
+                    card.style.transition = 'all 0.3s ease-out';
+                    card.style.transform = 'translateX(100%)';
+                    card.style.opacity = '0';
+
+                    setTimeout(() => {
+                        card.remove();
+
+                        const container = document.querySelector('.grid.grid-cols-1');
+                        if (container && container.children.length === 0) {
+                            location.reload();
+                        }
+                    }, 300);
+                }
             }
         })
         .catch(error => {
             console.error('Error al quitar favorito:', error);
-            alert('No se pudo cambiar el estado de favorito.');
+
+            if (error.status === 401) {
+                alert('Tu sesión expiró. Inicia sesión nuevamente para administrar tus favoritos.');
+            } else if (error.status === 403) {
+                alert('Solo los candidatos pueden marcar favoritos.');
+            } else if (error.status === 404) {
+                alert('El elemento ya no está disponible.');
+            } else {
+                alert(error.message || 'No se pudo cambiar el estado de favorito.');
+            }
+        })
+        .finally(() => {
+            button.style.opacity = '1';
+            button.style.pointerEvents = 'auto';
         });
     }
     </script>

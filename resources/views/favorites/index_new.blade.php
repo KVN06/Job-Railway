@@ -200,26 +200,55 @@
     @push('scripts')
     <script>
     function toggleFavorite(button, type, id, removeElement = false) {
-        // Evitar que el clic del botón propague al enlace padre
-        event.stopPropagation();
-        
+        const currentEvent = window.event;
+        if (currentEvent) {
+            currentEvent.stopPropagation();
+        }
+
         fetch("{{ route('favorites.toggle') }}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content,
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
             },
+            credentials: 'same-origin',
             body: JSON.stringify({ type, id }),
         })
-        .then(response => response.json())
+        .then(async response => {
+            const contentType = response.headers.get('content-type') || '';
+            const payload = contentType.includes('application/json')
+                ? await response.json().catch(() => ({}))
+                : {};
+
+            if (!response.ok || payload.error) {
+                const error = new Error(payload.error || 'No se pudo cambiar el estado de favorito.');
+                error.status = response.status;
+                throw error;
+            }
+
+            return payload;
+        })
         .then(data => {
             if (removeElement && !data.isFavorite) {
-                button.closest('div').remove();
+                const container = button.closest('.card-enhanced') || button.closest('div');
+                if (container) {
+                    container.remove();
+                }
             }
         })
         .catch(error => {
             console.error('Error al quitar favorito:', error);
-            alert('No se pudo cambiar el estado de favorito.');
+
+            if (error.status === 401) {
+                alert('Tu sesión expiró. Inicia sesión nuevamente para administrar tus favoritos.');
+            } else if (error.status === 403) {
+                alert('Solo los candidatos pueden marcar favoritos.');
+            } else if (error.status === 404) {
+                alert('El elemento ya no está disponible.');
+            } else {
+                alert(error.message || 'No se pudo cambiar el estado de favorito.');
+            }
         });
     }
     </script>

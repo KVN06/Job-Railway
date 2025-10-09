@@ -383,8 +383,10 @@ main .favorite-btn {
 @push('scripts')
 <script>
 function toggleFavorite(button, type, id) {
-    // Mostrar estado de carga
-    button.style.opacity = '0.5';
+    const label = button.querySelector('span');
+    const icon = button.querySelector('i');
+
+    button.style.opacity = '0.6';
     button.style.pointerEvents = 'none';
 
     fetch("{{ route('favorites.toggle') }}", {
@@ -394,42 +396,59 @@ function toggleFavorite(button, type, id) {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Accept': 'application/json',
         },
+        credentials: 'same-origin',
         body: JSON.stringify({ type, id }),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.error) {
-            throw new Error(data.error);
+    .then(async response => {
+        const contentType = response.headers.get('content-type') || '';
+        const payload = contentType.includes('application/json')
+            ? await response.json().catch(() => ({}))
+            : {};
+
+        if (!response.ok || payload.error) {
+            const error = new Error(payload.error || 'No se pudo cambiar el estado de favorito.');
+            error.status = response.status;
+            throw error;
         }
 
-        // Actualizar estado visual
-        if (data.isFavorite) {
-            button.classList.remove('bg-gray-100', 'text-gray-400', 'hover:bg-blue-50', 'hover:text-blue-700');
-            button.classList.add('bg-blue-100', 'text-blue-800');
-        } else {
-            button.classList.remove('bg-blue-100', 'text-blue-800');
-            button.classList.add('bg-gray-100', 'text-gray-400', 'hover:bg-blue-50', 'hover:text-blue-700');
+        return payload;
+    })
+    .then(data => {
+        const isFavorite = Boolean(data.isFavorite);
+
+        button.classList.toggle('bg-red-100', isFavorite);
+        button.classList.toggle('text-red-600', isFavorite);
+        button.classList.toggle('border-red-200', isFavorite);
+        button.classList.toggle('bg-white', !isFavorite);
+        button.classList.toggle('text-gray-500', !isFavorite);
+        button.classList.toggle('border-gray-200', !isFavorite);
+        button.classList.toggle('hover:bg-red-50', !isFavorite);
+        button.classList.toggle('hover:text-red-500', !isFavorite);
+        button.classList.toggle('hover:border-red-200', !isFavorite);
+
+        if (label) {
+            label.textContent = isFavorite ? 'Guardado' : 'Guardar';
+        }
+
+        if (icon) {
+            icon.classList.toggle('text-red-500', isFavorite);
+            icon.classList.toggle('text-gray-400', !isFavorite);
         }
     })
     .catch(error => {
         console.error('Error al cambiar favorito:', error);
 
-        // Mostrar mensaje de error específico
-        if (error.message.includes('403')) {
+        if (error.status === 401) {
+            alert('Tu sesión expiró. Inicia sesión nuevamente para guardar favoritos.');
+        } else if (error.status === 403) {
             alert('Solo los candidatos pueden marcar favoritos.');
-        } else if (error.message.includes('404')) {
+        } else if (error.status === 404) {
             alert('El elemento no fue encontrado.');
         } else {
-            alert('No se pudo cambiar el estado de favorito. Por favor, inténtalo de nuevo.');
+            alert(error.message || 'No se pudo cambiar el estado de favorito. Por favor, inténtalo de nuevo.');
         }
     })
     .finally(() => {
-        // Restaurar estado del botón
         button.style.opacity = '1';
         button.style.pointerEvents = 'auto';
     });
