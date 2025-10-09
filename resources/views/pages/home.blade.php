@@ -8,10 +8,20 @@
         @php
             $authUser = auth()->user();
             $company = $authUser?->company;
-            $jobOffers = $company ? $company->jobOffers()->withCount('jobApplications')->get() : collect();
-            $totalOffers = $jobOffers->count();
-            $activeOffers = $jobOffers->where('status', 'active')->count();
-            $applicationsCount = $jobOffers->sum('job_applications_count');
+
+            $jobOffers = collect();
+            $totalOffers = 0;
+            $activeOffers = 0;
+            $applicationsCount = 0;
+
+            if ($company) {
+                $jobOfferIds = $company->jobOffers()->pluck('id');
+                $totalOffers = $jobOfferIds->count();
+                $activeOffers = $company->jobOffers()->where('status', 'active')->count();
+                $applicationsCount = \App\Models\JobApplication::whereIn('job_offer_id', $jobOfferIds)->count();
+                $jobOffers = $company->jobOffers()->withCount('jobApplications')->latest()->get();
+            }
+
             $activityRate = $totalOffers > 0 ? round(($activeOffers / $totalOffers) * 100) : 0;
             $hasStatsData = $totalOffers > 0 || $applicationsCount > 0;
         @endphp
