@@ -178,7 +178,7 @@
         button.style.opacity = '0.6';
         button.style.pointerEvents = 'none';
 
-        fetch("{{ route('favorites.toggle') }}", {
+    fetch("{{ route('favorites.toggle', [], false) }}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

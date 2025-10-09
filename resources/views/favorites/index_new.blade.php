@@ -205,7 +205,7 @@
             currentEvent.stopPropagation();
         }
 
-        fetch("{{ route('favorites.toggle') }}", {
+    fetch("{{ route('favorites.toggle', [], false) }}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
