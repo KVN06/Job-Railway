@@ -11,12 +11,30 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('notify_email')->default(true);
-            $table->boolean('notify_platform')->default(true);
-            $table->boolean('dark_mode')->default(false);
-            $table->string('language', 5)->default('es');
-        });
+
+        if (!Schema::hasColumn('users', 'notify_email')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->boolean('notify_email')->default(true);
+            });
+        }
+
+        if (!Schema::hasColumn('users', 'notify_platform')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->boolean('notify_platform')->default(true);
+            });
+        }
+
+        if (!Schema::hasColumn('users', 'dark_mode')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->boolean('dark_mode')->default(false);
+            });
+        }
+
+        if (!Schema::hasColumn('users', 'language')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('language', 5)->default('es');
+            });
+        }
     }
 
     /**
@@ -24,8 +42,18 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['notify_email', 'notify_platform', 'dark_mode', 'language']);
-        });
+
+        $columns = [];
+        foreach (['notify_email', 'notify_platform', 'dark_mode', 'language'] as $col) {
+            if (Schema::hasColumn('users', $col)) {
+                $columns[] = $col;
+            }
+        }
+
+        if (!empty($columns)) {
+            Schema::table('users', function (Blueprint $table) use ($columns) {
+                $table->dropColumn($columns);
+            });
+        }
     }
 };

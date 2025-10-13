@@ -183,16 +183,13 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'notify_email' => 'boolean',
-            'notify_platform' => 'boolean',
-            'dark_mode' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'notify_email' => 'boolean',
+        'notify_platform' => 'boolean',
+        'dark_mode' => 'boolean',
+    ];
 
     public function getTypeLabelAttribute(): string
     {
