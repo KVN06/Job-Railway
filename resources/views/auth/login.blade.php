@@ -135,6 +135,10 @@
     </header>
 
     <main class="relative z-10 px-4 py-16 sm:px-6 lg:px-8">
+        @php
+            $jobsAvailable = \App\Models\JobOffer::active()->count();
+            $companiesCount = \App\Models\Company::count();
+        @endphp
         <section class="mx-auto flex w-full max-w-6xl flex-col gap-12">
             @if ($errors->any())
                 <div class="mx-auto w-full max-w-3xl rounded-2xl border border-red-400/40 bg-red-500/10 p-5 text-red-100 backdrop-blur">
