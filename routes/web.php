@@ -103,3 +103,22 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 Route::post('/favorites/classifieds/{classified}/toggle', [FavoriteController::class, 'toggleClassified'])->middleware(['auth'])->name('favorites.classifieds.toggle');
+
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
+
+// Mostrar formulario "¿Olvidaste tu contraseña?"
+Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->name('password.request');
+
+// Enviar correo con enlace de recuperación
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->name('password.email');
+
+// Mostrar formulario de nueva contraseña (desde el enlace del correo)
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->name('password.reset');
+
+// Guardar nueva contraseña
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->name('password.update');
