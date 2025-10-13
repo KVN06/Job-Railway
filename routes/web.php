@@ -12,6 +12,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ClassifiedController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SettingsController;
 
 
 // Rutas públicas
@@ -35,6 +36,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
     Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
+
+    // Configuración de usuario
+    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('/settings', [SettingsController::class, 'updatePreferences'])->name('settings.update');
+    Route::patch('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
+    Route::patch('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
+    Route::post('/settings/logout-all', [SettingsController::class, 'logoutAllSessions'])->name('settings.logout-all');
+    Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
 });
 
 // Unemployed

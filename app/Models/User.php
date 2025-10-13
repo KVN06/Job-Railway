@@ -162,6 +162,10 @@ class User extends Authenticatable
         'email',
         'password',
         'type',
+        'notify_email',
+        'notify_platform',
+        'dark_mode',
+        'language',
     ];
 
     /**
@@ -184,6 +188,23 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notify_email' => 'boolean',
+            'notify_platform' => 'boolean',
+            'dark_mode' => 'boolean',
         ];
+    }
+
+    public function getTypeLabelAttribute(): string
+    {
+        return match ($this->type) {
+            'company' => 'Empresa',
+            'unemployed' => 'Cesante',
+            default => 'Usuario',
+        };
+    }
+
+    public function getThemePreferenceAttribute(): string
+    {
+        return $this->dark_mode ? 'dark' : 'light';
     }
 }

@@ -378,7 +378,7 @@
                             variant="primary"
                             size="lg"
                             icon="fas fa-graduation-cap"
-                            class="bg-white/20 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-blue-800 transform hover:scale-105 transition-all duration-300"
+                            class="bg-white text-blue-800 hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 border border-transparent"
                         >
                             Ver capacitaciones
                         </x-button>

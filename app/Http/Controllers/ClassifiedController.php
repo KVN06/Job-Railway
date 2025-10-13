@@ -164,7 +164,7 @@ class ClassifiedController extends Controller
         'title' => 'required|string|max:255',
         'description' => 'required|string',
         'location' => 'required|string|max:255',
-        'geolocation' => 'required|string|max:255',
+    'geolocation' => 'nullable|string|max:255',
         'salary' => 'nullable|numeric|min:0',
         'categories' => 'nullable|array',
         'categories.*' => 'exists:categories,id',
