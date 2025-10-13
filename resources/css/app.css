@@ -1,8 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 /* ========================================
    VARIABLES Y ESTILOS BASE
    ======================================== */
+
+@layer base {
+    :root {
+        font-family: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+
+    body {
+        font-family: inherit;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: inherit;
+    }
+
+    button, input, textarea, select {
+        font-family: inherit;
+    }
+}
 
 /* Gradientes personalizados - Paleta seria y profesional */
 .gradient-primary {

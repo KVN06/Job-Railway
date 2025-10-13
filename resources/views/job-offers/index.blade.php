@@ -151,7 +151,6 @@
                             <!-- Estado de postulación -->
                             @if($hasApplied)
                                 <x-alert type="success" :dismissible="false" class="text-sm">
-                                    <i class="fas fa-check-circle mr-1"></i>
                                     Ya aplicaste a esta oferta
                                 </x-alert>
                             @endif
@@ -192,7 +191,7 @@
                         @else
                             <!-- Si ya aplicó, mostrar botón deshabilitado; si no, mostrar Ver Detalles -->
                             @if(auth()->check() && auth()->user()?->unemployed && $hasApplied)
-                                <button disabled class="mt-3 btn-primary text-white px-6 py-2 rounded-xl transition-all duration-300 text-sm font-medium shadow-soft w-full flex items-center justify-center pointer-events-none cursor-not-allowed opacity-60">
+                                <button disabled class="mt-3 w-full px-6 py-3 rounded-xl text-sm font-semibold flex items-center justify-center bg-slate-200 text-slate-500 border border-slate-200 cursor-not-allowed shadow-inner">
                                     <i class="fas fa-check mr-2"></i>
                                     Ya te postulaste
                                 </button>

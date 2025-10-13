@@ -298,20 +298,16 @@
                     </div>
                 </x-card>
 
-                <x-card hover class="bg-gray-900 text-white overflow-hidden relative">
-                    <div class="absolute -top-10 -right-10 w-36 h-36 bg-white/10 rounded-full blur-3xl"></div>
-                    <div class="space-y-4 relative z-10">
-                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/20 text-white"><i class="fas fa-graduation-cap"></i></span>
-                        <h3 class="text-xl font-bold">Recursos de capacitación</h3>
-                        <p class="text-white/80">Fortalece a tu equipo con talleres y cursos en habilidades digitales, liderazgo y metodología ágil.</p>
-                        <div class="flex flex-wrap gap-2 text-xs">
-                            <span class="px-3 py-1 bg-white/10 rounded-full">Metodologías ágiles</span>
-                            <span class="px-3 py-1 bg-white/10 rounded-full">Entrevistas efectivas</span>
-                            <span class="px-3 py-1 bg-white/10 rounded-full">Onboarding</span>
-                        </div>
-                        <x-button href="{{ route('training.index') }}" variant="outline" icon="fas fa-arrow-right" class="border-white/40 text-white hover:bg-white hover:text-gray-900">
-                            Explorar capacitaciones
-                        </x-button>
+                <x-card hover>
+                    <div class="space-y-3">
+                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-sky-100 text-sky-600"><i class="fas fa-graduation-cap"></i></span>
+                        <h3 class="text-xl font-bold text-gray-900">Recursos de capacitación</h3>
+                        <p class="text-gray-600">Fortalece a tu equipo con talleres y cursos en habilidades digitales, liderazgo y metodología ágil.</p>
+                        <ul class="text-sm text-gray-500 space-y-2">
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-sky-500"></i> Metodologías ágiles</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-sky-500"></i> Entrevistas efectivas</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-sky-500"></i> Onboarding</li>
+                        </ul>
                     </div>
                 </x-card>
             </div>
@@ -347,28 +343,25 @@
         <!-- HERO -->
         <section>
             <x-card variant="gradient" class="mb-4 overflow-hidden relative">
-                <div class="absolute top-0 right-0 w-72 h-72 bg-white opacity-5 rounded-full -mr-36 -mt-36 animate-pulse-slow"></div>
-                <div class="absolute bottom-0 left-0 w-56 h-56 bg-white opacity-5 rounded-full -ml-28 -mb-28 animate-pulse-slow" style="animation-delay: 1s;"></div>
-                <div class="absolute top-1/2 right-1/4 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl"></div>
+                <div class="absolute top-0 right-0 h-56 w-56 translate-x-1/3 -translate-y-1/3 rounded-full bg-white/20 blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 h-64 w-64 -translate-x-1/3 translate-y-1/3 rounded-full bg-sky-400/30 blur-3xl"></div>
 
-                <div class="max-w-4xl mx-auto text-center relative z-10 py-6 space-y-8">
-                    <div class="opacity-90">
-                        <p class="text-lg md:text-xl font-medium">
-                            <i class="fas fa-hand-wave mr-2"></i>
-                            Hola, <span class="font-bold">{{ $user->name }}</span>
-                        </p>
+                <div class="relative z-10 mx-auto max-w-4xl py-12 text-center space-y-8">
+                    <div class="text-white/90 text-lg font-medium flex flex-col items-center gap-2">
+                        <span class="inline-flex items-center gap-2">
+                            <i class="fas fa-hand-holding-heart"></i>
+                            Hola, <span class="font-semibold">{{ $user->name }}</span>
+                        </span>
+                        <span class="text-sm text-white/70">Esta es tu base para dar el siguiente paso profesional.</span>
                     </div>
 
-                    <i class="fas fa-rocket text-7xl text-white animate-bounce-slow"></i>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight">
+                        Descubre oportunidades, potencia tus habilidades y postula con confianza
+                    </h1>
 
-                    <div class="space-y-4">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                            Tu próxima oportunidad laboral
-                        </h1>
-                        <p class="text-xl md:text-2xl opacity-90 leading-relaxed max-w-3xl mx-auto">
-                            Conectamos talento con empresas líderes. Descubre vacantes, fortalece tu perfil y da el siguiente paso en tu carrera.
-                        </p>
-                    </div>
+                    <p class="text-white/85 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
+                        Te conectamos con empresas verificadas, cursos prácticos y herramientas que te ayudan a destacar frente a los reclutadores.
+                    </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <x-button
