@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class UnemployedController extends Controller
 {
     public function create() {
-        return view('unemployed-form');
+        return view('forms.unemployed-form');
     }
 
     public function agg_unemployed(Request $request) {
@@ -18,7 +18,7 @@ class UnemployedController extends Controller
         'location' => ['required', 'string', 'max:255'],
     ]);
 
-    $unemployed = new Unemployed(); 
+    $unemployed = new Unemployed();
     $unemployed->user_id = Auth::user()->id;
     $unemployed->profession = $request->profession;
     $unemployed->experience = $request->experience;
@@ -27,5 +27,5 @@ class UnemployedController extends Controller
 
     return redirect()->route('home')->with('success', 'Usuario registrado correctamente.');
 }
-    
+
 }

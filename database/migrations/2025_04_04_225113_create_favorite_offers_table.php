@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('unemployed_id')->constrained('unemployeds')->onDelete('cascade');
-            $table->unsignedBigInteger('favoritable_id');
-            $table->string('favoritable_type');;
+            $table->foreignId('unemployed_id')->constrained('unemployeds')->cascadeOnDelete();
+            $table->morphs('favoritable');
             $table->timestamp('added_at')->useCurrent();
             $table->timestamps();
-    
-            $table->unique(['unemployed_id', 'favoritable_id', 'favoritable_type']);
-            $table->index(['favoritable_id', 'favoritable_type']);
+
+            $table->unique(['unemployed_id', 'favoritable_id', 'favoritable_type'], 'favorites_unique');
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('favorite_offers');
+        Schema::dropIfExists('favorites');
     }
 };

@@ -12,11 +12,13 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ClassifiedController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SettingsController;
 
 
 // Rutas públicas
-Route::view('/login', 'login')->name('login');
-Route::view('/', 'home')->middleware('auth')->name('home');
+Route::view('/', 'pages.landing')->name('landing');
+Route::view('/login', 'auth.login')->name('login');
+Route::view('/home', 'pages.home')->middleware('auth')->name('home');
 
 // Usuario
 Route::get('/register', [UserController::class, 'create'])->name('register');
@@ -29,11 +31,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/messages', [MessageController::class, 'index'])->name('messages');
     Route::get('/message/create', [MessageController::class, 'create'])->name('message-form');
     Route::post('/message/send', [MessageController::class, 'send_message'])->name('send-message');
-    
+
     // Notificaciones
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
     Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
+
+    // Configuración de usuario
+    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('/settings', [SettingsController::class, 'updatePreferences'])->name('settings.update');
+    Route::patch('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
+    Route::patch('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
+    Route::post('/settings/logout-all', [SettingsController::class, 'logoutAllSessions'])->name('settings.logout-all');
+    Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
 });
 
 // Unemployed
@@ -86,11 +96,13 @@ Route::get('/Company/{company}', [CompanyController::class, 'show'])->name('show
 
 // Trainings
 Route::get('/capacitaciones', [TrainingController::class, 'index'])->name('training.index');
-Route::get('/capacitaciones/crear', [TrainingController::class, 'create'])->name('training.create');
-Route::post('/capacitaciones', [TrainingController::class, 'store'])->name('training.store');
-Route::get('/capacitaciones/{id}/editar', [TrainingController::class, 'edit'])->name('training.edit');
-Route::put('/capacitaciones/{id}', [TrainingController::class, 'update'])->name('training.update');
-Route::delete('/capacitaciones/{id}', [TrainingController::class, 'destroy'])->name('training.destroy');
+Route::middleware('auth')->group(function () {
+    Route::get('/capacitaciones/crear', [TrainingController::class, 'create'])->name('training.create');
+    Route::post('/capacitaciones', [TrainingController::class, 'store'])->name('training.store');
+    Route::get('/capacitaciones/{id}/editar', [TrainingController::class, 'edit'])->name('training.edit');
+    Route::put('/capacitaciones/{id}', [TrainingController::class, 'update'])->name('training.update');
+    Route::delete('/capacitaciones/{id}', [TrainingController::class, 'destroy'])->name('training.destroy');
+});
 
 
 
@@ -100,8 +112,8 @@ Route::middleware(['auth'])->group(function () {
 
 // corrigiendo esto
 // Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
-Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
-Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->middleware('auth')->name('favorites.toggle');
+Route::get('/favorites', [FavoriteController::class, 'index'])->middleware('auth')->name('favorites.index');
 Route::post('/favorites/classifieds/{classified}/toggle', [FavoriteController::class, 'toggleClassified'])->middleware(['auth'])->name('favorites.classifieds.toggle');
 
 use App\Http\Controllers\Auth\PasswordResetLinkController;

@@ -38,24 +38,24 @@ class TrainingUser extends Model
 
 
 
-    
-    protected $allowIncluded = ['unemployed', 'training']; 
+
+    protected $allowIncluded = ['unemployed', 'training'];
     protected $allowFilter = ['unemployed_id', 'training_id'];
     protected $allowSort = ['unemployed_id', 'training_id'];
 
     public function scopeIncluded(Builder $query)
     {
-        if (empty($this->allowIncluded) || empty(request('included'))) { 
+        if (empty($this->allowIncluded) || empty(request('included'))) {
             return;
         }
-        $relations  = explode(',', request('included')); 
-        $allowIncluded = collect($this->allowIncluded); 
-        foreach ($relations as $key => $relationship) { 
+        $relations  = explode(',', request('included'));
+        $allowIncluded = collect($this->allowIncluded);
+        foreach ($relations as $key => $relationship) {
             if (!$allowIncluded->contains($relationship)) {
                 unset($relations[$key]);
             }
         }
-        $query->with($relations); 
+        $query->with($relations);
     }
 
     public function scopeFilter(Builder $query)
@@ -82,7 +82,7 @@ class TrainingUser extends Model
         $allowSort = collect($this->allowSort);
         foreach ($sortFields as $sortField) {
             $direction = 'asc';
-            if(substr($sortField, 0,1)=='-'){ 
+            if(substr($sortField, 0,1)=='-'){
                 $direction = 'desc';
                 $sortField = substr($sortField,1);
             }

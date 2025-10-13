@@ -45,14 +45,20 @@
                     <div class="flex flex-col items-end space-y-2">
                         @if(auth()->user()?->unemployed)
                             <button onclick="toggleFavorite(this, 'joboffer', {{ $jobOffer->id }})"
-                                class="favorite-btn w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover-lift {{ $isFavorite ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-400 hover:bg-blue-50 hover:text-blue-700' }}">
+                                class="favorite-btn w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover-lift border {{ $isFavorite ? 'bg-red-100 text-red-600 border-red-200' : 'bg-gray-100 text-gray-400 border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200' }}">
                                 <i class="fas fa-heart text-lg"></i>
                             </button>
 
                             {{-- Formulario de postulación movido al sidebar --}}
                         @endif
 
-                        @if(auth()->user()?->isCompany() && auth()->user()->company->id === $jobOffer->company_id)
+                        @php
+                            $canManageOffer = auth()->user()?->isCompany()
+                                && auth()->user()?->company
+                                && auth()->user()->company->id === $jobOffer->company_id;
+                        @endphp
+
+                        @if($canManageOffer)
                             <div class="flex space-x-2">
                                 <a href="{{ route('job-offers.edit', $jobOffer->id) }}" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors">
                                     Editar
@@ -226,14 +232,14 @@ function initMap() {
     // Coordenadas fijas de Popayán, Cauca, Colombia
     let lat = 2.4448;
     let lng = -76.6147;
-    
+
     @if($jobOffer->geolocation)
         // Si hay geolocalización específica, intentar usarla
         try {
             const coords = "{{ $jobOffer->geolocation }}".split(',');
             const parsedLat = parseFloat(coords[0]);
             const parsedLng = parseFloat(coords[1]);
-            
+
             // Solo usar las coordenadas si son válidas
             if (!isNaN(parsedLat) && !isNaN(parsedLng) && parsedLat !== 0 && parsedLng !== 0) {
                 lat = parsedLat;
@@ -276,34 +282,69 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function toggleFavorite(button, type, id) {
-    fetch("{{ route('favorites.toggle') }}", {
+    const icon = button.querySelector('i');
+
+    button.style.opacity = '0.6';
+    button.style.pointerEvents = 'none';
+
+    fetch("{{ route('favorites.toggle', [], false) }}", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
         },
+        credentials: 'same-origin',
         body: JSON.stringify({ type, id }),
     })
-    .then(response => response.json())
-    .then(data => {
-        const filled = button.querySelector('.star-filled');
-        const outline = button.querySelector('.star-outline');
+    .then(async response => {
+        const contentType = response.headers.get('content-type') || '';
+        const payload = contentType.includes('application/json')
+            ? await response.json().catch(() => ({}))
+            : {};
 
-        if (data.isFavorite) {
-            filled.classList.remove('hidden');
-            outline.classList.add('hidden');
-            button.classList.remove('text-gray-400');
-            button.classList.add('text-yellow-500');
-        } else {
-            filled.classList.add('hidden');
-            outline.classList.remove('hidden');
-            button.classList.remove('text-yellow-500');
-            button.classList.add('text-gray-400');
+        if (!response.ok || payload.error) {
+            const error = new Error(payload.error || 'No se pudo cambiar el estado de favorito.');
+            error.status = response.status;
+            throw error;
+        }
+
+        return payload;
+    })
+    .then(data => {
+        const isFavorite = Boolean(data.isFavorite);
+
+        button.classList.toggle('bg-red-100', isFavorite);
+        button.classList.toggle('text-red-600', isFavorite);
+        button.classList.toggle('border-red-200', isFavorite);
+        button.classList.toggle('bg-gray-100', !isFavorite);
+        button.classList.toggle('text-gray-400', !isFavorite);
+        button.classList.toggle('border-gray-200', !isFavorite);
+        button.classList.toggle('hover:bg-red-50', !isFavorite);
+        button.classList.toggle('hover:text-red-500', !isFavorite);
+        button.classList.toggle('hover:border-red-200', !isFavorite);
+
+        if (icon) {
+            icon.classList.toggle('text-red-500', isFavorite);
+            icon.classList.toggle('text-gray-400', !isFavorite);
         }
     })
     .catch(error => {
         console.error('Error al cambiar favorito:', error);
-        alert('No se pudo cambiar el estado de favorito.');
+
+        if (error.status === 401) {
+            alert('Tu sesión expiró. Inicia sesión nuevamente para guardar favoritos.');
+        } else if (error.status === 403) {
+            alert('Solo los candidatos pueden marcar favoritos.');
+        } else if (error.status === 404) {
+            alert('El elemento no fue encontrado.');
+        } else {
+            alert(error.message || 'No se pudo cambiar el estado de favorito.');
+        }
+    })
+    .finally(() => {
+        button.style.opacity = '1';
+        button.style.pointerEvents = 'auto';
     });
 }
 </script>

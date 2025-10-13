@@ -67,8 +67,8 @@
                                         Empresa
                                     @endif
                                 </span>
-                                
-                                
+
+
                             </div>
                             <!-- Ícono de flecha para indicar que hay un menú desplegable -->
                             <i class="fas fa-chevron-down ml-2"></i>
@@ -112,20 +112,20 @@
                                         Crear Nueva Oferta
                                     </a>
                                 @endif
-                                
+
                                 <!-- Enlaces comunes -->
                                 <a href="{{ route('messages') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-800 transition-colors">
                                     <i class="fas fa-envelope mr-3 w-4 text-blue-600"></i>
                                     Mensajes
                                 </a>
-                                <a href="#" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-800 transition-colors">
+                                <a href="{{ route('settings.edit') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-800 transition-colors">
                                     <i class="fas fa-cog mr-3 w-4 text-blue-600"></i>
                                     Configuración
                                 </a>
-                                
+
                                 <!-- Separador -->
                                 <div class="border-t border-gray-200 my-2"></div>
-                                
+
                                 <!-- Enlace para cerrar sesión -->
                                 <a href="{{ route('logout') }}" class="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
                                     <i class="fas fa-sign-out-alt mr-3 w-4"></i>
@@ -159,7 +159,7 @@
                         <a href="{{ route('job-offers.index') }}" class="block text-gray-600 hover:text-blue-600">Gestionar Ofertas</a>
                     @endif
                     <a href="{{ route('messages') }}" class="block text-gray-600 hover:text-blue-600">Mensajes</a>
-                    <a href="#" class="block text-gray-600 hover:text-blue-600">Configuración</a>
+                    <a href="{{ route('settings.edit') }}" class="block text-gray-600 hover:text-blue-600">Configuración</a>
                     <a href="{{ route('logout') }}" class="block text-red-600 hover:text-red-800">Cerrar Sesión</a>
                 @endauth
             </nav>

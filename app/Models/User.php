@@ -1,16 +1,16 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Database\Eloquent\Model;
+
 use App\Models\Company;
-use App\Models\Unemployed;
-use App\Models\Notification;
 use App\Models\Message;
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Notification;
+use App\Models\Unemployed;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Builder;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -67,23 +67,23 @@ class User extends Authenticatable
 
 
 
-    protected $allowIncluded = []; 
+    protected $allowIncluded = [];
     protected $allowFilter = ['name', 'email', 'type'];
     protected $allowSort = ['name', 'email', 'type'];
 
     public function scopeIncluded(Builder $query)
     {
-        if (empty($this->allowIncluded) || empty(request('included'))) { 
+        if (empty($this->allowIncluded) || empty(request('included'))) {
             return;
         }
-        $relations  = explode(',', request('included')); 
-        $allowIncluded = collect($this->allowIncluded); 
-        foreach ($relations as $key => $relationship) { 
+        $relations  = explode(',', request('included'));
+        $allowIncluded = collect($this->allowIncluded);
+        foreach ($relations as $key => $relationship) {
             if (!$allowIncluded->contains($relationship)) {
                 unset($relations[$key]);
             }
         }
-        $query->with($relations); 
+        $query->with($relations);
     }
 
     public function scopeFilter(Builder $query)
@@ -110,7 +110,7 @@ class User extends Authenticatable
         $allowSort = collect($this->allowSort);
         foreach ($sortFields as $sortField) {
             $direction = 'asc';
-            if(substr($sortField, 0,1)=='-'){ 
+            if(substr($sortField, 0,1)=='-'){
                 $direction = 'desc';
                 $sortField = substr($sortField,1);
             }
@@ -150,7 +150,7 @@ class User extends Authenticatable
 
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -162,6 +162,10 @@ class User extends Authenticatable
         'email',
         'password',
         'type',
+        'notify_email',
+        'notify_platform',
+        'dark_mode',
+        'language',
     ];
 
     /**
@@ -179,11 +183,25 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'notify_email' => 'boolean',
+        'notify_platform' => 'boolean',
+        'dark_mode' => 'boolean',
+    ];
+
+    public function getTypeLabelAttribute(): string
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return match ($this->type) {
+            'company' => 'Empresa',
+            'unemployed' => 'Cesante',
+            default => 'Usuario',
+        };
+    }
+
+    public function getThemePreferenceAttribute(): string
+    {
+        return $this->dark_mode ? 'dark' : 'light';
     }
 }

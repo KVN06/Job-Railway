@@ -33,7 +33,15 @@ class FavoriteController extends Controller
 
         $user = auth()->user();
 
-        if (!$user->unemployed) {
+        if (! $user) {
+            return response()->json(['error' => 'No autenticado.'], 401);
+        }
+
+        if (! $user->relationLoaded('unemployed')) {
+            $user->load('unemployed');
+        }
+
+        if (! $user->unemployed) {
             return response()->json(['error' => 'Solo los desempleados pueden marcar favoritos.'], 403);
         }
 
@@ -59,6 +67,8 @@ class FavoriteController extends Controller
             $isFavorite = true;
         }
 
-        return response()->json(['isFavorite' => $isFavorite]);
+        return response()->json([
+            'isFavorite' => $isFavorite,
+        ]);
     }
 }

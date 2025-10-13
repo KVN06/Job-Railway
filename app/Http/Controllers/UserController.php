@@ -6,13 +6,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use App\Models\Company;
-use App\Models\Unemployed;
+
 
 class UserController extends Controller
 {
     public function create() {
-        return view('register');
+        return view('auth.register');
     }
 
     public function agg_user(Request $request) {
@@ -61,6 +60,11 @@ class UserController extends Controller
         ])->withInput($request->only('email'));
     }
 }
+
+    // Mostrar formulario de login con estadísticas
+    public function showLoginForm() {
+        return view('auth.login');
+    }
 
     public function logout(Request $request) {
         Auth::logout();

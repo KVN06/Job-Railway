@@ -15,7 +15,7 @@ class MessageController extends Controller
         // Puedes pasar la lista de usuarios aquí para el select destinatarios si quieres
         $users = User::select('id', 'name')->get();
 
-        return view('message-form', compact('users'));
+        return view('forms.message-form', compact('users'));
     }
 
     // Enviar un mensaje a otro usuario

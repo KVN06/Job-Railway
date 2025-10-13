@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TrainingUser;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 
 class Training extends Model
@@ -18,7 +19,13 @@ class Training extends Model
         'provider',
         'start_date',
         'end_date',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
 
     public function TrainingUsers()
@@ -39,24 +46,24 @@ class Training extends Model
 
 
 
-    
-    protected $allowIncluded = []; 
+
+    protected $allowIncluded = [];
     protected $allowFilter = ['title','description','link','provider','start_date','end_date'];
     protected $allowSort = ['title','description','link','provider','start_date','end_date'];
 
     public function scopeIncluded(Builder $query)
     {
-        if (empty($this->allowIncluded) || empty(request('included'))) { 
+        if (empty($this->allowIncluded) || empty(request('included'))) {
             return;
         }
-        $relations  = explode(',', request('included')); 
-        $allowIncluded = collect($this->allowIncluded); 
-        foreach ($relations as $key => $relationship) { 
+        $relations  = explode(',', request('included'));
+        $allowIncluded = collect($this->allowIncluded);
+        foreach ($relations as $key => $relationship) {
             if (!$allowIncluded->contains($relationship)) {
                 unset($relations[$key]);
             }
         }
-        $query->with($relations); 
+        $query->with($relations);
     }
 
     public function scopeFilter(Builder $query)
@@ -83,7 +90,7 @@ class Training extends Model
         $allowSort = collect($this->allowSort);
         foreach ($sortFields as $sortField) {
             $direction = 'asc';
-            if(substr($sortField, 0,1)=='-'){ 
+            if(substr($sortField, 0,1)=='-'){
                 $direction = 'desc';
                 $sortField = substr($sortField,1);
             }

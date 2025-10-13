@@ -52,11 +52,11 @@
                                         Oferta Laboral
                                     </div>
                                 </div>
-                                
+
                                 <p class="text-gray-600 text-lg leading-relaxed mb-4">
                                     {{ Str::limit($jobOffer->description, 200) }}
                                 </p>
-                                
+
                                 <div class="flex items-center space-x-6 text-sm text-gray-500">
                                     <div class="flex items-center">
                                         <svg class="w-4 h-4 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
@@ -74,9 +74,9 @@
                                     @endif
                                 </div>
                             </div>
-                            
+
                             <button onclick="toggleFavorite(this, 'joboffer', {{ $jobOffer->id }}, true)"
-                                    class="ml-6 p-3 text-yellow-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300 z-10 group" 
+                                    class="ml-6 p-3 text-yellow-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300 z-10 group"
                                     title="Quitar de favoritos">
                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22L12 18.56L5.82 22L7 14.14l-5-4.87l6.91-1.01L12 2z"/>
@@ -134,11 +134,11 @@
                                         Clasificado
                                     </div>
                                 </div>
-                                
+
                                 <p class="text-gray-600 text-lg leading-relaxed mb-4">
                                     {{ Str::limit($classified->description, 200) }}
                                 </p>
-                                
+
                                 <div class="flex items-center space-x-6 text-sm text-gray-500">
                                     <div class="flex items-center">
                                         <svg class="w-4 h-4 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
@@ -164,9 +164,9 @@
                                     @endif
                                 </div>
                             </div>
-                            
+
                             <button onclick="toggleFavorite(this, 'classified', {{ $classified->id }}, true)"
-                                    class="ml-6 p-3 text-yellow-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300 z-10 group" 
+                                    class="ml-6 p-3 text-yellow-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300 z-10 group"
                                     title="Quitar de favoritos">
                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22L12 18.56L5.82 22L7 14.14l-5-4.87l6.91-1.01L12 2z"/>
@@ -200,26 +200,55 @@
     @push('scripts')
     <script>
     function toggleFavorite(button, type, id, removeElement = false) {
-        // Evitar que el clic del botón propague al enlace padre
-        event.stopPropagation();
-        
-        fetch("{{ route('favorites.toggle') }}", {
+        const currentEvent = window.event;
+        if (currentEvent) {
+            currentEvent.stopPropagation();
+        }
+
+    fetch("{{ route('favorites.toggle', [], false) }}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content,
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
             },
+            credentials: 'same-origin',
             body: JSON.stringify({ type, id }),
         })
-        .then(response => response.json())
+        .then(async response => {
+            const contentType = response.headers.get('content-type') || '';
+            const payload = contentType.includes('application/json')
+                ? await response.json().catch(() => ({}))
+                : {};
+
+            if (!response.ok || payload.error) {
+                const error = new Error(payload.error || 'No se pudo cambiar el estado de favorito.');
+                error.status = response.status;
+                throw error;
+            }
+
+            return payload;
+        })
         .then(data => {
             if (removeElement && !data.isFavorite) {
-                button.closest('div').remove();
+                const container = button.closest('.card-enhanced') || button.closest('div');
+                if (container) {
+                    container.remove();
+                }
             }
         })
         .catch(error => {
             console.error('Error al quitar favorito:', error);
-            alert('No se pudo cambiar el estado de favorito.');
+
+            if (error.status === 401) {
+                alert('Tu sesión expiró. Inicia sesión nuevamente para administrar tus favoritos.');
+            } else if (error.status === 403) {
+                alert('Solo los candidatos pueden marcar favoritos.');
+            } else if (error.status === 404) {
+                alert('El elemento ya no está disponible.');
+            } else {
+                alert(error.message || 'No se pudo cambiar el estado de favorito.');
+            }
         });
     }
     </script>
