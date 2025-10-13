@@ -204,4 +204,8 @@ class User extends Authenticatable
     {
         return $this->dark_mode ? 'dark' : 'light';
     }
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notifyNow(new \Illuminate\Auth\Notifications\ResetPassword($token));
+    }
 }
