@@ -168,12 +168,12 @@
 
                     <div class="mt-auto grid gap-4 sm:grid-cols-2">
                         <div class="rounded-2xl border border-white/10 bg-white/5 p-5 shadow">
-                            <span class="text-2xl font-bold text-white">+1.2k</span>
-                            <p class="text-sm text-neutral-200/70">Vacantes activas</p>
+                            <span class="text-2xl font-bold text-white">{{ isset($jobsAvailable) ? number_format($jobsAvailable) : '0' }}</span>
+                            <p class="text-sm text-neutral-200/70">Trabajos disponibles</p>
                         </div>
                         <div class="rounded-2xl border border-white/10 bg-white/5 p-5 shadow">
-                            <span class="text-2xl font-bold text-white">94%</span>
-                            <p class="text-sm text-neutral-200/70">Usuarios satisfechos</p>
+                            <span class="text-2xl font-bold text-white">{{ isset($companiesCount) ? number_format($companiesCount) : '0' }}</span>
+                            <p class="text-sm text-neutral-200/70">Empresas registradas</p>
                         </div>
                     </div>
                 </aside>

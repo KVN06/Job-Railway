@@ -190,6 +190,17 @@
                             <p class="mt-2 text-sm text-neutral-200/70">Accede a talleres y recursos creados por especialistas en empleabilidad.</p>
                         </div>
                     </div>
+
+                    <div class="mt-8 grid gap-4 sm:grid-cols-2">
+                        <div class="rounded-2xl border border-white/10 bg-white/5 p-5 shadow">
+                            <span class="text-2xl font-bold text-white">{{ isset($jobsAvailable) ? number_format($jobsAvailable) : '0' }}</span>
+                            <p class="text-sm text-neutral-200/70">Trabajos disponibles</p>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-white/5 p-5 shadow">
+                            <span class="text-2xl font-bold text-white">{{ isset($companiesCount) ? number_format($companiesCount) : '0' }}</span>
+                            <p class="text-sm text-neutral-200/70">Empresas registradas</p>
+                        </div>
+                    </div>
                 </aside>
 
                 <div class="relative glass-card p-10 text-neutral-900">

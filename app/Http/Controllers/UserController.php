@@ -8,11 +8,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Models\Unemployed;
+use App\Models\JobOffer;
 
 class UserController extends Controller
 {
     public function create() {
-        return view('auth.register');
+        $jobsAvailable = JobOffer::active()->count();
+        $companiesCount = Company::count();
+        return view('auth.register', compact('jobsAvailable', 'companiesCount'));
     }
 
     public function agg_user(Request $request) {
@@ -61,6 +64,13 @@ class UserController extends Controller
         ])->withInput($request->only('email'));
     }
 }
+
+    // Mostrar formulario de login con estadísticas
+    public function showLoginForm() {
+        $jobsAvailable = JobOffer::active()->count();
+        $companiesCount = Company::count();
+        return view('auth.login', compact('jobsAvailable', 'companiesCount'));
+    }
 
     public function logout(Request $request) {
         Auth::logout();
