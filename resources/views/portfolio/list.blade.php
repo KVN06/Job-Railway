@@ -1,96 +1,141 @@
 @extends('layouts.home')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <!-- Header mejorado -->
-    <div class="mb-8 animate-fade-in-up">
-        <div class="bg-white rounded-2xl shadow-soft p-8 mb-6">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-2">
-                        <i class="fas fa-briefcase text-blue-800 mr-3"></i>
-                        Mis Portafolios
+<div class="min-h-screen bg-blue-50 text-gray-900">
+
+    <header class="relative overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="w-full h-80 sm:h-96 md:h-[34rem] bg-cover bg-center" style="background-image: url('{{ asset('images/hero.jpg') }}');"></div>
+            <div class="absolute inset-0 bg-blue-200/30 backdrop-blur-sm"></div>
+        </div>
+
+        <div class="relative max-w-6xl mx-auto px-4 py-16 sm:py-24">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-6">
+                    <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight">
+                        <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">Capturando Momentos,</span>
+                        <span class="block text-gray-900">Creando Historias</span>
                     </h1>
-                    <p class="text-gray-600">Muestra tus proyectos y logros profesionales</p>
+                    <p class="text-black-700 max-w-lg">
+                        Portafolios cuidadosamente presentados para mostrar tu trabajo — proyectos, PDFs y enlaces en un estilo profesional y elegante.
+                    </p>
+
+                    <div class="flex flex-wrap gap-3 mt-4">
+                        <a href="{{ route('portfolio-form') }}"
+                            class="inline-flex items-center gap-2 px-5 py-3 rounded-full text-white shadow-lg transform hover:-translate-y-0.5 bg-gradient-to-r from-blue-500 to-blue-600">
+                            <i class="fas fa-plus"></i> Agregar Portafolio
+                        </a>
+                        <a id="btn-view-work" href="#mis-portafolios"
+                            class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-blue-300 bg-white/40 backdrop-blur-sm text-blue-800 hover:bg-blue-100 transition">
+                            Ver Mi Trabajo
+                        </a>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('portfolio-form') }}" class="btn-primary text-white px-6 py-3 rounded-xl hover-lift flex items-center shadow-soft">
-                        <i class="fas fa-plus mr-2"></i>
-                        Agregar Portafolio
-                    </a>
+
+                <div class="hidden md:flex justify-end">
+                    <div class="w-72 h-44 rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition">
+                        <img src="{{ asset('images/hero.jpg') }}" alt="destacado" class="w-full h-full object-cover">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="grid grid-cols-1 gap-6 animate-slide-in">
-        @forelse($portfolios as $portfolio)
-            <div class="card-enhanced hover-lift p-6">
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="flex-1">
-                                <h2 class="text-xl font-semibold text-gray-800 mb-2">
-                                    <i class="fas fa-folder-open text-blue-700 mr-2"></i>
-                                    {{ $portfolio->title }}
-                                </h2>
-                                <p class="text-gray-600 mb-4 leading-relaxed">{{ $portfolio->description }}</p>
-                                
-                                <div class="flex items-center space-x-4 mb-4">
-                                    @if($portfolio->url_proyect)
-                                        <a href="{{ $portfolio->url_proyect }}" target="_blank" 
-                                           class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-                                            <i class="fas fa-globe mr-1"></i>
-                                            Ver Proyecto
-                                        </a>
-                                    @endif
-                                    
-                                    @if($portfolio->url_pdf)
-                                        <a href="{{ asset('storage/portfolios/' . $portfolio->url_pdf) }}" target="_blank"
-                                           class="flex items-center text-purple-600 hover:text-purple-800 transition-colors">
-                                            <i class="fas fa-file-pdf mr-1"></i>
-                                            Ver PDF
-                                        </a>
-                                    @endif
+        <div class="h-12 md:h-20"></div>
+    </header>
+
+    <main class="px-4 pb-12">
+        <div id="mis-portafolios" class="max-w-6xl mx-auto -mt-20">
+            <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-blue-100">
+                <div class="bg-white/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 border border-transparent shadow-lg">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-blue-900">Mis Portafolios</h2>
+                            <p class="text-black-700 mt-1">Muestra tus proyectos y logros profesionales</p>
+                        </div>
+                        <div>
+                            <a href="{{ route('portfolio-form') }}"
+                                class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-400 to-blue-600 text-white px-4 py-2 rounded-lg shadow hover:scale-105 transition">
+                                <i class="fas fa-plus"></i> Nuevo
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @forelse($portfolios as $portfolio)
+                        <article
+                            class="group bg-blue-50/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg transform hover:-translate-y-2 hover:shadow-2xl transition duration-200">
+                            <div class="h-40 bg-cover bg-center"
+                                style="background-image: url('{{ isset($portfolio->cover_image) ? asset('storage/'.$portfolio->cover_image) : asset('images/placeholder.jpg') }}');">
+                                <div
+                                    class="w-full h-full bg-gradient-to-t from-blue-900/30 to-transparent flex items-end p-4">
+                                    <span class="bg-blue-100 text-blue-900 px-3 py-1 rounded-full text-sm font-semibold">{{ $portfolio->title }}</span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="text-right flex flex-col items-end">
-                        <div class="flex space-x-2 mb-3">
-                            <a href="{{ route('edit-portfolio', $portfolio->id) }}" 
-                               class="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-4 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
-                                <i class="fas fa-edit mr-1"></i>
-                                Editar
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-blue-900 mb-1">{{ $portfolio->title }}</h3>
+                                <p class="text-gray-700 text-sm mb-3 line-clamp-3">{{ $portfolio->description }}</p>
+
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        @if($portfolio->url_proyect)
+                                        
+                                        <a href="{{ $portfolio->url_proyect }}" target="_blank"
+                                            class="text-blue-600 hover:text-blue-700 inline-flex items-center gap-2 text-sm">
+                                            <i class="fas fa-globe"></i> Ver
+                                        </a>
+                                        @endif
+
+                                        @if($portfolio->url_pdf)
+                                        <a href="{{ asset('storage/'.$portfolio->url_pdf) }}" target="_blank"
+                                            class="text-blue-500 hover:text-blue-700 inline-flex items-center gap-2 text-sm">
+                                            <i class="fas fa-file-pdf"></i> PDF
+                                        </a>
+                                        @endif
+                                    </div>
+
+                                    <div class="flex items-center gap-2">
+                                        <a href="{{ route('edit-portfolio', $portfolio->id) }}"
+                                            class="px-3 py-1 bg-blue-50 rounded-md text-sm hover:bg-blue-100 border border-blue-100">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <form action="{{ route('delete-portfolio', $portfolio->id) }}" method="POST"
+                                            onsubmit="return confirm('¿Estás seguro de eliminar este portafolio?')"
+                                            class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="px-3 py-1 bg-red-100 rounded-md text-sm hover:bg-red-200 border border-red-100">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 text-xs text-gray-500">
+                                    {{ $portfolio->created_at ? $portfolio->created_at->format('d M, Y') : '' }}
+                                </div>
+                            </div>
+                        </article>
+                        @empty
+                        <div class="col-span-full rounded-2xl p-12 bg-blue-50 text-center border border-blue-100">
+                            <div
+                                class="w-24 h-24 bg-blue-100 rounded-full mx-auto flex items-center justify-center mb-4">
+                                <i class="fas fa-briefcase text-2xl text-blue-600"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-blue-900">No tienes portafolios aún</h3>
+                            <p class="text-blue-700 mt-2">Comienza a mostrar tus proyectos y logros profesionales.</p>
+                            <a href="{{ route('portfolio-form') }}"
+                                class="mt-6 inline-flex items-center gap-2 bg-gradient-to-r from-blue-400 to-blue-600 text-white px-6 py-3 rounded-xl">
+                                <i class="fas fa-plus"></i> Crear Primer Portafolio
                             </a>
-                            <form action="{{ route('delete-portfolio', $portfolio->id) }}" method="POST" 
-                                  style="display:inline;" onsubmit="return confirm('¿Estás seguro de eliminar este portafolio?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" 
-                                        class="bg-gradient-to-r from-red-800 to-red-900 text-white px-4 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
-                                    <i class="fas fa-trash mr-1"></i>
-                                    Eliminar
-                                </button>
-                            </form>
                         </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
-        @empty
-            <div class="card-enhanced p-12 text-center animate-fade-in-up">
-                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-briefcase text-3xl text-gray-400"></i>
-                </div>
-                <h3 class="text-xl font-semibold text-gray-800 mb-2">No tienes portafolios aún</h3>
-                <p class="text-gray-600 mb-6">Comienza a mostrar tus proyectos y logros profesionales.</p>
-                <a href="{{ route('portfolio-form') }}" class="btn-primary text-white px-6 py-3 rounded-xl hover-lift inline-flex items-center">
-                    <i class="fas fa-plus mr-2"></i>
-                    Crear Primer Portafolio
-                </a>
-            </div>
-        @endforelse
-    </div>
+        </div>
+    </main>
 </div>
 @endsection

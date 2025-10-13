@@ -1,57 +1,70 @@
-@extends('layouts.home') 
-<!-- Extiende la plantilla base 'home' -->
+@extends('layouts.home')
 
 @section('content')
-    <!-- Inicio de la sección de contenido -->
+    <form action="{{ route('update-portfolio', $portfolio->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('POST')
 
-    <form action="{{ route('update-portfolio', $portfolio->id) }}" method="POST">
-        @csrf 
-        <!-- Token de seguridad CSRF -->
+        <main class="min-h-screen bg-white text-gray-900 py-12 px-4">
+            <div class="max-w-3xl mx-auto">
+                <header class="text-center mb-8">
+                    <h1 class="text-3xl font-extrabold text-gray-900">Editar Portafolio</h1>
+                    <p class="text-gray-600 mt-2">Actualiza los datos de tu portafolio.</p>
+                </header>
 
-        @method('POST') 
-        <!-- Simula el método POST, aunque para actualizar usualmente se usa PUT o PATCH -->
+                <section class="bg-white rounded-2xl shadow p-8 border border-gray-100">
+                    <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-transparent shadow-md">
+                        <div class="space-y-6">
+                            <div>
+                                <label for="title" class="block text-sm font-medium text-gray-700">Título del Portafolio</label>
+                                <input type="text" id="title" name="title" required
+                                       value="{{ old('title', $portfolio->title) }}"
+                                       class="mt-2 block w-full rounded-xl bg-white/40 ring-1 ring-gray-200 text-gray-900 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
+                            </div>
 
-        <main class="container mx-auto py-8 px-6">
-            <h1 class="text-3xl font-bold text-center mb-8">Editar Portafolio</h1>
+                            <div>
+                                <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
+                                <textarea id="description" name="description" rows="5" required
+                                          class="mt-2 block w-full rounded-xl bg-white/40 ring-1 ring-gray-200 text-gray-900 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">{{ old('description', $portfolio->description) }}</textarea>
+                            </div>
 
-            <section class="bg-white shadow rounded-lg p-6 max-w-lg mx-auto">
-                <!-- Contenedor del formulario con diseño centrado y estilos -->
+                            <div>
+                                <label for="file_url" class="block text-sm font-medium text-gray-700">URL del Portafolio</label>
+                                <input type="text" id="file_url" name="file_url"
+                                       value="{{ old('file_url', $portfolio->file_url) }}"
+                                       class="mt-2 block w-full rounded-xl bg-white/40 ring-1 ring-gray-200 text-gray-900 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
+                            </div>
 
-                <div class="space-y-4">
-                    <!-- Espaciado vertical entre los campos -->
+                            @if(isset($portfolio->url_pdf) && $portfolio->url_pdf)
+                                <div class="text-sm text-gray-700">
+                                    PDF actual:
+                                    <a href="{{ asset('storage/portfolios/' . $portfolio->url_pdf) }}" target="_blank" class="text-yellow-600 hover:underline ml-2">
+                                        Ver PDF
+                                    </a>
+                                </div>
+                            @endif
 
-                    <div>
-                        <label for="title" class="block text-gray-700 font-medium">Título del Portafolio</label>
-                        <input type="text" id="title" name="title" 
-                               value="{{ old('title', $portfolio->title) }}" 
-                               class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                        <!-- Campo de texto con valor precargado desde el modelo -->
+                            <div>
+                                <button type="submit" class="w-full inline-flex justify-center items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-2xl shadow-lg hover:brightness-95 transition">
+                                    Actualizar Portafolio
+                                </button>
+                            </div>
+                        </div>
                     </div>
-
-                    <div>
-                        <label for="description" class="block text-gray-700 font-medium">Descripción</label>
-                        <textarea id="description" name="description" 
-                                  class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                            {{ old('description', $portfolio->description) }}
-                        </textarea>
-                        <!-- Textarea con descripción existente -->
-                    </div>
-
-                    <div>
-                        <label for="file_url" class="block text-gray-700 font-medium">URL del Portafolio</label>
-                        <input type="text" id="file_url" name="file_url" 
-                               value="{{ old('file_url', $portfolio->file_url) }}" 
-                               class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                        <!-- Campo para la URL, precargado -->
-                    </div>
-
-                    <button type="submit" 
-                            class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-400">
-                        Actualizar Portafolio
-                    </button>
-                    <!-- Botón de envío -->
-                </div>
-            </section>
+                </section>
+            </div>
         </main>
     </form>
+
+    <script>
+        // Limpia espacios al enviar (solo UI helper)
+        (function(){
+            const form = document.querySelector('form[action*="update-portfolio"]');
+            if (!form) return;
+            form.addEventListener('submit', function(){
+                const els = form.querySelectorAll('input[type="text"], textarea');
+                els.forEach(el => el.value = el.value.trim());
+            });
+        })();
+    </script>
 @endsection

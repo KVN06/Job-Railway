@@ -197,18 +197,17 @@
                                         >
                                             Editar capacitación
                                         </x-button>
-                                        <form action="{{ route('training.destroy', $item->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro que deseas eliminar esta capacitación?')">
+                                        <form id="delete-form-{{ $item->id }}" action="{{ route('training.destroy', $item->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <x-button
-                                                type="submit"
-                                                variant="danger"
-                                                size="sm"
-                                                icon="fas fa-trash"
-                                                class="w-full"
-                                            >
+                                            <!-- importante: type="button" y sin onsubmit/onclick confirm() -->
+                                            <button type="button"
+                                                    data-form="delete-form-{{ $item->id }}"
+
+                                                    class="open-delete-modal bg-gradient-to-r from-red-800 to-red-900 text-white px-4 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
+                                                <i class="fas fa-trash mr-1"></i>
                                                 Eliminar
-                                            </x-button>
+                                            </button>
                                         </form>
                                     </div>
                                 </div>
@@ -233,5 +232,55 @@
         </div>
     </section>
 
+    <!-- Confirmación modal centrada -->
+    <div id="delete-modal" class="fixed inset-0 hidden flex items-center justify-center bg-black/50 z-50 px-4" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 mx-auto">
+            <h3 id="delete-modal-title" class="text-lg font-semibold text-gray-800 mb-3">¿Deseas eliminar esta capacitación?</h3>
+            <p class="text-sm text-gray-600 mb-6">Esta acción es irreversible. ¿Deseas continuar?</p>
+            <div class="flex justify-end space-x-3">
+                <button id="cancel-delete" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">No</button>
+                <button id="confirm-delete" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const modal = document.getElementById('delete-modal');
+            const confirmBtn = document.getElementById('confirm-delete');
+            const cancelBtn = document.getElementById('cancel-delete');
+            let targetFormId = null;
+
+            document.querySelectorAll('.open-delete-modal').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    targetFormId = this.getAttribute('data-form');
+                    // mostrar modal (remover hidden y forzar display:flex)
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    // bloquear scroll de fondo
+                    document.documentElement.style.overflow = 'hidden';
+                    confirmBtn.focus();
+                });
+            });
+
+            cancelBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+            document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+            confirmBtn.addEventListener('click', function () {
+                if (!targetFormId) return closeModal();
+                const form = document.getElementById(targetFormId);
+                if (form) form.submit();
+                closeModal();
+            });
+
+            function closeModal() {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                targetFormId = null;
+                document.documentElement.style.overflow = '';
+            }
+        })();
+    </script>
 </main>
 @endsection

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('unemployed_id');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('url_proyect');
+            $table->text('url_proyect');
             $table->string('url_pdf')->nullable();
             $table->timestamps();
     
