@@ -1,26 +1,28 @@
 <?php
 
 namespace App\Providers;
-use App\Http\Middleware\AdminMiddleware;
 
+use Illuminate\Support\Facades\URL;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
+        // Middleware existente
         $router = $this->app['router'];
         $router->aliasMiddleware('admin', AdminMiddleware::class);
+
+        // Forzar URL base al usar Google localmente
+        if ($this->app->environment('local')) {
+            URL::forceRootUrl('http://localhost:8000');
+        }
     }
 }
+

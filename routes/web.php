@@ -14,12 +14,16 @@ use App\Http\Controllers\ClassifiedController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\GoogleController;
 
 
 // Rutas públicas
 Route::view('/', 'pages.landing')->name('landing');
 Route::view('/login', 'auth.login')->name('login');
 Route::view('/home', 'pages.home')->middleware('auth')->name('home');
+
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
 // Usuario
 Route::get('/register', [UserController::class, 'create'])->name('register');
@@ -167,7 +171,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/trainings/{id}/edit', [TrainingController::class, 'edit'])->name('trainings.edit');
     Route::put('/trainings/{id}', [TrainingController::class, 'update'])->name('trainings.update');
     Route::delete('/trainings/{id}', [TrainingController::class, 'destroy'])->name('trainings.destroy');
+
     
+    
+
+     
+
 
     // Usuarios - TODAS las rutas
     Route::resource('users', UserController::class)->names([

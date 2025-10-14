@@ -189,14 +189,15 @@
                         <p class="text-base text-neutral-600">Inicia sesión con tu cuenta o continúa con Google.</p>
                     </div>
 
-                    <div class="grid gap-3">
-                        <button type="button" class="group flex items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-neutral-50">
-                            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-900 shadow-inner">
-                                <i class="fab fa-google text-lg"></i>
-                            </span>
-                            Inicia sesión con Google
-                        </button>
-                    </div>
+                    <a href="{{ route('google.login') }}" 
+   class="group flex items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-neutral-50">
+    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-900 shadow-inner">
+        <i class="fab fa-google text-lg"></i>
+    </span>
+    Iniciar sesión con Google
+</a>
+
+
 
                     <div class="relative my-8 text-center text-sm font-semibold text-neutral-500">
                         <span class="relative z-10 inline-flex items-center gap-2 rounded-full border border-white/60 bg-white px-4 py-2 shadow">
