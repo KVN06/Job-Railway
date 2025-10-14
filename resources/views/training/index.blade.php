@@ -1,4 +1,7 @@
 @extends('layouts.home')
+@php
+    use Carbon\Carbon;
+@endphp
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -23,8 +26,8 @@
                 <i class="fas fa-check-circle mr-2"></i>
                 {{ session('success') }}
             </div>
-        </x-card>
-    </section>
+        </div>
+    @endif
 
     <!-- LISTADO DE CAPACITACIONES -->
     <section class="space-y-6" id="training-insights">
@@ -100,32 +103,34 @@
                                     </p>
                                 </div>
 
-                    <div class="text-right flex flex-col items-end">
-                        <!-- Solo el botón Ver que redirige al enlace -->
-                        @if($item->link)
-                            <div class="flex space-x-2 mb-3">
-                                <a href="{{ $item->link }}" 
-                                   target="_blank"
-                                  class="btn-primary text-white px-6 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
-                                    <i class="fas fa-external-link-alt mr-1"></i>
-                                    Ver Capacitación
-                                </a>
+                                <div class="text-right flex flex-col items-end">
+                                    @if($item->link)
+                                        <div class="flex space-x-2 mb-3">
+                                            <a href="{{ $item->link }}" 
+                                               target="_blank"
+                                              class="btn-primary text-white px-6 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
+                                                <i class="fas fa-external-link-alt mr-1"></i>
+                                                Ver Capacitación
+                                            </a>
+                                        </div>
+                                    @else
+                                        <span class="text-gray-500 text-sm">Sin enlace disponible</span>
+                                    @endif
+                                </div>
                             </div>
-                        @else
-                            <span class="text-gray-500 text-sm">Sin enlace disponible</span>
-                        @endif
+                        </div>
                     </div>
+                </x-card> {{-- ✅ cierre del componente --}}
+            @empty
+                <div class="card-enhanced p-12 text-center animate-fade-in-up">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-graduation-cap text-3xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">No hay capacitaciones disponibles</h3>
+                    <p class="text-gray-600">Actualmente no hay capacitaciones publicadas.</p>
                 </div>
-            </div>
-        @empty
-            <div class="card-enhanced p-12 text-center animate-fade-in-up">
-                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-graduation-cap text-3xl text-gray-400"></i>
-                </div>
-                <h3 class="text-xl font-semibold text-gray-800 mb-2">No hay capacitaciones disponibles</h3>
-                <p class="text-gray-600">Actualmente no hay capacitaciones publicadas.</p>
-            </div>
-        @endforelse
-    </div>
+            @endforelse
+        </div>
+    </section>
 </div>
 @endsection
