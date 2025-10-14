@@ -25,7 +25,7 @@ Route::view('/home', 'pages.home')->middleware('auth')->name('home');
 Route::get('/register', [UserController::class, 'create'])->name('register');
 Route::post('/crearUsuario', [UserController::class, 'agg_user'])->name('create-user');
 Route::post('/inicia-sesion', [UserController::class, 'login'])->name('inicia-sesion');
-Route::get('/logout', [UserController::class, 'logout'])->name('logout');
+Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 // Mensajes (solo auth)
 Route::middleware('auth')->group(function () {
