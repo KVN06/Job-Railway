@@ -135,6 +135,7 @@
                     {{ $trainings->links() }}
                 </div>
             @endif
-    </div>
+        </div>
+    </section>
 </div>
 @endsection
