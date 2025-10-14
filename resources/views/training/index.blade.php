@@ -7,7 +7,7 @@
 <div class="container mx-auto px-4 py-8">
     <!-- Header mejorado -->
     <div class="mb-8 animate-fade-in-up">
-        <div class="bg-white rounded-2xl shadow-soft p-8 mb-6">
+        <x-card padding="p-8" class="mb-6">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
                     <h1 class="text-3xl font-bold text-gray-800 mb-2">
@@ -17,7 +17,7 @@
                     <p class="text-gray-600">Explora oportunidades de formación y desarrollo profesional</p>
                 </div>
             </div>
-        </div>
+        </x-card>
     </div>
 
     @if(session('success'))
@@ -40,7 +40,7 @@
                     $isFinished = $item->end_date ? \Carbon\Carbon::parse($item->end_date)->isPast() : false;
                 @endphp
 
-                <x-card variant="enhanced" hover class="overflow-hidden">
+                <x-card variant="enhanced" hover padding="p-0" class="overflow-hidden">
                     <div class="flex flex-col md:flex-row">
                         <div class="flex-1 p-6 space-y-5">
                             <div class="flex items-start justify-between gap-4">
