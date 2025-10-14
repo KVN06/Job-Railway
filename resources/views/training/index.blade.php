@@ -61,14 +61,14 @@
                                 </x-badge>
                             </div>
                         </div>
-                        
+
                         <!-- Descripción -->
                         @if($item->description)
                             <div class="mb-4">
                                 <p class="text-gray-700">{{ Str::limit($item->description, 150) }}</p>
                             </div>
                         @endif
-                        
+
                         <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
                             @if($item->start_date)
                                 <div class="flex items-center">
@@ -105,7 +105,7 @@
                         <!-- Solo el botón Ver que redirige al enlace -->
                         @if($item->link)
                             <div class="flex space-x-2 mb-3">
-                                <a href="{{ $item->link }}" 
+                                <a href="{{ $item->link }}"
                                    target="_blank"
                                   class="btn-primary text-white px-6 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
                                     <i class="fas fa-external-link-alt mr-1"></i>
