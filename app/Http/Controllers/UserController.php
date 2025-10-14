@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
@@ -58,10 +59,14 @@ class UserController extends Controller
         
         // Redirigir según el tipo de usuario
         if ($user->type === 'admin') {
-            return redirect()->route('admin.dashboard');
-        } else {
+            // Evitar excepción si la ruta no está definida en el entorno de deploy
+            if (Route::has('admin.dashboard')) {
+                return redirect()->route('admin.dashboard');
+            }
+            // fallback seguro
             return redirect()->intended(route('home'));
         }
+        return redirect()->intended(route('home'));
     } else {
         // Redirigir con mensaje de error
         return redirect()->back()->withErrors([
