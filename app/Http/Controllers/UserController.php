@@ -53,10 +53,10 @@ class UserController extends Controller
     $remember = $request->remember ? true : false;
     if (Auth::attempt($credentials, $remember)) {
         $request->session()->regenerate();
-        
+
         // Obtener el usuario autenticado
         $user = Auth::user();
-        
+
         // Redirigir según el tipo de usuario
         if ($user->type === 'admin') {
             // Evitar excepción si la ruta no está definida en el entorno de deploy
@@ -93,5 +93,5 @@ class UserController extends Controller
 
 
 
-    
+
 }
