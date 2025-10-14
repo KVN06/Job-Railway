@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4 py-8">
     <!-- Header mejorado -->
     <div class="mb-8 animate-fade-in-up">
-        <div class="bg-white rounded-2xl shadow-soft p-8 mb-6">
+        <x-card padding="p-8" class="mb-6">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
                     <h1 class="text-3xl font-bold text-gray-800 mb-2">
@@ -14,7 +14,7 @@
                     <p class="text-gray-600">Explora oportunidades de formación y desarrollo profesional</p>
                 </div>
             </div>
-        </div>
+        </x-card>
     </div>
 
     @if(session('success'))
@@ -23,21 +23,21 @@
                 <i class="fas fa-check-circle mr-2"></i>
                 {{ session('success') }}
             </div>
-        </x-card>
-    </section>
+        </div>
+    @endif
 
     <!-- LISTADO DE CAPACITACIONES -->
     <section class="space-y-6" id="training-insights">
         <div class="grid grid-cols-1 gap-6 animate-slide-in">
             @forelse($trainings as $item)
                 @php
-                    $startDate = $item->start_date ? Carbon::parse($item->start_date)->format('d/m/Y') : null;
-                    $endDate = $item->end_date ? Carbon::parse($item->end_date)->format('d/m/Y') : null;
-                    $isUpcoming = $item->start_date ? Carbon::parse($item->start_date)->isFuture() : false;
-                    $isFinished = $item->end_date ? Carbon::parse($item->end_date)->isPast() : false;
+                    $startDate = $item->start_date ? \Carbon\Carbon::parse($item->start_date)->format('d/m/Y') : null;
+                    $endDate = $item->end_date ? \Carbon\Carbon::parse($item->end_date)->format('d/m/Y') : null;
+                    $isUpcoming = $item->start_date ? \Carbon\Carbon::parse($item->start_date)->isFuture() : false;
+                    $isFinished = $item->end_date ? \Carbon\Carbon::parse($item->end_date)->isPast() : false;
                 @endphp
 
-                <x-card variant="enhanced" hover class="overflow-hidden">
+                <x-card variant="enhanced" hover padding="p-0">
                     <div class="flex flex-col md:flex-row">
                         <div class="flex-1 p-6 space-y-5">
                             <div class="flex items-start justify-between gap-4">
@@ -59,31 +59,31 @@
                                     {{ $isFinished ? 'Finalizada' : ($isUpcoming ? 'Próxima' : 'En curso') }}
                                 </x-badge>
                             </div>
-                        </div>
-                        
-                        <!-- Descripción -->
-                        @if($item->description)
-                            <div class="mb-4">
-                                <p class="text-gray-700">{{ Str::limit($item->description, 150) }}</p>
-                            </div>
-                        @endif
-                        
-                        <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
-                            @if($item->start_date)
-                                <div class="flex items-center">
-                                    <i class="fas fa-play-circle text-green-600 mr-1"></i>
-                                    <span>Inicio: {{ $item->start_date }}</span>
+
+                            <!-- Descripción -->
+                            @if($item->description)
+                                <div class="mb-4">
+                                    <p class="text-gray-700">{{ \Illuminate\Support\Str::limit($item->description, 150) }}</p>
                                 </div>
                             @endif
-                            @if($item->end_date)
+
+                            <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
+                                @if($item->start_date)
+                                    <div class="flex items-center">
+                                        <i class="fas fa-play-circle text-green-600 mr-1"></i>
+                                        <span>Inicio: {{ $startDate }}</span>
+                                    </div>
+                                @endif
+                                @if($item->end_date)
+                                    <div class="flex items-center">
+                                        <i class="fas fa-stop-circle text-red-600 mr-1"></i>
+                                        <span>Fin: {{ $endDate }}</span>
+                                    </div>
+                                @endif
                                 <div class="flex items-center">
-                                    <i class="fas fa-stop-circle text-red-600 mr-1"></i>
-                                    <span>Fin: {{ $item->end_date }}</span>
+                                    <i class="fas fa-clock text-gray-600 mr-1"></i>
+                                    <span>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
                                 </div>
-                            @endif
-                            <div class="flex items-center">
-                                <i class="fas fa-clock text-gray-600 mr-1"></i>
-                                <span>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
                             </div>
                         </div>
 
@@ -102,21 +102,22 @@
 
                     <div class="text-right flex flex-col items-end">
                         <!-- Solo el botón Ver que redirige al enlace -->
-                        @if($item->link)
-                            <div class="flex space-x-2 mb-3">
-                                <a href="{{ $item->link }}" 
-                                   target="_blank"
-                                  class="btn-primary text-white px-6 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
-                                    <i class="fas fa-external-link-alt mr-1"></i>
-                                    Ver Capacitación
-                                </a>
-                            </div>
-                        @else
+                                @if($item->link)
+                                    <div class="flex space-x-2 mb-3">
+                                        <a href="{{ $item->link }}"
+                                           target="_blank" rel="noopener noreferrer"
+                                           class="btn-primary text-white px-6 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
+                                            <i class="fas fa-external-link-alt mr-1"></i>
+                                            Ver Capacitación
+                                        </a>
+                                    </div>
+                                @else
                             <span class="text-gray-500 text-sm">Sin enlace disponible</span>
                         @endif
                     </div>
                 </div>
             </div>
+        </x-card>
         @empty
             <div class="card-enhanced p-12 text-center animate-fade-in-up">
                 <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -126,6 +127,24 @@
                 <p class="text-gray-600">Actualmente no hay capacitaciones publicadas.</p>
             </div>
         @endforelse
-    </div>
+            @if(method_exists($trainings, 'links'))
+                <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="text-sm text-gray-600">
+                        Mostrando
+                        <span class="font-medium">{{ $trainings->firstItem() ?? 0 }}</span>
+                        -
+                        <span class="font-medium">{{ $trainings->lastItem() ?? 0 }}</span>
+                        de
+                        <span class="font-medium">{{ $trainings->total() }}</span>
+                        resultados
+                    </div>
+
+                    <div>
+                        {{ $trainings->links('pagination::tailwind') }}
+                    </div>
+                </div>
+            @endif
+        </div>
+    </section>
 </div>
 @endsection
