@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use App\Models\Unemployed;
+use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +18,9 @@ class GoogleController extends Controller
     {
         if ($request->has('type')) {
             session(['google_user_type' => $request->type]);
+        } else {
+            // Si no viene tipo, es login (no registro)
+            session(['is_login_attempt' => true]);
         }
         
         return Socialite::driver('google')->redirect();
@@ -30,10 +35,27 @@ class GoogleController extends Controller
             $user = User::where('email', $googleUser->getEmail())->first();
 
             if (!$user) {
-                // Obtener el tipo de usuario
-                $userType = session('google_user_type', 'unemployed');
+                // USUARIO NUEVO
                 
-                // CREAR SOLO EL USUARIO, NO el perfil específico
+                // Verificar si es un intento de LOGIN (no registro)
+                if (session('is_login_attempt')) {
+                    session()->forget('is_login_attempt');
+                    return redirect('/login')->withErrors([
+                        'email' => 'Este correo no está registrado. Por favor regístrate primero.'
+                    ]);
+                }
+
+                // Es REGISTRO - verificar que tenga tipo seleccionado
+                $userType = session('google_user_type');
+                
+                if (!$userType) {
+                    // Si no tiene tipo, redirigir al registro para que elija
+                    return redirect('/register')->withErrors([
+                        'email' => 'Por favor selecciona el tipo de cuenta antes de registrarte con Google.'
+                    ]);
+                }
+                
+                // Crear usuario con el tipo seleccionado
                 $user = User::create([
                     'name' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
@@ -42,31 +64,39 @@ class GoogleController extends Controller
                     'email_verified_at' => now(),
                 ]);
 
-                // NO crear unemployed o company aquí
-                // Eso lo harán los controladores específicos
-
                 session()->forget('google_user_type');
+                Auth::login($user);
 
-            } else {
-                // Usuario existente - actualizar tipo si es necesario
-                if (!$user->type && session()->has('google_user_type')) {
-                    $user->update([
-                        'type' => session('google_user_type')
-                    ]);
+                // Redirigir al formulario correspondiente
+                if ($user->type == 'unemployed') {
+                    return redirect()->route('unemployed-form');
+                } else {
+                    return redirect()->route('company-form');
                 }
-                session()->forget('google_user_type');
-            }
 
-            Auth::login($user);
-
-            // Redirigir al formulario correspondiente para COMPLETAR el perfil
-            if ($user->type == 'unemployed') {
-                return redirect()->route('unemployed-form'); // Va al UnemployedController@create
             } else {
-                return redirect()->route('company-form'); // Va al CompanyController@create
+                // USUARIO EXISTENTE - Solo iniciar sesión
+                session()->forget(['google_user_type', 'is_login_attempt']);
+                Auth::login($user);
+                
+                // Verificar si ya tiene perfil completo
+                if ($user->type == 'unemployed') {
+                    $hasProfile = Unemployed::where('user_id', $user->id)->exists();
+                    if (!$hasProfile) {
+                        return redirect()->route('unemployed-form');
+                    }
+                } else if ($user->type == 'company') {
+                    $hasProfile = Company::where('user_id', $user->id)->exists();
+                    if (!$hasProfile) {
+                        return redirect()->route('company-form');
+                    }
+                }
+
+                return redirect()->intended(route('home'));
             }
 
         } catch (Exception $e) {
+            session()->forget(['google_user_type', 'is_login_attempt']);
             return redirect('/login')->withErrors('Error al iniciar sesión con Google: ' . $e->getMessage());
         }
     }
