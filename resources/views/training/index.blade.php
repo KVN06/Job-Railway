@@ -1,4 +1,7 @@
 @extends('layouts.home')
+@php
+    use Carbon\Carbon;
+@endphp
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -24,7 +27,6 @@
                 {{ session('success') }}
             </div>
         </div>
-    </div>
     @endif
 
     <!-- LISTADO DE CAPACITACIONES -->
@@ -118,7 +120,6 @@
                     </div>
                 </div>
             </div>
-            </x-card>
         @empty
             <div class="card-enhanced p-12 text-center animate-fade-in-up">
                 <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

@@ -32,6 +32,12 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
+        'sendgrid' => [
+        'transport' => 'sendgrid',
+        'api_key' => env('SENDGRID_API_KEY'),
+    ],
+
+
         'ses' => [
             'transport' => 'ses',
         ],
@@ -92,8 +98,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'velazcocruzv9@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'JobRailway'),
     ],
 
 ];
