@@ -57,7 +57,7 @@ class TrainingController extends Controller
     public function update(Request $request, $id)
     {
         $training = Training::findOrFail($id);
-        
+
         $request->validate([
             'title' => 'required|string|max:255',
             'provider' => 'nullable|string|max:255',
