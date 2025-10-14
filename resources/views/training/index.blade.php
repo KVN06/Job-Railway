@@ -128,8 +128,20 @@
             </div>
         @endforelse
             @if(method_exists($trainings, 'links'))
-                <div class="mt-6">
-                    {{ $trainings->links() }}
+                <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="text-sm text-gray-600">
+                        Mostrando
+                        <span class="font-medium">{{ $trainings->firstItem() ?? 0 }}</span>
+                        -
+                        <span class="font-medium">{{ $trainings->lastItem() ?? 0 }}</span>
+                        de
+                        <span class="font-medium">{{ $trainings->total() }}</span>
+                        resultados
+                    </div>
+
+                    <div>
+                        {{ $trainings->links('pagination::tailwind') }}
+                    </div>
                 </div>
             @endif
         </div>

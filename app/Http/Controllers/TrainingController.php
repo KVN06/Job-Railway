@@ -13,7 +13,9 @@ class TrainingController extends Controller
     // Método para vista pública
     public function index()
     {
-                $trainings = Training::all();
+                // Usar paginación para que la vista pueda renderizar los links
+        $trainings = Training::latest()->paginate(10)->withQueryString();
+
         return view('training.index', compact('trainings'));
     }
 
