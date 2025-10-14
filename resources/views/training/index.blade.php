@@ -23,8 +23,9 @@
                 <i class="fas fa-check-circle mr-2"></i>
                 {{ session('success') }}
             </div>
-        </x-card>
-    </section>
+        </div>
+    </div>
+    @endif
 
     <!-- LISTADO DE CAPACITACIONES -->
     <section class="space-y-6" id="training-insights">
