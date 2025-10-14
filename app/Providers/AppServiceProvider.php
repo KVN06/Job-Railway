@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Providers;
+use App\Http\Middleware\AdminMiddleware;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -19,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $router = $this->app['router'];
+        $router->aliasMiddleware('admin', AdminMiddleware::class);
     }
 }

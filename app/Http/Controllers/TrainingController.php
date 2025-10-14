@@ -10,36 +10,21 @@ use Illuminate\Support\Facades\Schema;
 
 class TrainingController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            $this->ensureUserColumnExists();
-
-            return $next($request);
-        });
-    }
-
-    // Muestra todas las capacitaciones
+    // Método para vista pública
     public function index()
     {
-        $trainings = Training::with('user')->get();
+                $trainings = Training::all();
         return view('training.index', compact('trainings'));
     }
 
-    // Muestra el formulario de creación
+    // Métodos para admin
     public function create()
     {
-        abort_unless(Auth::check(), 403);
-
-        return view('training.create');
+        return view('admin.trainings.create');
     }
 
-    // Guarda una nueva capacitación
     public function store(Request $request)
     {
-        abort_unless(Auth::check(), 403);
-
-        // Validación de los datos del formulario
         $request->validate([
             'title' => 'required|string|max:255',
             'provider' => 'nullable|string|max:255',
@@ -49,31 +34,28 @@ class TrainingController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
-        // Crea una nueva capacitación
-        Training::create(array_merge(
-            $request->only(['title', 'provider', 'description', 'link', 'start_date', 'end_date']),
-            ['user_id' => Auth::id()]
-        ));
+        Training::create($request->all());
 
-        // Redirige con un mensaje de éxito
-        return redirect()->route('training.index')->with('success', 'Capacitación registrada correctamente.');
+        return redirect()->route('admin.trainings.index')
+                         ->with('success', 'Capacitación creada exitosamente');
     }
 
-    // Muestra el formulario de edición para una capacitación específica
+    public function show($id)
+    {
+        $training = Training::findOrFail($id);
+        return view('admin.trainings.show', compact('training'));
+    }
+
     public function edit($id)
     {
         $training = Training::findOrFail($id);
-        $this->authorizeTraining($training);
-        return view('training.edit', compact('training'));
+        return view('admin.trainings.edit', compact('training'));
     }
 
-    // Actualiza una capacitación
     public function update(Request $request, $id)
     {
         $training = Training::findOrFail($id);
-        $this->authorizeTraining($training);
-
-        // Validación de los datos del formulario
+        
         $request->validate([
             'title' => 'required|string|max:255',
             'provider' => 'nullable|string|max:255',
@@ -83,36 +65,19 @@ class TrainingController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
-        // Actualiza la capacitación
-        $training->update($request->only(['title', 'provider', 'description', 'link', 'start_date', 'end_date']));
+        $training->update($request->all());
 
-        // Redirige con un mensaje de éxito
-        return redirect()->route('training.index')->with('success', 'Capacitación actualizada correctamente.');
+        return redirect()->route('admin.trainings.index')
+                         ->with('success', 'Capacitación actualizada exitosamente');
     }
 
-    // Elimina una capacitación
     public function destroy($id)
     {
         $training = Training::findOrFail($id);
         $this->authorizeTraining($training);
         $training->delete();
 
-        // Redirige con un mensaje de éxito
-        return redirect()->route('training.index')->with('success', 'Capacitación eliminada correctamente.');
-    }
-    protected function authorizeTraining(Training $training): void
-    {
-        abort_unless(Auth::check() && Auth::id() === $training->user_id, 403, 'No tienes permisos para modificar esta capacitación.');
-    }
-
-    protected function ensureUserColumnExists(): void
-    {
-        if (Schema::hasColumn('trainings', 'user_id')) {
-            return;
-        }
-
-        Schema::table('trainings', function (Blueprint $table) {
-            $table->foreignId('user_id')->nullable()->after('id')->constrained()->nullOnDelete();
-        });
+        return redirect()->route('admin.trainings.index')
+                         ->with('success', 'Capacitación eliminada exitosamente');
     }
 }

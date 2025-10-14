@@ -22,12 +22,13 @@ class Training extends Model
         'user_id',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+ // Agregar casts para las fechas
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
 
-
+    
     public function TrainingUsers()
     {
         return $this->hasMany(TrainingUser::class);

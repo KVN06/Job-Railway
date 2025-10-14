@@ -52,7 +52,16 @@ class UserController extends Controller
     $remember = $request->remember ? true : false;
     if (Auth::attempt($credentials, $remember)) {
         $request->session()->regenerate();
-        return redirect()->intended(route('home'));
+        
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+        
+        // Redirigir según el tipo de usuario
+        if ($user->type === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->intended(route('home'));
+        }
     } else {
         // Redirigir con mensaje de error
         return redirect()->back()->withErrors([
@@ -72,4 +81,12 @@ class UserController extends Controller
         $request->session()->regenerateToken();
         return redirect(route('login'));
     }
+
+
+
+
+
+
+
+    
 }

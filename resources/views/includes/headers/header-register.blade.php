@@ -23,7 +23,7 @@
                     <span>Inicio</span>
                     <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-primary group-hover:w-full transition-all duration-300"></span>
                 </a>
-                <a href="{{ route('training.index') }}" class="relative text-gray-600 hover:text-blue-800 transition-all duration-300 font-medium group">
+                <a href="{{ route('training.public.index') }}" class="relative text-gray-600 hover:text-blue-800 transition-all duration-300 font-medium group">
                     <span>Capacitaciones</span>
                     <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-primary group-hover:w-full transition-all duration-300"></span>
                 </a>
@@ -64,7 +64,7 @@
                     <i class="fas fa-home mr-3 w-4"></i>
                     Inicio
                 </a>
-                <a href="{{ route('training.index') }}" class="flex items-center text-gray-600 hover:text-blue-800 py-2 transition-colors">
+                <a href="{{ route('training.public.index') }}" class="flex items-center text-gray-600 hover:text-blue-800 py-2 transition-colors">
                     <i class="fas fa-graduation-cap mr-3 w-4"></i>
                     Capacitaciones
                 </a>
