@@ -48,8 +48,6 @@
                                 class="favorite-btn w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover-lift border {{ $isFavorite ? 'bg-red-100 text-red-600 border-red-200' : 'bg-gray-100 text-gray-400 border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200' }}">
                                 <i class="fas fa-heart text-lg"></i>
                             </button>
-
-                            {{-- Formulario de postulación movido al sidebar --}}
                         @endif
 
                         @php
@@ -99,10 +97,18 @@
 
                 <!-- Mapa -->
                 <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Ubicación</h3>
-                    <div id="map" class="w-full h-64 rounded-lg border"></div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-semibold text-gray-800">Ubicación</h3>
+                        <button 
+                            onclick="openMapModal()"
+                            class="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                            <span class="text-sm font-medium">Ampliar Mapa</span>
+                        </button>
+                    </div>
+                    <div id="map" class="w-full h-64 rounded-lg border-2 border-gray-200 shadow-sm"></div>
                     @if(!$jobOffer->geolocation)
-                        <p class="text-sm text-gray-500 mt-2">
+                        <p class="text-sm text-gray-500 mt-2 flex items-center">
                             <i class="fas fa-info-circle mr-1"></i>
                             Mostrando ubicación aproximada de Popayán (coordenadas específicas no disponibles)
                         </p>
@@ -216,10 +222,89 @@
         </div>
     </div>
 </div>
+
+<!-- Modal del Mapa Ampliado -->
+<div id="mapModal" class="fixed inset-0 hidden overflow-y-auto" style="background-color: rgba(0, 0, 0, 0.8); z-index: 9999;">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-5xl animate-fade-in-up">
+            <!-- Header del Modal -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-map-marked-alt text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">{{ $jobOffer->title }}</h3>
+                            <p class="text-sm text-blue-100">{{ $jobOffer->company->name }}</p>
+                        </div>
+                    </div>
+                    <button onclick="closeMapModal()" class="text-white hover:bg-white/20 rounded-lg p-2 transition-all">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cuerpo del Modal con Mapa -->
+            <div class="p-6">
+                <div id="modalMap" class="w-full rounded-xl overflow-hidden border-2 border-gray-200" style="height: 600px;"></div>
+                
+                <!-- Información adicional -->
+                <div class="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-info-circle text-blue-600 mt-1"></i>
+                        <div class="flex-1">
+                            <p class="text-sm text-blue-800 font-medium mb-1">Información de ubicación</p>
+                            <p class="text-xs text-blue-600">{{ $jobOffer->location }}</p>
+                            @if($jobOffer->geolocation)
+                                @php
+                                    $coords = explode(',', $jobOffer->geolocation);
+                                    $lat = trim($coords[0] ?? '');
+                                    $lng = trim($coords[1] ?? '');
+                                @endphp
+                                <p class="text-xs text-blue-500 mt-1">Coordenadas: {{ $lat }}, {{ $lng }}</p>
+                            @else
+                                <p class="text-xs text-blue-500 mt-1">Ubicación aproximada (Popayán)</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer del Modal -->
+            <div class="bg-gray-50 px-6 py-4 rounded-b-2xl flex justify-end space-x-3">
+                <button onclick="closeMapModal()" class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all font-medium">
+                    <i class="fas fa-times mr-2"></i>
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+.gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.3s ease-out;
+}
+</style>
 @endpush
 
 @push('scripts')
@@ -227,6 +312,8 @@
 <script>
 let map;
 let marker;
+let modalMap = null;
+let modalMarker = null;
 
 function initMap() {
     // Coordenadas fijas de Popayán, Cauca, Colombia
@@ -269,12 +356,97 @@ function initMap() {
             <h3 class="font-semibold text-gray-800">{{ $jobOffer->title }}</h3>
             <p class="text-gray-600">{{ $jobOffer->company->name }}</p>
             <p class="text-sm text-gray-500">{{ $jobOffer->location }}</p>
-            <p class="text-xs text-blue-500">Coords: ${lat}, ${lng}</p>
+            <p class="text-xs text-blue-500">Coords: ${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
         </div>
     `;
 
     marker.bindPopup(popupContent).openPopup();
 }
+
+function openMapModal() {
+    const modal = document.getElementById('mapModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Pequeño delay para que el modal se renderice antes de inicializar el mapa
+    setTimeout(() => {
+        initModalMap();
+    }, 100);
+}
+
+function initModalMap() {
+    // Coordenadas fijas de Popayán, Cauca, Colombia
+    let lat = 2.4448;
+    let lng = -76.6147;
+
+    @if($jobOffer->geolocation)
+        try {
+            const coords = "{{ $jobOffer->geolocation }}".split(',');
+            const parsedLat = parseFloat(coords[0]);
+            const parsedLng = parseFloat(coords[1]);
+
+            if (!isNaN(parsedLat) && !isNaN(parsedLng) && parsedLat !== 0 && parsedLng !== 0) {
+                lat = parsedLat;
+                lng = parsedLng;
+            }
+        } catch (e) {
+            console.log('Error parsing coordinates for modal map');
+        }
+    @endif
+
+    // Destruir mapa anterior si existe
+    if (modalMap) {
+        modalMap.remove();
+        modalMap = null;
+    }
+    
+    // Crear nuevo mapa
+    modalMap = L.map('modalMap').setView([lat, lng], 15);
+    
+    // Agregar tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(modalMap);
+    
+    // Crear marcador con popup
+    const popupContent = `
+        <div class="p-3">
+            <h3 class="font-bold text-gray-800 text-lg mb-2">{{ $jobOffer->title }}</h3>
+            <p class="text-gray-600 mb-1"><i class="fas fa-building mr-2 text-blue-500"></i>{{ $jobOffer->company->name }}</p>
+            <p class="text-gray-600 mb-2"><i class="fas fa-map-marker-alt mr-2 text-red-500"></i>{{ $jobOffer->location }}</p>
+            <p class="text-xs text-gray-500 mt-2">Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}</p>
+        </div>
+    `;
+    
+    modalMarker = L.marker([lat, lng]).addTo(modalMap);
+    modalMarker.bindPopup(popupContent).openPopup();
+    
+    // Forzar actualización del tamaño del mapa
+    setTimeout(() => {
+        modalMap.invalidateSize();
+    }, 200);
+}
+
+function closeMapModal() {
+    const modal = document.getElementById('mapModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    
+    // Destruir mapa al cerrar
+    if (modalMap) {
+        modalMap.remove();
+        modalMap = null;
+        modalMarker = null;
+    }
+}
+
+// Cerrar modal con ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeMapModal();
+    }
+});
 
 // Inicializar el mapa cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {

@@ -201,7 +201,7 @@
                             <div class="flex flex-col items-center justify-center">
                                 <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                                     <i class="fas fa-briefcase text-3xl text-gray-400"></i>
-                                </div>
+                                </div>          
                                 <p class="text-gray-500 font-medium">No hay ofertas laborales disponibles</p>
                                 <p class="text-sm text-gray-400 mt-1">Las ofertas publicadas aparecerán aquí</p>
                             </div>
