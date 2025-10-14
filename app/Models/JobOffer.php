@@ -2,166 +2,81 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Company;
-use App\Models\JobApplication;
-use App\Models\Comment;
-use App\Models\Favorites;
-use App\Models\Category;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\JobOfferCategory;
+use App\Models\Concerns\AppliesApiScopes;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class JobOffer extends Model
 {
     use HasFactory;
+    use AppliesApiScopes;
 
-    protected $fillable = ['title', 'description', 'salary', 'location', 'geolocation', 'company_id'];
-
-    protected $casts = [
-        'salary' => 'decimal:2'
+    protected $fillable = [
+        'company_id',
+        'title',
+        'description',
+        'salary',
+        'location',
+        'geolocation',
+        'offer_type',
+        'status',
     ];
 
-    public function company()
+    protected $casts = [
+        'salary' => 'decimal:2',
+    ];
+
+    protected array $allowIncluded = ['company', 'categories'];
+
+    protected array $allowFilter = ['title', 'location', 'status', 'offer_type'];
+
+    protected array $allowSort = ['title', 'salary', 'created_at'];
+
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }
 
-    public function JobApplications()
+    public function jobApplications(): HasMany
     {
         return $this->hasMany(JobApplication::class);
     }
 
-    // Alias en minúsculas para compatibilidad con vistas y convenciones
-    public function applications()
+    public function applications(): HasMany
     {
-        return $this->hasMany(JobApplication::class);
+        return $this->jobApplications();
     }
 
-    
-    public function favoritedBy()
+    public function categories(): MorphToMany
     {
-        return $this->morphToMany(Unemployed::class, 'favoritable', 'favorites');
+        return $this->morphToMany(Category::class, 'categorizable')->withTimestamps();
     }
 
-    public function Categories()
+    public function favoritedBy(): MorphToMany
     {
-        return $this->morphToMany(Category::class, 'categorizable');
+        return $this->morphToMany(Unemployed::class, 'favoritable', 'favorites')
+            ->withPivot('added_at')
+            ->withTimestamps();
     }
 
-    public function Notification()
+    public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);
     }
 
-    public function getContractTypeAttribute($value)
+    public function scopeActive(Builder $query): Builder
     {
-        $types = [
-            'tiempo_completo' => 'Tiempo Completo',
-            'medio_tiempo' => 'Medio Tiempo',
-            'proyecto' => 'Proyecto',
-            'practicas' => 'Prácticas'
-        ];
-        return $types[$value] ?? ucfirst($value);
+        return $query->where('status', 'active');
     }
 
-    public function getExperienceLevelAttribute($value)
+    public function getSalaryFormattedAttribute(): string
     {
-        $levels = [
-            'junior' => 'Junior',
-            'medio' => 'Medio',
-            'senior' => 'Senior',
-            'lead' => 'Lead'
-        ];
-        return $levels[$value] ?? ucfirst($value);
-    }
-
-    public function getSalaryFormattedAttribute()
-    {
-        return $this->salary ? '$ ' . number_format($this->salary, 2) : 'No especificado';
-    }
-
-    public function favoriteUnemployed()
-    {
-        return $this->belongsToMany(Unemployed::class, 'favorite_offers', 'job_offer_id', 'unemployed_id');
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    protected $allowIncluded = ['company']; 
-    protected $allowFilter = ['title', 'description', 'salary', 'location', 'geolocation', 'company_id'];
-    protected $allowSort = ['title', 'description', 'salary', 'location', 'geolocation', 'company_id'];
-
-    public function scopeIncluded(Builder $query)
-    {
-        if (empty($this->allowIncluded) || empty(request('included'))) { 
-            return;
-        }
-        $relations  = explode(',', request('included')); 
-        $allowIncluded = collect($this->allowIncluded); 
-        foreach ($relations as $key => $relationship) { 
-            if (!$allowIncluded->contains($relationship)) {
-                unset($relations[$key]);
-            }
-        }
-        $query->with($relations); 
-    }
-
-    public function scopeFilter(Builder $query)
-    {
-        if (empty($this->allowFilter) || empty(request('filter'))) {
-            return;
-        }
-        $filters = request('filter');
-        $allowFilter = collect($this->allowFilter);
-        foreach ($filters as $filter => $value) {
-            if ($allowFilter->contains($filter)) {
-                $query->where($filter, 'LIKE', '%' . $value . '%');
-            }
-        }
-    }
-
-
-        public function scopeSort(Builder $query)
-    {
-    if (empty($this->allowSort) || empty(request('sort'))) {
-            return;
-        }
-        $sortFields = explode(',', request('sort'));
-        $allowSort = collect($this->allowSort);
-        foreach ($sortFields as $sortField) {
-            $direction = 'asc';
-            if(substr($sortField, 0,1)=='-'){ 
-                $direction = 'desc';
-                $sortField = substr($sortField,1);
-            }
-            if ($allowSort->contains($sortField)) {
-                $query->orderBy($sortField, $direction);
-            }
-        }
-    }
-
-
-    public function scopeGetOrPaginate(Builder $query)
-    {
-        if (request('perPage')) {
-            $perPage = intval(request('perPage'));
-            if($perPage){
-                return $query->paginate($perPage);
-            }
-            }
-            return $query->get();
+        return $this->salary !== null
+            ? '$ ' . number_format($this->salary, 2)
+            : 'No especificado';
     }
 }

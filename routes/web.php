@@ -13,11 +13,13 @@ use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ClassifiedController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SettingsController;
 
 
 // Rutas públicas
-Route::view('/login', 'login')->name('login');
-Route::view('/', 'home')->middleware('auth')->name('home');
+Route::view('/', 'pages.landing')->name('landing');
+Route::view('/login', 'auth.login')->name('login');
+Route::view('/home', 'pages.home')->middleware('auth')->name('home');
 
 // Usuario
 Route::get('/register', [UserController::class, 'create'])->name('register');
@@ -30,11 +32,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/messages', [MessageController::class, 'index'])->name('messages');
     Route::get('/message/create', [MessageController::class, 'create'])->name('message-form');
     Route::post('/message/send', [MessageController::class, 'send_message'])->name('send-message');
-    
+
     // Notificaciones
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
     Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
+
+    // Configuración de usuario
+    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('/settings', [SettingsController::class, 'updatePreferences'])->name('settings.update');
+    Route::patch('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
+    Route::patch('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
+    Route::post('/settings/logout-all', [SettingsController::class, 'logoutAllSessions'])->name('settings.logout-all');
+    Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
 });
 
 // Unemployed
@@ -89,57 +99,43 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/Companies', [CompanyController::class, 'index'])->name('index');
 Route::get('/Company/{company}', [CompanyController::class, 'show'])->name('show');
 
+// Trainings
+Route::get('/capacitaciones', [TrainingController::class, 'index'])->name('training.index');
+Route::middleware('auth')->group(function () {
+    Route::get('/capacitaciones/crear', [TrainingController::class, 'create'])->name('training.create');
+    Route::post('/capacitaciones', [TrainingController::class, 'store'])->name('training.store');
+    Route::get('/capacitaciones/{id}/editar', [TrainingController::class, 'edit'])->name('training.edit');
+    Route::put('/capacitaciones/{id}', [TrainingController::class, 'update'])->name('training.update');
+    Route::delete('/capacitaciones/{id}', [TrainingController::class, 'destroy'])->name('training.destroy');
+});
 
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('classifieds', ClassifiedController::class);
+});
 
 // corrigiendo esto
 // Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
-Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
-Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->middleware('auth')->name('favorites.toggle');
+Route::get('/favorites', [FavoriteController::class, 'index'])->middleware('auth')->name('favorites.index');
 Route::post('/favorites/classifieds/{classified}/toggle', [FavoriteController::class, 'toggleClassified'])->middleware(['auth'])->name('favorites.classifieds.toggle');
 
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
 
+// Mostrar formulario "¿Olvidaste tu contraseña?"
+Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->name('password.request');
 
+// Enviar correo con enlace de recuperación
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->name('password.email');
 
+// Mostrar formulario de nueva contraseña (desde el enlace del correo)
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->name('password.reset');
 
-
-
-
-// Grupo de rutas ADMIN
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-    
-    // Dashboard
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    
-    // Clasificados - SOLO index, edit, update, destroy
-    Route::get('/classifieds', [AdminController::class, 'classifieds'])->name('classifieds.index');
-    Route::get('/classifieds/{classified}/edit', [ClassifiedController::class, 'edit'])->name('classifieds.edit');
-    Route::put('/classifieds/{classified}', [ClassifiedController::class, 'update'])->name('classifieds.update');
-    Route::delete('/classifieds/{classified}', [ClassifiedController::class, 'destroy'])->name('classifieds.destroy');
-    
-    // Ofertas Laborales - SOLO index, edit, update, destroy
-    Route::get('/job-offers', [AdminController::class, 'jobOffers'])->name('job-offers.index');
-    Route::get('/job-offers/{jobOffer}/edit', [JobOfferController::class, 'edit'])->name('job-offers.edit');
-    Route::put('/job-offers/{jobOffer}', [JobOfferController::class, 'update'])->name('job-offers.update');
-    Route::delete('/job-offers/{jobOffer}', [JobOfferController::class, 'destroy'])->name('job-offers.destroy');
-    
-       // Capacitaciones - RUTAS EXPLÍCITAS
-    Route::get('/trainings', [AdminController::class, 'trainings'])->name('trainings.index');
-    Route::get('/trainings/create', [TrainingController::class, 'create'])->name('trainings.create');
-    Route::post('/trainings', [TrainingController::class, 'store'])->name('trainings.store');
-    Route::get('/trainings/{id}', [TrainingController::class, 'show'])->name('trainings.show');
-    Route::get('/trainings/{id}/edit', [TrainingController::class, 'edit'])->name('trainings.edit');
-    Route::put('/trainings/{id}', [TrainingController::class, 'update'])->name('trainings.update');
-    Route::delete('/trainings/{id}', [TrainingController::class, 'destroy'])->name('trainings.destroy');
-    
-
-    // Usuarios - TODAS las rutas
-    Route::resource('users', UserController::class)->names([
-        'index' => 'users.index',
-        'create' => 'users.create',
-        'store' => 'users.store',
-        'show' => 'users.show',
-        'edit' => 'users.edit',
-        'update' => 'users.update',
-        'destroy' => 'users.destroy'
-    ]);
-});
+// Guardar nueva contraseña
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->name('password.update');

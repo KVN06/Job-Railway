@@ -23,26 +23,41 @@
                 <i class="fas fa-check-circle mr-2"></i>
                 {{ session('success') }}
             </div>
-        </div>
-    @endif
+        </x-card>
+    </section>
 
-    <div class="grid grid-cols-1 gap-6 animate-slide-in">
-        @forelse($trainings as $item)
-            <div class="card-enhanced hover-lift p-6">
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="flex-1">
-                                <h2 class="text-xl font-semibold text-gray-800 mb-2">
-                                    <i class="fas fa-certificate text-blue-700 mr-2"></i>
-                                    {{ $item->title }}
-                                </h2>
-                                <div class="flex items-center mb-3">
-                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mr-3">
-                                        <i class="fas fa-building mr-1"></i>
-                                        {{ $item->provider }}
-                                    </span>
+    <!-- LISTADO DE CAPACITACIONES -->
+    <section class="space-y-6" id="training-insights">
+        <div class="grid grid-cols-1 gap-6 animate-slide-in">
+            @forelse($trainings as $item)
+                @php
+                    $startDate = $item->start_date ? Carbon::parse($item->start_date)->format('d/m/Y') : null;
+                    $endDate = $item->end_date ? Carbon::parse($item->end_date)->format('d/m/Y') : null;
+                    $isUpcoming = $item->start_date ? Carbon::parse($item->start_date)->isFuture() : false;
+                    $isFinished = $item->end_date ? Carbon::parse($item->end_date)->isPast() : false;
+                @endphp
+
+                <x-card variant="enhanced" hover class="overflow-hidden">
+                    <div class="flex flex-col md:flex-row">
+                        <div class="flex-1 p-6 space-y-5">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="space-y-3">
+                                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
+                                        <i class="fas fa-building"></i>
+                                        {{ $item->provider ?? 'Proveedor no especificado' }}
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-gray-900">
+                                        {{ $item->title }}
+                                    </h2>
                                 </div>
+
+                                <x-badge
+                                    :variant="$isFinished ? 'secondary' : ($isUpcoming ? 'warning' : 'success')"
+                                    size="sm"
+                                    icon="fas fa-graduation-cap"
+                                >
+                                    {{ $isFinished ? 'Finalizada' : ($isUpcoming ? 'Próxima' : 'En curso') }}
+                                </x-badge>
                             </div>
                         </div>
                         
@@ -71,7 +86,19 @@
                                 <span>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
                             </div>
                         </div>
-                    </div>
+
+                        <div class="md:w-72 bg-gradient-to-br from-gray-50 to-blue-50 p-6 border-t md:border-t-0 md:border-l border-gray-100 flex flex-col justify-between gap-6">
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Estado</p>
+                                    <p class="text-lg font-semibold text-gray-900">
+                                        {{ $isFinished ? 'Finalizada' : ($isUpcoming ? 'Inicia pronto' : 'Activa ahora') }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                                        <i class="fas fa-lightbulb"></i>
+                                        Ideal para {{ $isUpcoming ? 'planificar participación' : 'repasar contenidos' }}
+                                    </p>
+                                </div>
 
                     <div class="text-right flex flex-col items-end">
                         <!-- Solo el botón Ver que redirige al enlace -->

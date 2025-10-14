@@ -2,41 +2,47 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <!-- Header mejorado -->
+    <!-- Header mejorado con componentes -->
     <div class="mb-8 animate-fade-in-up">
-        <div class="bg-white rounded-2xl shadow-soft p-8 mb-6">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-2">
-                        <i class="fas fa-briefcase text-blue-800 mr-3"></i>
-                        Ofertas de Trabajo
+        <x-card padding="p-8" class="mb-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <h1 class="text-3xl md:text-4xl font-bold mb-3">
+                        <span class="bg-gradient-to-r from-blue-800 to-gray-700 bg-clip-text text-transparent">
+                            <i class="fas fa-briefcase mr-3"></i>
+                            Ofertas de Trabajo
+                        </span>
                     </h1>
-                    <p class="text-gray-600">Descubre oportunidades que se adapten a tu perfil profesional</p>
+                    <p class="text-gray-600 text-lg">Descubre oportunidades que se adapten a tu perfil profesional</p>
                 </div>
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center gap-3">
                     @if(auth()->user()?->unemployed)
-                        <a href="{{ route('favorites.index') }}" class="btn-secondary text-white px-6 py-3 rounded-xl hover-lift flex items-center shadow-soft">
-                            <i class="fas fa-heart mr-2"></i>
+                        <x-button
+                            href="{{ route('favorites.index') }}"
+                            variant="secondary"
+                            icon="fas fa-heart"
+                        >
                             Mis Favoritos
-                        </a>
+                        </x-button>
                     @endif
 
                     @if(auth()->user()?->isCompany())
-                        <a href="{{ route('job-offers.create') }}" class="btn-primary text-white px-6 py-3 rounded-xl hover-lift flex items-center shadow-soft">
-                            <i class="fas fa-plus mr-2"></i>
+                        <x-button
+                            href="{{ route('job-offers.create') }}"
+                            variant="primary"
+                            icon="fas fa-plus"
+                        >
                             Crear Nueva Oferta
-                        </a>
+                        </x-button>
                     @endif
                 </div>
             </div>
-        </div>
+        </x-card>
     </div>
-
-    {{-- Filtros mejorados aquí si los tienes --}}
 
     <div class="grid grid-cols-1 gap-6 animate-slide-in">
         @forelse($jobOffers as $jobOffer)
-            <div class="card-enhanced hover-lift p-6">
+            <x-card variant="enhanced" hover padding="p-0" class="overflow-hidden">
                 @php
                     $hasApplied = false;
                     if (auth()->check() && auth()->user()?->unemployed) {
@@ -47,123 +53,159 @@
                         }
                     }
                 @endphp
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
+
+                <div class="flex flex-col md:flex-row">
+                    <!-- Contenido principal -->
+                    <div class="flex-1 p-6">
                         <div class="flex items-start justify-between mb-4">
                             <div class="flex-1">
-                                <h2 class="text-xl font-semibold text-gray-800 mb-2">
-                                    <a href="{{ route('job-offers.show', $jobOffer->id) }}" class="hover:text-blue-800 transition-colors flex items-center group">
-                                        <i class="fas fa-arrow-right text-blue-700 mr-2 opacity-0 group-hover:opacity-100 transition-opacity transform transition-transform duration-200 -translate-x-1 group-hover:translate-x-0"></i>
+                                <h2 class="text-2xl font-bold text-gray-900 mb-3">
+                                    <a href="{{ route('job-offers.show', $jobOffer->id) }}" class="hover:text-blue-700 transition-colors group inline-flex items-center">
                                         {{ $jobOffer->title }}
+                                        <i class="fas fa-arrow-right ml-2 text-blue-700 opacity-0 group-hover:opacity-100 transition-all duration-200 transform translate-x-0 group-hover:translate-x-1"></i>
                                     </a>
                                 </h2>
-                                <div class="flex items-center mb-3">
-                                    <div class="w-12 h-12 gradient-primary rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-building text-white"></i>
+
+                                <div class="flex items-center mb-4 group cursor-pointer">
+                                    <div class="w-14 h-14 gradient-primary rounded-xl flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                                        <i class="fas fa-building text-white text-xl"></i>
                                     </div>
                                     <div>
-                                        <p class="text-gray-700 font-medium">{{ $jobOffer->company->name }}</p>
-                                        <p class="text-sm text-gray-500">Empresa verificada</p>
+                                        <p class="text-gray-800 font-semibold text-lg">{{ $jobOffer->company->name }}</p>
+                                        <p class="text-sm text-gray-500 flex items-center">
+                                            <i class="fas fa-check-circle text-green-600 mr-1"></i>
+                                            Empresa verificada
+                                        </p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <span class="badge-primary">
+
+                            <div class="ml-4">
+                                <x-badge :variant="$jobOffer->offer_type === 'contract' ? 'primary' : 'warning'" size="lg">
                                     @if($jobOffer->offer_type === 'contract')
-                                        Contrato
+                                        <i class="fas fa-file-contract mr-1"></i> Contrato
                                     @elseif($jobOffer->offer_type === 'classified')
-                                        Clasificado
+                                        <i class="fas fa-newspaper mr-1"></i> Clasificado
                                     @else
                                         {{ ucfirst($jobOffer->offer_type) }}
                                     @endif
-                                </span>
+                                </x-badge>
                             </div>
                         </div>
-                        
-                        <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
-                            <div class="flex items-center">
-                                <i class="fas fa-map-marker-alt text-blue-700 mr-1"></i>
-                                <span>{{ $jobOffer->location }}</span>
+
+                        <div class="flex flex-wrap items-center gap-4 mb-4">
+                            <div class="flex items-center text-gray-700 bg-gray-50 px-3 py-2 rounded-lg">
+                                <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
+                                <span class="font-medium">{{ $jobOffer->location }}</span>
                             </div>
                             @if($jobOffer->geolocation)
-                                <div class="flex items-center">
-                                    <i class="fas fa-globe text-gray-700 mr-1"></i>
-                                    <span>Ver en mapa</span>
+                                <div class="flex items-center text-gray-600 bg-blue-50 px-3 py-2 rounded-lg">
+                                    <i class="fas fa-globe text-blue-600 mr-2"></i>
+                                    <span class="text-sm">Ver en mapa</span>
                                 </div>
                             @endif
-                            <div class="flex items-center">
-                                <i class="fas fa-clock text-gray-600 mr-1"></i>
-                                <span>{{ $jobOffer->created_at->diffForHumans() }}</span>
+                            <div class="flex items-center text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+                                <i class="fas fa-clock text-gray-500 mr-2"></i>
+                                <span class="text-sm">{{ $jobOffer->created_at->diffForHumans() }}</span>
                             </div>
                         </div>
-                        
+
                         <div class="mb-4">
                             @foreach($jobOffer->categories as $category)
-                                <span class="inline-block bg-gradient-to-r from-gray-100 to-blue-100 text-gray-800 rounded-full px-3 py-1 text-sm font-medium mr-2 mb-2">
+                                <x-badge variant="default" class="mr-2 mb-2 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-800 border border-blue-200">
                                     <i class="fas fa-tag mr-1"></i>
                                     {{ $category->name }}
-                                </span>
+                                </x-badge>
                             @endforeach
                         </div>
                     </div>
 
-                    <div class="text-right flex flex-col items-end">
-                        <!-- Botón de favoritos mejorado -->
-                        @if(auth()->user()?->unemployed)
-                            @php
-                                $isFavorite = auth()->user()->unemployed->favoriteJobOffers->contains($jobOffer);
-                            @endphp
-                            <button onclick="toggleFavorite(this, 'joboffer', {{ $jobOffer->id }})"
-                                class="favorite-btn mb-4 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover-lift {{ $isFavorite ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-400 hover:bg-blue-50 hover:text-blue-700' }}">
-                                <i class="fas {{ $isFavorite ? 'fa-heart' : 'fa-heart' }} text-lg"></i>
-                            </button>
-                        @endif
+                    <!-- Sidebar con acciones -->
+                    <div class="md:w-64 bg-gradient-to-br from-gray-50 to-blue-50 p-6 flex flex-col justify-between border-l border-gray-100">
+                        <div>
+                            <!-- Botón de favoritos -->
+                            @if(auth()->user()?->unemployed)
+                                @php
+                                    $isFavorite = auth()->user()->unemployed
+                                        ->favoriteJobOffers()
+                                        ->where('favoritable_id', $jobOffer->id)
+                                        ->exists();
+                                @endphp
+                                <button onclick="toggleFavorite(this, 'joboffer', {{ $jobOffer->id }})"
+                                    class="favorite-btn mb-4 w-full h-12 rounded-xl flex items-center justify-center transition-all duration-300 hover-lift {{ $isFavorite ? 'bg-red-100 text-red-600 border-2 border-red-300' : 'bg-white text-gray-400 border-2 border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200' }}">
+                                    <i class="fas fa-heart text-xl mr-2"></i>
+                                    <span class="font-semibold">{{ $isFavorite ? 'Guardado' : 'Guardar' }}</span>
+                                </button>
+                            @endif
 
-                        <!-- Información de salario mejorada -->
-                        <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-4 mb-4">
-                            <p class="text-lg font-bold text-gray-800 mb-1">{{ $jobOffer->salary_formatted }}</p>
-                            <p class="text-xs text-gray-500 flex items-center">
-                                <i class="fas fa-calendar-alt mr-1"></i>
-                                {{ $jobOffer->created_at->diffForHumans() }}
-                            </p>
+                            <!-- Información de salario -->
+                            <div class="bg-white rounded-xl p-4 mb-4 shadow-sm border border-gray-200">
+                                <p class="text-xs text-gray-500 mb-1 uppercase tracking-wide font-semibold">Salario Ofrecido</p>
+                                <p class="text-2xl font-bold text-gray-900 mb-2">{{ $jobOffer->salary_formatted }}</p>
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Según experiencia
+                                </div>
+                            </div>
+
+                            <!-- Estado de postulación -->
+                            @if($hasApplied)
+                                <x-alert type="success" :dismissible="false" class="text-sm">
+                                    Ya aplicaste a esta oferta
+                                </x-alert>
+                            @endif
                         </div>
 
                         <!-- Botones de acción para empresas -->
-                        @if(auth()->user()?->isCompany())
-                            <div class="flex space-x-2">
-                                <a href="{{ route('job-offers.edit', $jobOffer->id) }}" 
-                                   class="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-4 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
-                                    <i class="fas fa-edit mr-1"></i>
+                        @php
+                            $canManageOffer = auth()->user()?->isCompany()
+                                && auth()->user()?->company
+                                && auth()->user()->company->id === $jobOffer->company_id;
+                        @endphp
+
+                        @if($canManageOffer)
+                            <div class="space-y-2">
+                                <x-button
+                                    href="{{ route('job-offers.edit', $jobOffer->id) }}"
+                                    variant="secondary"
+                                    size="sm"
+                                    icon="fas fa-edit"
+                                    class="w-full"
+                                >
                                     Editar
-                                </a>
-                                <form action="{{ route('job-offers.destroy', $jobOffer->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro que deseas eliminar esta oferta laboral?')">
+                                </x-button>
+                                <form action="{{ route('job-offers.destroy', $jobOffer->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro que deseas eliminar esta oferta laboral?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" 
-                                            class="bg-gradient-to-r from-red-800 to-red-900 text-white px-4 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
-                                        <i class="fas fa-trash mr-1"></i>
+                                    <x-button
+                                        type="submit"
+                                        variant="danger"
+                                        size="sm"
+                                        icon="fas fa-trash"
+                                        class="w-full"
+                                    >
                                         Eliminar
-                                    </button>
+                                    </x-button>
                                 </form>
                             </div>
-                        @endif
-
-                        <!-- Si ya aplicó, mostrar botón deshabilitado con mismo estilo; si no, mostrar Ver Detalles -->
-                        @if(auth()->check() && auth()->user()?->unemployed && $hasApplied)
-                            <button disabled class="mt-3 btn-primary text-white px-6 py-2 rounded-xl transition-all duration-300 text-sm font-medium shadow-soft w-full flex items-center justify-center pointer-events-none cursor-not-allowed">
-                                <i class="fas fa-check mr-2"></i>
-                                Ya te postulaste
-                            </button>
                         @else
-                            <a href="{{ route('job-offers.show', $jobOffer->id) }}" 
-                               class="mt-3 btn-primary text-white px-6 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
-                                <i class="fas fa-eye mr-1"></i>
-                                Ver Detalles
-                            </a>
+                            <!-- Si ya aplicó, mostrar botón deshabilitado; si no, mostrar Ver Detalles -->
+                            @if(auth()->check() && auth()->user()?->unemployed && $hasApplied)
+                                <button disabled class="mt-3 w-full px-6 py-3 rounded-xl text-sm font-semibold flex items-center justify-center bg-slate-200 text-slate-500 border border-slate-200 cursor-not-allowed shadow-inner">
+                                    <i class="fas fa-check mr-2"></i>
+                                    Ya te postulaste
+                                </button>
+                            @else
+                                <a href="{{ route('job-offers.show', $jobOffer->id) }}"
+                                   class="mt-3 btn-primary text-white px-6 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft w-full flex items-center justify-center">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    Ver Detalles
+                                </a>
+                            @endif
                         @endif
                     </div>
                 </div>
-            </div>
+            </x-card>
         @empty
             <div class="card-enhanced p-12 text-center animate-fade-in-up">
                 <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -212,53 +254,75 @@
 @push('scripts')
 <script>
 function toggleFavorite(button, type, id) {
+    const label = button.querySelector('span');
+    const heartIcon = button.querySelector('i');
+
+    button.dataset.originalText = label ? label.textContent : button.dataset.originalText;
+
     // Mostrar estado de carga
-    button.style.opacity = '0.5';
+    button.style.opacity = '0.6';
     button.style.pointerEvents = 'none';
-    
-    fetch("{{ route('favorites.toggle') }}", {
+
+    fetch("{{ route('favorites.toggle', [], false) }}", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Accept': 'application/json',
         },
+        credentials: 'same-origin',
         body: JSON.stringify({ type, id }),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    .then(async response => {
+        const contentType = response.headers.get('content-type') || '';
+        const payload = contentType.includes('application/json')
+            ? await response.json().catch(() => ({}))
+            : {};
+
+        if (!response.ok || payload.error) {
+            const error = new Error(payload.error || 'No se pudo cambiar el estado de favorito.');
+            error.status = response.status;
+            throw error;
         }
-        return response.json();
+
+        return payload;
     })
     .then(data => {
-        if (data.error) {
-            throw new Error(data.error);
+        const isFavorite = Boolean(data.isFavorite);
+
+        button.classList.toggle('bg-red-100', isFavorite);
+        button.classList.toggle('text-red-600', isFavorite);
+        button.classList.toggle('border-red-300', isFavorite);
+        button.classList.toggle('bg-white', !isFavorite);
+        button.classList.toggle('text-gray-400', !isFavorite);
+        button.classList.toggle('border-gray-200', !isFavorite);
+        button.classList.toggle('hover:bg-red-50', !isFavorite);
+        button.classList.toggle('hover:text-red-500', !isFavorite);
+        button.classList.toggle('hover:border-red-200', !isFavorite);
+
+        if (label) {
+            label.textContent = isFavorite ? 'Guardado' : 'Guardar';
         }
-        
-        // Actualizar estado visual
-        if (data.isFavorite) {
-            button.classList.remove('bg-gray-100', 'text-gray-400', 'hover:bg-blue-50', 'hover:text-blue-700');
-            button.classList.add('bg-blue-100', 'text-blue-800');
-        } else {
-            button.classList.remove('bg-blue-100', 'text-blue-800');
-            button.classList.add('bg-gray-100', 'text-gray-400', 'hover:bg-blue-50', 'hover:text-blue-700');
+
+        if (heartIcon) {
+            heartIcon.classList.toggle('text-red-500', isFavorite);
+            heartIcon.classList.toggle('text-gray-400', !isFavorite);
         }
     })
     .catch(error => {
         console.error('Error al cambiar favorito:', error);
-        
-        // Mostrar mensaje de error específico
-        if (error.message.includes('403')) {
+
+        if (error.status === 401) {
+            alert('Tu sesión expiró. Inicia sesión nuevamente para guardar favoritos.');
+        } else if (error.status === 403) {
             alert('Solo los candidatos pueden marcar favoritos.');
-        } else if (error.message.includes('404')) {
+        } else if (error.status === 404) {
             alert('El elemento no fue encontrado.');
         } else {
-            alert('No se pudo cambiar el estado de favorito. Por favor, inténtalo de nuevo.');
+            alert(error.message || 'No se pudo cambiar el estado de favorito. Por favor, inténtalo de nuevo.');
         }
     })
     .finally(() => {
-        // Restaurar estado del botón
         button.style.opacity = '1';
         button.style.pointerEvents = 'auto';
     });

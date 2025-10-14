@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('categorizables', function (Blueprint $table) {
             $table->id();
-        $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-        $table->unsignedBigInteger('categorizable_id');
-        $table->string('categorizable_type');
-        $table->timestamps();
-    
-        // Optional index for better performance
-        $table->index(['categorizable_id', 'categorizable_type']);
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->morphs('categorizable');
+            $table->timestamps();
+
+            $table->unique(
+                ['category_id', 'categorizable_id', 'categorizable_type'],
+                'category_categorizable_unique'
+            );
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('job_offer_category');
+        Schema::dropIfExists('categorizables');
     }
 };

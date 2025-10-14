@@ -21,6 +21,20 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Project notes
+
+- Las ofertas laborales ahora requieren que la empresa esté autenticada y sea propietaria de la oferta para crear, editar o eliminar registros.
+- Se validan los campos críticos mediante *Form Requests*, garantizando ubicaciones opcionales, salarios numéricos y categorías existentes.
+- Las categorías de ofertas se sincronizan de forma segura durante la creación y actualización.
+
+### Ejecutar pruebas
+
+```bash
+php artisan test
+```
+
+Las pruebas cubren los casos de acceso invitado, usuarios desempleados y empresas para la creación de ofertas laborales.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
