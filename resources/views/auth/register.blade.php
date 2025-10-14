@@ -218,12 +218,25 @@
                         <p class="text-base text-neutral-600">Regístrate para acceder a oportunidades, gestionar postulaciones y recibir recomendaciones.</p>
                     </div>
 
-                    <div class="grid gap-3">
-                        <button type="button" class="group flex items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-neutral-50">
-                            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-900 shadow-inner"><i class="fab fa-google text-lg"></i></span>
-                            Registrarse con Google
-                        </button>
-                    </div>
+                    <div class="grid gap-4 sm:grid-cols-2">
+    <!-- Google para Cesante -->
+    <a href="{{ route('google.login', ['type' => 'unemployed']) }}" 
+       class="group flex items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-neutral-50">
+        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-900 shadow-inner">
+            <i class="fab fa-google text-lg"></i>
+        </span>
+        Registrarse como Cesante
+    </a>
+
+    <!-- Google para Empresa -->
+    <a href="{{ route('google.login', ['type' => 'company']) }}" 
+       class="group flex items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-neutral-50">
+        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-900 shadow-inner">
+            <i class="fab fa-google text-lg"></i>
+        </span>
+        Registrarse como Empresa
+    </a>
+</div>
 
                     <div class="relative my-8 text-center text-sm font-semibold text-neutral-500">
                         <span class="relative z-10 inline-flex items-center gap-2 rounded-full border border-white/60 bg-white px-4 py-2 shadow">
