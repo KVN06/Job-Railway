@@ -126,11 +126,14 @@
                                 <!-- Separador -->
                                 <div class="border-t border-gray-200 my-2"></div>
 
-                                <!-- Enlace para cerrar sesión -->
-                                <a href="{{ route('logout') }}" class="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
-                                    <i class="fas fa-sign-out-alt mr-3 w-4"></i>
-                                    Cerrar Sesión
-                                </a>
+                                <!-- Enlace para cerrar sesión (form POST para cumplir con la ruta) -->
+                                <form id="logoutFormDropdown" action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left flex items-center px-4 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
+                                        <i class="fas fa-sign-out-alt mr-3 w-4"></i>
+                                        Cerrar Sesión
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -160,7 +163,10 @@
                     @endif
                     <a href="{{ route('messages') }}" class="block text-gray-600 hover:text-blue-600">Mensajes</a>
                     <a href="{{ route('settings.edit') }}" class="block text-gray-600 hover:text-blue-600">Configuración</a>
-                    <a href="{{ route('logout') }}" class="block text-red-600 hover:text-red-800">Cerrar Sesión</a>
+                    <form id="logoutFormMobile" action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="block text-left w-full text-red-600 hover:text-red-800">Cerrar Sesión</button>
+                    </form>
                 @endauth
             </nav>
         </div>
