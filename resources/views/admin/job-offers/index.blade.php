@@ -182,11 +182,6 @@
                                    title="Ver oferta">
                                     <i class="fas fa-eye text-sm"></i>
                                 </a>
-                                <a href="{{ route('admin.job-offers.edit', $jobOffer->id) }}" 
-                                   class="w-8 h-8 flex items-center justify-center bg-indigo-100 hover:bg-indigo-200 text-indigo-600 rounded-lg transition-all hover-lift"
-                                   title="Editar oferta">
-                                    <i class="fas fa-edit text-sm"></i>
-                                </a>
                                 <form action="{{ route('admin.job-offers.destroy', $jobOffer->id) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
