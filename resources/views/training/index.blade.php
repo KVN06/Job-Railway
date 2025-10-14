@@ -32,10 +32,10 @@
         <div class="grid grid-cols-1 gap-6 animate-slide-in">
             @forelse($trainings as $item)
                 @php
-                    $startDate = $item->start_date ? Carbon::parse($item->start_date)->format('d/m/Y') : null;
-                    $endDate = $item->end_date ? Carbon::parse($item->end_date)->format('d/m/Y') : null;
-                    $isUpcoming = $item->start_date ? Carbon::parse($item->start_date)->isFuture() : false;
-                    $isFinished = $item->end_date ? Carbon::parse($item->end_date)->isPast() : false;
+                    $startDate = $item->start_date ? \Carbon\Carbon::parse($item->start_date)->format('d/m/Y') : null;
+                    $endDate = $item->end_date ? \Carbon\Carbon::parse($item->end_date)->format('d/m/Y') : null;
+                    $isUpcoming = $item->start_date ? \Carbon\Carbon::parse($item->start_date)->isFuture() : false;
+                    $isFinished = $item->end_date ? \Carbon\Carbon::parse($item->end_date)->isPast() : false;
                 @endphp
 
                 <x-card variant="enhanced" hover class="overflow-hidden">
@@ -70,16 +70,16 @@
                         @endif
 
                         <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
-                            @if($item->start_date)
+                                @if($item->start_date)
                                 <div class="flex items-center">
                                     <i class="fas fa-play-circle text-green-600 mr-1"></i>
-                                    <span>Inicio: {{ $item->start_date }}</span>
+                                    <span>Inicio: {{ $startDate }}</span>
                                 </div>
                             @endif
                             @if($item->end_date)
                                 <div class="flex items-center">
                                     <i class="fas fa-stop-circle text-red-600 mr-1"></i>
-                                    <span>Fin: {{ $item->end_date }}</span>
+                                    <span>Fin: {{ $endDate }}</span>
                                 </div>
                             @endif
                             <div class="flex items-center">
@@ -118,6 +118,7 @@
                     </div>
                 </div>
             </div>
+            </x-card>
         @empty
             <div class="card-enhanced p-12 text-center animate-fade-in-up">
                 <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
