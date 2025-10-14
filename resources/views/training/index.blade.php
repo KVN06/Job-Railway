@@ -62,31 +62,31 @@
                                     {{ $isFinished ? 'Finalizada' : ($isUpcoming ? 'Próxima' : 'En curso') }}
                                 </x-badge>
                             </div>
-                        </div>
 
-                        <!-- Descripción -->
-                        @if($item->description)
-                            <div class="mb-4">
-                                <p class="text-gray-700">{{ Str::limit($item->description, 150) }}</p>
-                            </div>
-                        @endif
+                            <!-- Descripción -->
+                            @if($item->description)
+                                <div class="mb-4">
+                                    <p class="text-gray-700">{{ \Illuminate\Support\Str::limit($item->description, 150) }}</p>
+                                </div>
+                            @endif
 
-                        <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
+                            <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
                                 @if($item->start_date)
+                                    <div class="flex items-center">
+                                        <i class="fas fa-play-circle text-green-600 mr-1"></i>
+                                        <span>Inicio: {{ $startDate }}</span>
+                                    </div>
+                                @endif
+                                @if($item->end_date)
+                                    <div class="flex items-center">
+                                        <i class="fas fa-stop-circle text-red-600 mr-1"></i>
+                                        <span>Fin: {{ $endDate }}</span>
+                                    </div>
+                                @endif
                                 <div class="flex items-center">
-                                    <i class="fas fa-play-circle text-green-600 mr-1"></i>
-                                    <span>Inicio: {{ $startDate }}</span>
+                                    <i class="fas fa-clock text-gray-600 mr-1"></i>
+                                    <span>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
                                 </div>
-                            @endif
-                            @if($item->end_date)
-                                <div class="flex items-center">
-                                    <i class="fas fa-stop-circle text-red-600 mr-1"></i>
-                                    <span>Fin: {{ $endDate }}</span>
-                                </div>
-                            @endif
-                            <div class="flex items-center">
-                                <i class="fas fa-clock text-gray-600 mr-1"></i>
-                                <span>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
                             </div>
                         </div>
 
@@ -105,16 +105,16 @@
 
                     <div class="text-right flex flex-col items-end">
                         <!-- Solo el botón Ver que redirige al enlace -->
-                        @if($item->link)
-                            <div class="flex space-x-2 mb-3">
-                                <a href="{{ $item->link }}"
-                                   target="_blank"
-                                  class="btn-primary text-white px-6 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
-                                    <i class="fas fa-external-link-alt mr-1"></i>
-                                    Ver Capacitación
-                                </a>
-                            </div>
-                        @else
+                                @if($item->link)
+                                    <div class="flex space-x-2 mb-3">
+                                        <a href="{{ $item->link }}"
+                                           target="_blank" rel="noopener noreferrer"
+                                           class="btn-primary text-white px-6 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
+                                            <i class="fas fa-external-link-alt mr-1"></i>
+                                            Ver Capacitación
+                                        </a>
+                                    </div>
+                                @else
                             <span class="text-gray-500 text-sm">Sin enlace disponible</span>
                         @endif
                     </div>
@@ -130,6 +130,11 @@
                 <p class="text-gray-600">Actualmente no hay capacitaciones publicadas.</p>
             </div>
         @endforelse
+            @if(method_exists($trainings, 'links'))
+                <div class="mt-6">
+                    {{ $trainings->links() }}
+                </div>
+            @endif
     </div>
 </div>
 @endsection
