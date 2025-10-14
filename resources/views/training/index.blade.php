@@ -37,7 +37,7 @@
                     $isFinished = $item->end_date ? \Carbon\Carbon::parse($item->end_date)->isPast() : false;
                 @endphp
 
-                <x-card variant="enhanced" hover padding="p-0" class="overflow-hidden">
+                <x-card variant="enhanced" hover padding="p-0">
                     <div class="flex flex-col md:flex-row">
                         <div class="flex-1 p-6 space-y-5">
                             <div class="flex items-start justify-between gap-4">
