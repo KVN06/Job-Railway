@@ -7,23 +7,21 @@ use Illuminate\Http\Request;
 
 class TrainingController extends Controller
 {
-    // Muestra todas las capacitaciones
+    // Método para vista pública
     public function index()
     {
-        $trainings = Training::all();
+                $trainings = Training::all();
         return view('training.index', compact('trainings'));
     }
 
-    // Muestra el formulario de creación
+    // Métodos para admin
     public function create()
     {
-        return view('training.create');
+        return view('admin.trainings.create');
     }
 
-    // Guarda una nueva capacitación
     public function store(Request $request)
     {
-        // Validación de los datos del formulario
         $request->validate([
             'title' => 'required|string|max:255',
             'provider' => 'nullable|string|max:255',
@@ -33,24 +31,28 @@ class TrainingController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
-        // Crea una nueva capacitación
         Training::create($request->all());
 
-        // Redirige con un mensaje de éxito
-        return redirect()->route('training.index')->with('success', 'Capacitación registrada correctamente.');
+        return redirect()->route('admin.trainings.index')
+                         ->with('success', 'Capacitación creada exitosamente');
     }
 
-    // Muestra el formulario de edición para una capacitación específica
+    public function show($id)
+    {
+        $training = Training::findOrFail($id);
+        return view('admin.trainings.show', compact('training'));
+    }
+
     public function edit($id)
     {
         $training = Training::findOrFail($id);
-        return view('training.edit', compact('training'));
+        return view('admin.trainings.edit', compact('training'));
     }
 
-    // Actualiza una capacitación
     public function update(Request $request, $id)
     {
-        // Validación de los datos del formulario
+        $training = Training::findOrFail($id);
+        
         $request->validate([
             'title' => 'required|string|max:255',
             'provider' => 'nullable|string|max:255',
@@ -60,21 +62,18 @@ class TrainingController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
-        // Encuentra y actualiza la capacitación
-        $training = Training::findOrFail($id);
         $training->update($request->all());
 
-        // Redirige con un mensaje de éxito
-        return redirect()->route('training.index')->with('success', 'Capacitación actualizada correctamente.');
+        return redirect()->route('admin.trainings.index')
+                         ->with('success', 'Capacitación actualizada exitosamente');
     }
 
-    // Elimina una capacitación
     public function destroy($id)
     {
         $training = Training::findOrFail($id);
         $training->delete();
 
-        // Redirige con un mensaje de éxito
-        return redirect()->route('training.index')->with('success', 'Capacitación eliminada correctamente.');
+        return redirect()->route('admin.trainings.index')
+                         ->with('success', 'Capacitación eliminada exitosamente');
     }
 }

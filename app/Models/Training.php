@@ -20,7 +20,13 @@ class Training extends Model
         'end_date',
     ];
 
+ // Agregar casts para las fechas
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
 
+    
     public function TrainingUsers()
     {
         return $this->hasMany(TrainingUser::class);

@@ -12,6 +12,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ClassifiedController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AdminController;
 
 
 // Rutas públicas
@@ -61,9 +62,6 @@ Route::get('/joboffers/{jobOffer}/editar', [JobOfferController::class, 'edit'])-
 Route::put('/joboffers/{jobOffer}', [JobOfferController::class, 'update'])->name('job-offers.update');
 Route::delete('/joboffers/{jobOffer}', [JobOfferController::class, 'destroy'])->name('job-offers.destroy');
 
-// // Favorite Offers
-// Route::get('/favoriteOffer', [FavoriteController::class, 'index'])->name('favorite-offers.index');
-// Route::post('/ofertas/{jobOffer}/favorite', [FavoriteController::class, 'toggle'])->name('job-offers.toggle-favorite');
 
 
 // Postulaciones (Job Applications)
@@ -78,28 +76,70 @@ Route::middleware(['auth'])->group(function () {
     // Rutas para entrevistas (programar y ver)
     Route::get('/interviews/{applicationId}', [\App\Http\Controllers\InterviewController::class, 'index'])->name('interviews.index');
     Route::post('/interviews/{applicationId}', [\App\Http\Controllers\InterviewController::class, 'store'])->name('interviews.store');
+
+    Route::resource('classifieds', ClassifiedController::class);
+
+
+    // Trainings
+    Route::get('/trainings', [TrainingController::class, 'index'])->name('training.public.index');
+
 });
 
 // Companies
 Route::get('/Companies', [CompanyController::class, 'index'])->name('index');
 Route::get('/Company/{company}', [CompanyController::class, 'show'])->name('show');
 
-// Trainings
-Route::get('/capacitaciones', [TrainingController::class, 'index'])->name('training.index');
-Route::get('/capacitaciones/crear', [TrainingController::class, 'create'])->name('training.create');
-Route::post('/capacitaciones', [TrainingController::class, 'store'])->name('training.store');
-Route::get('/capacitaciones/{id}/editar', [TrainingController::class, 'edit'])->name('training.edit');
-Route::put('/capacitaciones/{id}', [TrainingController::class, 'update'])->name('training.update');
-Route::delete('/capacitaciones/{id}', [TrainingController::class, 'destroy'])->name('training.destroy');
 
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::resource('classifieds', ClassifiedController::class);
-});
 
 // corrigiendo esto
 // Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
 Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 Route::post('/favorites/classifieds/{classified}/toggle', [FavoriteController::class, 'toggleClassified'])->middleware(['auth'])->name('favorites.classifieds.toggle');
+
+
+
+
+
+
+
+
+// Grupo de rutas ADMIN
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    
+    // Dashboard
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Clasificados - SOLO index, edit, update, destroy
+    Route::get('/classifieds', [AdminController::class, 'classifieds'])->name('classifieds.index');
+    Route::get('/classifieds/{classified}/edit', [ClassifiedController::class, 'edit'])->name('classifieds.edit');
+    Route::put('/classifieds/{classified}', [ClassifiedController::class, 'update'])->name('classifieds.update');
+    Route::delete('/classifieds/{classified}', [ClassifiedController::class, 'destroy'])->name('classifieds.destroy');
+    
+    // Ofertas Laborales - SOLO index, edit, update, destroy
+    Route::get('/job-offers', [AdminController::class, 'jobOffers'])->name('job-offers.index');
+    Route::get('/job-offers/{jobOffer}/edit', [JobOfferController::class, 'edit'])->name('job-offers.edit');
+    Route::put('/job-offers/{jobOffer}', [JobOfferController::class, 'update'])->name('job-offers.update');
+    Route::delete('/job-offers/{jobOffer}', [JobOfferController::class, 'destroy'])->name('job-offers.destroy');
+    
+       // Capacitaciones - RUTAS EXPLÍCITAS
+    Route::get('/trainings', [AdminController::class, 'trainings'])->name('trainings.index');
+    Route::get('/trainings/create', [TrainingController::class, 'create'])->name('trainings.create');
+    Route::post('/trainings', [TrainingController::class, 'store'])->name('trainings.store');
+    Route::get('/trainings/{id}', [TrainingController::class, 'show'])->name('trainings.show');
+    Route::get('/trainings/{id}/edit', [TrainingController::class, 'edit'])->name('trainings.edit');
+    Route::put('/trainings/{id}', [TrainingController::class, 'update'])->name('trainings.update');
+    Route::delete('/trainings/{id}', [TrainingController::class, 'destroy'])->name('trainings.destroy');
+    
+
+    // Usuarios - TODAS las rutas
+    Route::resource('users', UserController::class)->names([
+        'index' => 'users.index',
+        'create' => 'users.create',
+        'store' => 'users.store',
+        'show' => 'users.show',
+        'edit' => 'users.edit',
+        'update' => 'users.update',
+        'destroy' => 'users.destroy'
+    ]);
+});

@@ -28,7 +28,7 @@
                         <span>Clasificados</span>
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-primary group-hover:w-full transition-all duration-300"></span>
                     </a>
-                    <a href="{{ route('training.index') }}" class="relative text-gray-600 hover:text-blue-800 transition-all duration-300 font-medium group">
+                    <a href="{{ route('training.public.index') }}" class="relative text-gray-600 hover:text-blue-800 transition-all duration-300 font-medium group">
                         <span>Capacitaciones</span>
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-primary group-hover:w-full transition-all duration-300"></span>
                     </a>
@@ -151,7 +151,7 @@
                     <a href="{{ route('home') }}" class="block text-gray-600 hover:text-blue-600">Inicio</a>
                     <a href="{{ route('job-offers.index') }}" class="block text-gray-600 hover:text-blue-600">Empleos</a>
                     <a href="{{ route('classifieds.index') }}" class="block text-gray-600 hover:text-blue-600">Clasificados</a>
-                    <a href="{{ route('training.index') }}" class="block text-gray-600 hover:text-blue-600">Capacitaciones</a>
+                    <a href="{{ route('training.public.index') }}" class="block text-gray-600 hover:text-blue-600">Capacitaciones</a>
                     @if(auth()->user()->isUnemployed())
                         <a href="{{ route('portfolios.index') }}" class="block text-gray-600 hover:text-blue-600">Portafolio</a>
                     @endif

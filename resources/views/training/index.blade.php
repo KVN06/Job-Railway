@@ -11,13 +11,7 @@
                         <i class="fas fa-graduation-cap text-blue-800 mr-3"></i>
                         Capacitaciones
                     </h1>
-                    <p class="text-gray-600">Gestiona tu formación y desarrollo profesional</p>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('training.create') }}" class="btn-primary text-white px-6 py-3 rounded-xl hover-lift flex items-center shadow-soft">
-                        <i class="fas fa-plus mr-2"></i>
-                        Nueva Capacitación
-                    </a>
+                    <p class="text-gray-600">Explora oportunidades de formación y desarrollo profesional</p>
                 </div>
             </div>
         </div>
@@ -52,15 +46,26 @@
                             </div>
                         </div>
                         
+                        <!-- Descripción -->
+                        @if($item->description)
+                            <div class="mb-4">
+                                <p class="text-gray-700">{{ Str::limit($item->description, 150) }}</p>
+                            </div>
+                        @endif
+                        
                         <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
-                            <div class="flex items-center">
-                                <i class="fas fa-play-circle text-green-600 mr-1"></i>
-                                <span>Inicio: {{ $item->start_date }}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-stop-circle text-red-600 mr-1"></i>
-                                <span>Fin: {{ $item->end_date }}</span>
-                            </div>
+                            @if($item->start_date)
+                                <div class="flex items-center">
+                                    <i class="fas fa-play-circle text-green-600 mr-1"></i>
+                                    <span>Inicio: {{ $item->start_date }}</span>
+                                </div>
+                            @endif
+                            @if($item->end_date)
+                                <div class="flex items-center">
+                                    <i class="fas fa-stop-circle text-red-600 mr-1"></i>
+                                    <span>Fin: {{ $item->end_date }}</span>
+                                </div>
+                            @endif
                             <div class="flex items-center">
                                 <i class="fas fa-clock text-gray-600 mr-1"></i>
                                 <span>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
@@ -69,22 +74,19 @@
                     </div>
 
                     <div class="text-right flex flex-col items-end">
-                        <div class="flex space-x-2 mb-3">
-                            <a href="{{ route('training.edit', $item->id) }}" 
-                               class="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-4 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
-                                <i class="fas fa-edit mr-1"></i>
-                                Editar
-                            </a>
-                            <form action="{{ route('training.destroy', $item->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro que deseas eliminar esta capacitación?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" 
-                                        class="bg-gradient-to-r from-red-800 to-red-900 text-white px-4 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
-                                    <i class="fas fa-trash mr-1"></i>
-                                    Eliminar
-                                </button>
-                            </form>
-                        </div>
+                        <!-- Solo el botón Ver que redirige al enlace -->
+                        @if($item->link)
+                            <div class="flex space-x-2 mb-3">
+                                <a href="{{ $item->link }}" 
+                                   target="_blank"
+                                  class="btn-primary text-white px-6 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
+                                    <i class="fas fa-external-link-alt mr-1"></i>
+                                    Ver Capacitación
+                                </a>
+                            </div>
+                        @else
+                            <span class="text-gray-500 text-sm">Sin enlace disponible</span>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -93,12 +95,8 @@
                 <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-graduation-cap text-3xl text-gray-400"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-800 mb-2">No tienes capacitaciones registradas</h3>
-                <p class="text-gray-600 mb-6">Comienza a agregar tu formación y certificaciones para destacar tu perfil.</p>
-                <a href="{{ route('training.create') }}" class="btn-primary text-white px-6 py-3 rounded-xl hover-lift inline-flex items-center">
-                    <i class="fas fa-plus mr-2"></i>
-                    Agregar Primera Capacitación
-                </a>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">No hay capacitaciones disponibles</h3>
+                <p class="text-gray-600">Actualmente no hay capacitaciones publicadas.</p>
             </div>
         @endforelse
     </div>
