@@ -135,10 +135,6 @@
     </header>
 
     <main class="relative z-10 px-4 py-16 sm:px-6 lg:px-8">
-        @php
-            $jobsAvailable = \App\Models\JobOffer::active()->count();
-            $companiesCount = \App\Models\Company::count();
-        @endphp
         <section class="mx-auto flex w-full max-w-6xl flex-col gap-12">
             @if ($errors->any())
                 <div class="mx-auto w-full max-w-3xl rounded-2xl border border-red-400/40 bg-red-500/10 p-5 text-red-100 backdrop-blur">
@@ -197,11 +193,11 @@
 
                     <div class="mt-8 grid gap-4 sm:grid-cols-2">
                         <div class="rounded-2xl border border-white/10 bg-white/5 p-5 shadow">
-                            <span class="text-2xl font-bold text-white">{{ isset($jobsAvailable) ? number_format($jobsAvailable) : '0' }}</span>
+                            <span class="text-2xl font-bold text-white">{{ number_format($jobsAvailable ?? 0) }}</span>
                             <p class="text-sm text-neutral-200/70">Trabajos disponibles</p>
                         </div>
                         <div class="rounded-2xl border border-white/10 bg-white/5 p-5 shadow">
-                            <span class="text-2xl font-bold text-white">{{ isset($companiesCount) ? number_format($companiesCount) : '0' }}</span>
+                            <span class="text-2xl font-bold text-white">{{ number_format($companiesCount ?? 0) }}</span>
                             <p class="text-sm text-neutral-200/70">Empresas registradas</p>
                         </div>
                     </div>

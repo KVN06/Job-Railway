@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use App\Models\JobOffer;
+use App\Models\Company;
 
 
 class UserController extends Controller
 {
     public function create() {
-        return view('auth.register');
+        return view('auth.register', $this->getPlatformStats());
     }
 
     public function agg_user(Request $request) {
@@ -77,7 +79,7 @@ class UserController extends Controller
 
     // Mostrar formulario de login con estadísticas
     public function showLoginForm() {
-        return view('auth.login');
+        return view('auth.login', $this->getPlatformStats());
     }
 
     public function logout(Request $request) {
@@ -87,11 +89,11 @@ class UserController extends Controller
         return redirect(route('login'));
     }
 
-
-
-
-
-
-
-
+    private function getPlatformStats(): array
+    {
+        return [
+            'jobsAvailable' => JobOffer::active()->count(),
+            'companiesCount' => Company::count(),
+        ];
+    }
 }

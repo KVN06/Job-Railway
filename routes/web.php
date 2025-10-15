@@ -19,7 +19,7 @@ use App\Http\Controllers\GoogleController;
 
 // Rutas públicas
 Route::view('/', 'pages.landing')->name('landing');
-Route::view('/login', 'auth.login')->name('login');
+Route::get('/login', [UserController::class, 'showLoginForm'])->name('login');
 Route::view('/home', 'pages.home')->middleware('auth')->name('home');
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');

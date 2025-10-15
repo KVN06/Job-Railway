@@ -167,13 +167,13 @@
                     </ul>
 
                     <div class="mt-auto grid gap-4 sm:grid-cols-2">
-                        <div class="rounded-2xl border border-white/10 bg-white/5 p-5 shadow">
-                            <span class="text-2xl font-bold text-white">+1.2k</span>
-                            <p class="text-sm text-neutral-200/70">Vacantes activas</p>
+                        <div class="flex flex-col rounded-2xl border border-white/15 bg-white/10 p-6 shadow backdrop-blur">
+                            <span class="text-3xl font-semibold text-white">{{ number_format($jobsAvailable ?? 0) }}</span>
+                            <p class="mt-2 text-sm text-neutral-200/80">Trabajos disponibles</p>
                         </div>
-                        <div class="rounded-2xl border border-white/10 bg-white/5 p-5 shadow">
-                            <span class="text-2xl font-bold text-white">94%</span>
-                            <p class="text-sm text-neutral-200/70">Usuarios satisfechos</p>
+                        <div class="flex flex-col rounded-2xl border border-white/15 bg-white/10 p-6 shadow backdrop-blur">
+                            <span class="text-3xl font-semibold text-white">{{ number_format($companiesCount ?? 0) }}</span>
+                            <p class="mt-2 text-sm text-neutral-200/80">Empresas registradas</p>
                         </div>
                     </div>
                 </aside>
