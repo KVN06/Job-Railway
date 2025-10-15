@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="mb-6">
-        <div class="bg-white rounded-2xl shadow-soft p-6">
+    <div class="bg-white rounded-2xl shadow-soft p-6 border border-blue-900/30">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <i class="fas fa-comments text-blue-700 text-2xl mr-3"></i>
@@ -25,7 +25,7 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-2xl shadow-soft overflow-hidden" style="height:70vh;">
+    <div class="bg-white rounded-2xl shadow-soft overflow-hidden border border-blue-900/30" style="height:70vh;">
         <div class="flex h-full">
             <!-- Sidebar contactos -->
             <div class="w-80 border-r border-gray-100 p-4 flex flex-col">

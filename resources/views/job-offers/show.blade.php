@@ -15,7 +15,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Información principal -->
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-blue-900/30">
                 <!-- Header -->
                 <div class="flex justify-between items-start mb-6">
                     <div class="flex-1">
@@ -120,7 +120,7 @@
         <!-- Sidebar -->
         <div class="lg:col-span-1">
             <!-- Información de la empresa -->
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-blue-900/30">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Información de la empresa</h3>
                 <div class="space-y-3">
                     <div>
@@ -151,7 +151,7 @@
             </div>
 
             <!-- Detalles del trabajo -->
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-blue-900/30">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Detalles del trabajo</h3>
                 <div class="space-y-3">
                     <div class="flex justify-between">
@@ -171,7 +171,7 @@
 
             <!-- Tarjeta de aplicar (solo visible para cesantes) -->
             @if(auth()->user()?->unemployed)
-                <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-blue-900/30">
                     <h3 class="text-lg font-semibold text-gray-800 mb-3">Aplicar a esta oferta</h3>
 
                     @if(session('success'))

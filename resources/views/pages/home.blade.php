@@ -50,7 +50,7 @@
                                 variant="primary"
                                 size="lg"
                                 icon="fas fa-plus-circle"
-                                class="bg-white text-blue-700 hover:bg-gray-100 shadow-xl"
+                                class="btn-primary text-white shadow-xl"
                             >
                                 Publicar nueva oferta
                             </x-button>
@@ -59,7 +59,7 @@
                                 variant="primary"
                                 size="lg"
                                 icon="fas fa-list-check"
-                                class="bg-white/10 border border-white/40 text-white hover:bg-white/20"
+                                class="btn-primary text-white shadow-xl"
                             >
                                 Administrar vacantes
                             </x-button>
@@ -114,7 +114,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 animate-fade-in-up">
                         <x-card hover class="group">
                             <div class="flex flex-col items-center text-center space-y-4">
-                                <span class="inline-flex w-16 h-16 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 group-hover:scale-110 transition">
+                                <span class="inline-flex w-16 h-16 items-center justify-center rounded-2xl bg-gradient-primary text-white group-hover:scale-110 transition">
                                     <i class="fas fa-bullseye"></i>
                                 </span>
                                 <p class="text-4xl font-extrabold text-gray-900">{{ $activeOffers }}</p>
@@ -130,7 +130,7 @@
                                 </span>
                                 <p class="text-4xl font-extrabold text-gray-900">{{ $applicationsCount }}</p>
                                 <p class="text-gray-600 font-semibold">Postulaciones totales</p>
-                                <x-badge variant="primary" size="sm" icon="fas fa-user-plus">Candidatos</x-badge>
+                                <x-badge variant="primary" size="sm" icon="fas fa-user-plus" class="badge-primary">Candidatos</x-badge>
                             </div>
                         </x-card>
 
@@ -197,10 +197,10 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                <x-card hover class="relative overflow-hidden border border-blue-100 bg-blue-50">
+                <x-card hover class="relative overflow-hidden border border-blue-900/30 bg-white">
                     <div class="absolute -top-6 -right-6 w-28 h-28 bg-blue-200/60 rounded-full blur-2xl"></div>
                     <div class="relative z-10 space-y-5">
-                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 text-white">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl gradient-primary text-white">
                             <i class="fas fa-file-circle-plus"></i>
                         </div>
                         <div>
@@ -211,23 +211,23 @@
                             <li class="flex items-center gap-2"><i class="fas fa-check"></i> Plantillas prearmadas</li>
                             <li class="flex items-center gap-2"><i class="fas fa-check"></i> Visibilidad inmediata</li>
                         </ul>
-                        <x-button href="{{ route('job-offers.create') }}" variant="primary" icon="fas fa-arrow-right" class="bg-blue-600 hover:bg-blue-700">
+                        <x-button href="{{ route('job-offers.create') }}" variant="primary" icon="fas fa-arrow-right" class="btn-primary">
                             Crear oferta
                         </x-button>
                     </div>
                 </x-card>
 
-                <x-card hover class="relative overflow-hidden border border-indigo-100 bg-indigo-50">
+                <x-card hover class="relative overflow-hidden border border-blue-900/30 bg-white">
                     <div class="absolute -top-6 -right-6 w-28 h-28 bg-indigo-200/60 rounded-full blur-2xl"></div>
                     <div class="relative z-10 space-y-5">
-                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl gradient-primary text-white">
                             <i class="fas fa-users-gear"></i>
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-indigo-900">Revisar postulaciones</h3>
                             <p class="text-indigo-900/80 mt-2">Clasifica candidatos, deja notas internas y coordina entrevistas.</p>
                         </div>
-                        <ul class="space-y-2 text-sm text-indigo-900/70">
+                        <ul class="space-y-2 text-sm text-blue-900/70">
                             <li class="flex items-center gap-2"><i class="fas fa-check"></i> Filtros avanzados</li>
                             <li class="flex items-center gap-2"><i class="fas fa-check"></i> Trazabilidad de estados</li>
                         </ul>
@@ -235,24 +235,24 @@
                             href="{{ \Illuminate\Support\Facades\Route::has('job-applications.index-company') ? route('job-applications.index-company') : route('job-offers.index') }}"
                             variant="primary"
                             icon="fas fa-arrow-right"
-                            class="bg-indigo-600 hover:bg-indigo-700"
+                            class="btn-primary"
                         >
                             Gestionar postulaciones
                         </x-button>
                     </div>
                 </x-card>
 
-                <x-card hover class="relative overflow-hidden border border-purple-100 bg-purple-50">
+                <x-card hover class="relative overflow-hidden border border-blue-900/30 bg-white">
                     <div class="absolute -top-6 -right-6 w-28 h-28 bg-purple-200/60 rounded-full blur-2xl"></div>
                     <div class="relative z-10 space-y-5">
-                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-600 text-white">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl gradient-primary text-white">
                             <i class="fas fa-building"></i>
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-purple-900">Perfil de empresa</h3>
                             <p class="text-purple-900/80 mt-2">Refuerza tu marca empleadora con una presentación atractiva.</p>
                         </div>
-                        <ul class="space-y-2 text-sm text-purple-900/70">
+                        <ul class="space-y-2 text-sm text-blue-900/70">
                             <li class="flex items-center gap-2"><i class="fas fa-check"></i> Información centralizada</li>
                             <li class="flex items-center gap-2"><i class="fas fa-check"></i> Imagen destacada</li>
                         </ul>
@@ -274,7 +274,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                <x-card hover>
+                <x-card hover class="border border-blue-900/30 bg-white">
                     <div class="space-y-3">
                         <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600"><i class="fas fa-pen-nib"></i></span>
                         <h3 class="text-xl font-bold text-gray-900">Historias de impacto</h3>
@@ -286,7 +286,7 @@
                     </div>
                 </x-card>
 
-                <x-card hover>
+                <x-card hover class="border border-blue-900/30 bg-white">
                     <div class="space-y-3">
                         <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-100 text-amber-600"><i class="fas fa-hourglass-half"></i></span>
                         <h3 class="text-xl font-bold text-gray-900">Tiempo de respuesta</h3>
@@ -298,7 +298,7 @@
                     </div>
                 </x-card>
 
-                <x-card hover>
+                <x-card hover class="border border-blue-900/30 bg-white">
                     <div class="space-y-3">
                         <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-sky-100 text-sky-600"><i class="fas fa-graduation-cap"></i></span>
                         <h3 class="text-xl font-bold text-gray-900">Recursos de capacitación</h3>

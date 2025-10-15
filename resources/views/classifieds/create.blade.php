@@ -15,7 +15,7 @@
         @endif
 
         <!-- Formulario de creación -->
-        <form action="{{ route('classifieds.store') }}" method="POST" class="bg-white rounded-lg shadow-sm p-6">
+    <form action="{{ route('classifieds.store') }}" method="POST" class="bg-white rounded-lg shadow-sm p-6 border border-blue-900/30">
             @csrf
 
             <!-- Campo: Título -->

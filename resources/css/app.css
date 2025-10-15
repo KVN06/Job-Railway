@@ -24,8 +24,9 @@
 }
 
 /* Gradientes personalizados - Paleta seria y profesional */
+
 .gradient-primary {
-    background: linear-gradient(135deg, #1e3a8a 0%, #1f2937 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #0d1a26 100%);
 }
 
 .gradient-secondary {
@@ -147,14 +148,15 @@
 }
 
 /* Botones mejorados - Tonos serios */
+
 .btn-primary {
-    background: linear-gradient(135deg, #1e3a8a 0%, #1f2937 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #0d1a26 100%);
     border: none;
     transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #1e40af 0%, #374151 100%);
+    background: linear-gradient(135deg, #0d1a26 0%, #1e3a8a 100%);
     transform: translateY(-1px);
     box-shadow: 0 10px 20px rgba(30, 58, 138, 0.4);
 }
@@ -177,7 +179,7 @@
     border-radius: 12px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(13, 26, 38, 0.28);
 }
 
 .card-enhanced:hover {
@@ -251,8 +253,9 @@ header * {
 }
 
 /* Badges mejorados - Tonos serios */
+
 .badge-primary {
-    background: linear-gradient(135deg, #1e3a8a 0%, #1f2937 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #0d1a26 100%);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;

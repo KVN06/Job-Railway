@@ -231,7 +231,7 @@
     <!-- Paginación mejorada -->
     @if($jobOffers->hasPages())
         <div class="mt-8 flex justify-center">
-            <div class="bg-white rounded-xl shadow-soft p-4">
+            <div class="bg-white rounded-xl shadow-soft p-4 border border-blue-900/30">
                 {{ $jobOffers->links() }}
             </div>
         </div>

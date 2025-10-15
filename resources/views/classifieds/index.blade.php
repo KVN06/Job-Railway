@@ -354,7 +354,7 @@
 
         @if($classifieds->hasPages())
             <div class="flex justify-center">
-                <div class="bg-white rounded-xl shadow-soft p-4">
+                <div class="bg-white rounded-xl shadow-soft p-4 border border-blue-900/30">
                     {{ $classifieds->links() }}
                 </div>
             </div>

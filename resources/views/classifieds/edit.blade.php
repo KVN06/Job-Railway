@@ -8,7 +8,7 @@
         <h1 class="text-2xl font-bold text-gray-800 mb-6">Editar Clasificado</h1>
 
         <!-- Formulario -->
-        <form method="POST" action="{{ route('classifieds.update', $classified->id) }}" class="bg-white rounded-lg shadow-sm p-6">
+    <form method="POST" action="{{ route('classifieds.update', $classified->id) }}" class="bg-white rounded-lg shadow-sm p-6 border border-blue-900/30">
             @csrf
             @method('PUT')
 

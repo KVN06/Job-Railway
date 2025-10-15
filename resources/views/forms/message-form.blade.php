@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto py-8 px-4">
-    <div class="bg-white rounded-2xl shadow-soft overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-soft overflow-hidden border border-blue-900/30">
         <div class="flex h-[72vh]">
             <!-- Contactos -->
             <aside class="w-80 border-r border-gray-100 p-4 flex flex-col">
@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                <div class="flex-1 bg-white rounded-lg p-6 flex flex-col shadow-sm">
+                <div class="flex-1 bg-white rounded-lg p-6 flex flex-col shadow-sm border border-blue-900/30">
                     <form id="messageForm" action="{{ route('send-message') }}" method="POST" class="flex flex-col h-full">
                         @csrf
                         <input type="hidden" name="receiver_id" id="receiver_id" value=""> 

@@ -126,7 +126,7 @@
                     <i class="fas fa-arrow-right-to-bracket"></i>
                     Iniciar sesión
                 </a>
-                <a href="{{ route('register') }}" class="hidden items-center gap-2 rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:bg-sky-400 md:inline-flex">
+                <a href="{{ route('register') }}" class="hidden items-center gap-2 rounded-full btn-primary px-4 py-2 text-sm font-semibold text-white shadow-lg transition md:inline-flex">
                     <i class="fas fa-user-plus"></i>
                     Crear cuenta
                 </a>
@@ -303,19 +303,19 @@
                             @enderror
                         </div>
 
-                        <button type="submit" class="group relative w-full overflow-hidden rounded-2xl bg-gradient-to-br from-sky-500 via-indigo-500 to-blue-600 px-6 py-4 text-lg font-semibold text-white shadow-xl transition duration-300 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-sky-200">
+                        <button type="submit" class="group relative w-full overflow-hidden rounded-2xl btn-primary px-6 py-4 text-lg font-semibold text-white shadow-xl transition duration-300 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-900">
                             Crear cuenta
                             <span class="absolute inset-0 h-full w-full scale-0 rounded-2xl bg-white/30 opacity-0 transition duration-500 ease-out group-hover:scale-150 group-hover:opacity-100"></span>
                         </button>
                     </form>
 
                     <p class="mt-6 text-center text-sm text-neutral-600">¿Ya tienes una cuenta?
-                        <a href="{{ route('login') }}" class="font-semibold text-sky-600 transition hover:text-sky-500">Inicia sesión</a>
+                        <a href="{{ route('login') }}" class="font-semibold text-blue-900 transition hover:text-blue-700">Inicia sesión</a>
                     </p>
                 </div>
             </div>
 
-            <p class="mx-auto max-w-3xl text-center text-xs text-neutral-200/80 fade-in-up" style="--fade-delay: 0.35s;">Al registrarte aceptas nuestros <a href="#" class="font-semibold text-sky-200 hover:text-sky-100">Términos de servicio</a> y <a href="#" class="font-semibold text-sky-200 hover:text-sky-100">Aviso de privacidad</a>.</p>
+            <p class="mx-auto max-w-3xl text-center text-xs text-neutral-200/80 fade-in-up" style="--fade-delay: 0.35s;">Al registrarte aceptas nuestros <a href="#" class="font-semibold text-blue-200 hover:text-blue-100">Términos de servicio</a> y <a href="#" class="font-semibold text-blue-200 hover:text-blue-100">Aviso de privacidad</a>.</p>
         </section>
     </main>
 

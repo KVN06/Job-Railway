@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4 py-8">
     <!-- Header mejorado -->
     <div class="mb-8 animate-fade-in-up">
-        <div class="bg-white rounded-2xl shadow-soft p-8 mb-6">
+    <div class="bg-white rounded-2xl shadow-soft p-8 mb-6 border border-blue-900/30">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
                     <h1 class="text-3xl font-bold text-gray-800 mb-2">

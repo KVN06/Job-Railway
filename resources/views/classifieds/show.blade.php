@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4 py-8">
     <!-- Header mejorado -->
     <div class="mb-8 animate-fade-in-up">
-        <div class="bg-white rounded-2xl shadow-soft p-6">
+    <div class="bg-white rounded-2xl shadow-soft p-6 border border-blue-900/30">
             <div class="flex items-center justify-between">
                 <a href="{{ route('classifieds.index') }}" class="btn-secondary text-white px-6 py-3 rounded-xl hover-lift flex items-center shadow-soft">
                     <i class="fas fa-arrow-left mr-2"></i>
@@ -152,7 +152,7 @@
         <!-- Sidebar -->
         <div class="lg:col-span-1">
             <!-- Información del publicador -->
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-blue-900/30">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Información del publicador</h3>
                 <div class="space-y-3">
                     @if($classified->company)
@@ -202,7 +202,7 @@
             </div>
 
             <!-- Detalles del clasificado -->
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-blue-900/30">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Detalles</h3>
                 <div class="space-y-3">
                     @if($classified->salary)
@@ -240,7 +240,7 @@
                 @endphp
 
                 @if($canContact)
-                    <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="bg-white rounded-lg shadow-sm p-6 border border-blue-900/30">
                         <a href="{{ route('message-form') }}?to={{ $classified->company ? 'company_' . $classified->company_id : 'unemployed_' . $classified->unemployed_id }}"
                            class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors font-semibold text-center block">
                             Contactar

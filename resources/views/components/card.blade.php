@@ -12,7 +12,7 @@
         'gradient' => 'gradient-primary text-white',
     ];
 
-    $baseClasses = 'rounded-2xl ' . $padding . ' transition-all duration-300 ' . ($variantClasses[$variant] ?? $variantClasses['default']);
+    $baseClasses = 'rounded-2xl border border-blue-900/30 ' . $padding . ' transition-all duration-300 ' . ($variantClasses[$variant] ?? $variantClasses['default']);
     $hoverClasses = $hover ? 'hover-lift' : '';
 @endphp
 
