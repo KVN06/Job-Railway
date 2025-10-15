@@ -216,7 +216,7 @@
 
                     <div class="grid gap-4 sm:grid-cols-2">
     <!-- Google para Cesante -->
-    <a href="{{ route('google.login', ['type' => 'unemployed']) }}" 
+    <a href="{{ route('google.login', ['type' => 'unemployed']) }}"
        class="group flex items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-neutral-50">
         <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-900 shadow-inner">
             <i class="fab fa-google text-lg"></i>
@@ -225,7 +225,7 @@
     </a>
 
     <!-- Google para Empresa -->
-    <a href="{{ route('google.login', ['type' => 'company']) }}" 
+    <a href="{{ route('google.login', ['type' => 'company']) }}"
        class="group flex items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-neutral-50">
         <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-900 shadow-inner">
             <i class="fab fa-google text-lg"></i>

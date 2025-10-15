@@ -147,22 +147,22 @@ Route::post('/reset-password', [NewPasswordController::class, 'store'])
 
     // Grupo de rutas ADMIN
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-    
+
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    
+
     // Clasificados - SOLO index, edit, update, destroy
     Route::get('/classifieds', [AdminController::class, 'classifieds'])->name('classifieds.index');
     Route::get('/classifieds/{classified}/edit', [ClassifiedController::class, 'edit'])->name('classifieds.edit');
     Route::put('/classifieds/{classified}', [ClassifiedController::class, 'update'])->name('classifieds.update');
     Route::delete('/classifieds/{classified}', [ClassifiedController::class, 'destroy'])->name('classifieds.destroy');
-    
+
     // Ofertas Laborales - SOLO index, edit, update, destroy
     Route::get('/job-offers', [AdminController::class, 'jobOffers'])->name('job-offers.index');
     Route::get('/job-offers/{jobOffer}/edit', [JobOfferController::class, 'edit'])->name('job-offers.edit');
     Route::put('/job-offers/{jobOffer}', [JobOfferController::class, 'update'])->name('job-offers.update');
     Route::delete('/job-offers/{jobOffer}', [JobOfferController::class, 'destroy'])->name('job-offers.destroy');
-    
+
        // Capacitaciones - RUTAS EXPLÍCITAS
     Route::get('/trainings', [AdminController::class, 'trainings'])->name('trainings.index');
     Route::get('/trainings/create', [TrainingController::class, 'create'])->name('trainings.create');
@@ -172,10 +172,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::put('/trainings/{id}', [TrainingController::class, 'update'])->name('trainings.update');
     Route::delete('/trainings/{id}', [TrainingController::class, 'destroy'])->name('trainings.destroy');
 
-    
-    
 
-     
+
+
+
 
 
     // Usuarios - TODAS las rutas
