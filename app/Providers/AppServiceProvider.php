@@ -23,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('local')) {
             URL::forceRootUrl('http://localhost:8000');
         }
+
+        // ✅ NUEVO: Forzar HTTPS en producción (Railway)
+    if ($this->app->environment('production')) {
+        URL::forceScheme('https');
+    }
     }
 }
 

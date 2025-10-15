@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => env('MAIL_MAILER', 'resend'),
 
     
 
@@ -32,9 +32,8 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
-        'sendgrid' => [
-        'transport' => 'sendgrid',
-        'api_key' => env('SENDGRID_API_KEY'),
+        'resend' => [
+    'transport' => 'resend',
     ],
 
 
