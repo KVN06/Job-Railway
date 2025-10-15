@@ -35,16 +35,16 @@
                                     {{ $portfolio->title }}
                                 </h2>
                                 <p class="text-gray-600 mb-4 leading-relaxed">{{ $portfolio->description }}</p>
-                                
+
                                 <div class="flex items-center space-x-4 mb-4">
                                     @if($portfolio->url_proyect)
-                                        <a href="{{ $portfolio->url_proyect }}" target="_blank" 
+                                        <a href="{{ $portfolio->url_proyect }}" target="_blank"
                                            class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                                             <i class="fas fa-globe mr-1"></i>
                                             Ver Proyecto
                                         </a>
                                     @endif
-                                    
+
                                     @if($portfolio->url_pdf)
                                         <a href="{{ asset('storage/portfolios/' . $portfolio->url_pdf) }}" target="_blank"
                                            class="flex items-center text-purple-600 hover:text-purple-800 transition-colors">
@@ -59,16 +59,16 @@
 
                     <div class="text-right flex flex-col items-end">
                         <div class="flex space-x-2 mb-3">
-                            <a href="{{ route('edit-portfolio', $portfolio->id) }}" 
+                            <a href="{{ route('edit-portfolio', $portfolio->id) }}"
                                class="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-4 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
                                 <i class="fas fa-edit mr-1"></i>
                                 Editar
                             </a>
-                            <form action="{{ route('delete-portfolio', $portfolio->id) }}" method="POST" 
+                            <form action="{{ route('delete-portfolio', $portfolio->id) }}" method="POST"
                                   style="display:inline;" onsubmit="return confirm('¿Estás seguro de eliminar este portafolio?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" 
+                                <button type="submit"
                                         class="bg-gradient-to-r from-red-800 to-red-900 text-white px-4 py-2 rounded-xl hover-lift transition-all duration-300 text-sm font-medium shadow-soft">
                                     <i class="fas fa-trash mr-1"></i>
                                     Eliminar

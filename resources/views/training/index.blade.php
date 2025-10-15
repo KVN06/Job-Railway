@@ -160,7 +160,7 @@
                     <p class="text-gray-600">Actualmente no hay capacitaciones publicadas.</p>
                 </x-card>
             @endforelse
-            
+
             @if(method_exists($trainings, 'links'))
                 <div class="mt-8 flex justify-center animate-fade-in-up">
                     <div class="bg-white rounded-xl shadow-soft p-4 border border-blue-900/30">

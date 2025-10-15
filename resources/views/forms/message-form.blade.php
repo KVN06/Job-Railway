@@ -60,7 +60,7 @@
                 <div class="flex-1 bg-white rounded-lg p-6 flex flex-col shadow-sm border border-blue-900/30">
                     <form id="messageForm" action="{{ route('send-message') }}" method="POST" class="flex flex-col h-full">
                         @csrf
-                        <input type="hidden" name="receiver_id" id="receiver_id" value=""> 
+                        <input type="hidden" name="receiver_id" id="receiver_id" value="">
 
                         <div class="mb-4">
                             <label class="block text-sm text-gray-600">Destinatario</label>

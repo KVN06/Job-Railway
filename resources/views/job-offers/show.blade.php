@@ -99,7 +99,7 @@
                 <div class="mb-6">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-lg font-semibold text-gray-800">Ubicación</h3>
-                        <button 
+                        <button
                             onclick="openMapModal()"
                             class="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105">
                             <i class="fas fa-expand-arrows-alt"></i>
@@ -248,7 +248,7 @@
             <!-- Cuerpo del Modal con Mapa -->
             <div class="p-6">
                 <div id="modalMap" class="w-full rounded-xl overflow-hidden border-2 border-gray-200" style="height: 600px;"></div>
-                
+
                 <!-- Información adicional -->
                 <div class="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
                     <div class="flex items-start space-x-3">
@@ -367,7 +367,7 @@ function openMapModal() {
     const modal = document.getElementById('mapModal');
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    
+
     // Pequeño delay para que el modal se renderice antes de inicializar el mapa
     setTimeout(() => {
         initModalMap();
@@ -399,16 +399,16 @@ function initModalMap() {
         modalMap.remove();
         modalMap = null;
     }
-    
+
     // Crear nuevo mapa
     modalMap = L.map('modalMap').setView([lat, lng], 15);
-    
+
     // Agregar tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 19
     }).addTo(modalMap);
-    
+
     // Crear marcador con popup
     const popupContent = `
         <div class="p-3">
@@ -418,10 +418,10 @@ function initModalMap() {
             <p class="text-xs text-gray-500 mt-2">Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}</p>
         </div>
     `;
-    
+
     modalMarker = L.marker([lat, lng]).addTo(modalMap);
     modalMarker.bindPopup(popupContent).openPopup();
-    
+
     // Forzar actualización del tamaño del mapa
     setTimeout(() => {
         modalMap.invalidateSize();
@@ -432,7 +432,7 @@ function closeMapModal() {
     const modal = document.getElementById('mapModal');
     modal.classList.add('hidden');
     document.body.style.overflow = 'auto';
-    
+
     // Destruir mapa al cerrar
     if (modalMap) {
         modalMap.remove();
