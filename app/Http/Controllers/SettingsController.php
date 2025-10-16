@@ -33,30 +33,18 @@ class SettingsController extends Controller
         $anchor = $request->input('redirect_to', '#notificaciones');
 
         $validator = Validator::make($request->all(), [
-            'notify_email' => ['sometimes', 'boolean'],
-            'notify_platform' => ['sometimes', 'boolean'],
             'dark_mode' => ['sometimes', 'boolean'],
             'theme' => ['sometimes', Rule::in(['light', 'dark'])],
             'redirect_to' => ['nullable', 'string'],
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->to(route('settings.edit') . $anchor)
-                ->withErrors($validator, 'preferences')
-                ->withInput($request->except(['current_password', 'password', 'password_confirmation']));
-        }
 
         $validated = $validator->validated();
 
         $user = $request->user();
 
-        if ($request->has('notify_email')) {
-            $user->notify_email = (bool) $validated['notify_email'];
-        }
 
-        if ($request->has('notify_platform')) {
-            $user->notify_platform = (bool) $validated['notify_platform'];
-        }
+           // Preferencias de notificaciones eliminadas
 
         if (array_key_exists('theme', $validated)) {
             $user->dark_mode = $validated['theme'] === 'dark';

@@ -74,10 +74,7 @@
                         <i class="fas fa-user-cog text-blue-700 w-5 text-center"></i>
                         <span class="font-medium">Cuenta</span>
                     </a>
-                    <a href="#notificaciones" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-gray-700">
-                        <i class="fas fa-bell text-blue-700 w-5 text-center"></i>
-                        <span class="font-medium">Notificaciones</span>
-                    </a>
+                    <!-- Sección de Notificaciones eliminada -->
                     <a href="#apariencia" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-gray-700">
                         <i class="fas fa-paint-brush text-blue-700 w-5 text-center"></i>
                         <span class="font-medium">Apariencia</span>
@@ -141,49 +138,7 @@
                 </form>
             </div>
 
-            <div id="notificaciones" class="card-enhanced p-6 scroll-mt-24">
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-800">Notificaciones</h2>
-                        <p class="text-sm text-gray-500">Preferencias de avisos</p>
-                    </div>
-                </div>
-                @if($successMessage && $successAnchor === '#notificaciones')
-                    <div class="mb-4 rounded-xl border border-green-200 bg-green-50 text-green-800 px-4 py-3 flex items-center gap-3">
-                        <i class="fas fa-check-circle"></i>
-                        <span>{{ $successMessage }}</span>
-                    </div>
-                @endif
-                <form id="notificationsForm" method="POST" action="{{ route('settings.update') }}" class="space-y-4" aria-label="Preferencias de notificaciones" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    @method('PATCH')
-                    <input type="hidden" name="redirect_to" value="#notificaciones">
-                    <div class="space-y-3">
-                        <label class="flex items-center gap-3">
-                            <input type="hidden" name="notify_email" value="0">
-                            <input type="checkbox" name="notify_email" value="1" class="h-4 w-4 text-blue-700" {{ old('notify_email', (int) $user->notify_email) ? 'checked' : '' }}>
-                            <span class="text-gray-700">Recibir avisos por correo electrónico</span>
-                        </label>
-                        <p class="text-xs text-gray-500">Te enviaremos emails solo para eventos importantes (postulaciones, entrevistas, cambios de estado).</p>
-                    </div>
-                    <div class="space-y-3">
-                        <label class="flex items-center gap-3">
-                            <input type="hidden" name="notify_platform" value="0">
-                            <input type="checkbox" name="notify_platform" value="1" class="h-4 w-4 text-blue-700" {{ old('notify_platform', (int) $user->notify_platform) ? 'checked' : '' }}>
-                            <span class="text-gray-700">Mostrar notificaciones dentro de la plataforma</span>
-                        </label>
-                        <p class="text-xs text-gray-500">Aparecerán en la campana del header cuando haya novedades.</p>
-                    </div>
-                    <div class="pt-2 flex items-center gap-3">
-                        <button class="btn-primary text-white px-4 py-2 rounded-xl shadow-soft hover-lift" type="submit">
-                            <i class="fas fa-save mr-2"></i> Guardar preferencias
-                        </button>
-                        <a href="{{ route('notifications.index') }}" class="text-sm text-gray-500 hover:text-blue-700 inline-flex items-center">
-                            <i class="fas fa-bell mr-1"></i> Ver notificaciones
-                        </a>
-                    </div>
-                </form>
-            </div>
+            <!-- Sección de Notificaciones eliminada -->
 
             <div id="apariencia" class="card-enhanced p-6 scroll-mt-24">
                 <div class="flex items-start justify-between mb-4">

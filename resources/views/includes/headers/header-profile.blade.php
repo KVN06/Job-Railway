@@ -33,16 +33,7 @@
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-primary group-hover:w-full transition-all duration-300"></span>
                     </a>
 
-                    <!-- Icono de notificaciones -->
-                    <div class="relative">
-                        <a href="{{ route('notifications.index') }}" class="flex items-center text-gray-600 hover:text-blue-800 p-2 rounded-xl hover:bg-blue-50 transition-all duration-300 relative">
-                            <i class="fas fa-bell text-xl"></i>
-                            <!-- Badge de notificaciones no leídas -->
-                            <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold hidden">
-                                0
-                            </span>
-                        </a>
-                    </div>
+                    <!-- Icono de notificaciones eliminado -->
 
                     <!-- Dropdown de usuario con su información y enlaces personalizados -->
                     <div class="relative" id="userDropdown">
@@ -212,26 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Actualizar contador de notificaciones
-    function updateNotificationCount() {
-        fetch('{{ route("notifications.unread-count") }}')
-            .then(response => response.json())
-            .then(data => {
-                const badge = document.getElementById('notification-badge');
-                if (data.count > 0) {
-                    badge.textContent = data.count;
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    // Actualizar contador al cargar la página
-    updateNotificationCount();
-
-    // Actualizar contador cada 30 segundos
-    setInterval(updateNotificationCount, 30000);
+    // Lógica de notificaciones eliminada
 });
 </script>

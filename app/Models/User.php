@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Company;
 use App\Models\Message;
-use App\Models\Notification;
 use App\Models\Unemployed;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,7 +26,7 @@ class User extends Authenticatable
 
     public function Notifications()
     {
-        return $this->hasMany(Notification::class);
+    // Relación de notificaciones eliminada
     }
 
     public function SentMessages()
@@ -162,8 +161,6 @@ class User extends Authenticatable
         'email',
         'password',
         'type',
-        'notify_email',
-        'notify_platform',
         'dark_mode',
         'language',
     ];
@@ -186,8 +183,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'notify_email' => 'boolean',
-        'notify_platform' => 'boolean',
+    // Notificaciones removidas
         'dark_mode' => 'boolean',
     ];
 
