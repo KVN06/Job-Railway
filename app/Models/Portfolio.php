@@ -10,7 +10,7 @@ class Portfolio extends Model
 {
 
     // Agregar 'unemployed_id' al array $fillable
-    protected $fillable = ['unemployed_id', 'title', 'description', 'url_proyect', 'url_pdf'];
+    protected $fillable = ['unemployed_id', 'title', 'description', 'url_proyect', 'url_pdf', 'cover_image'];
 
     public function Unemployed()
     {
@@ -20,37 +20,23 @@ class Portfolio extends Model
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    protected $allowIncluded = ['unemployed']; 
+    protected $allowIncluded = ['unemployed'];
     protected $allowFilter = ['unemployed_id', 'title', 'description', 'url_proyect', 'url_pdf'];
     protected $allowSort = ['unemployed_id', 'title', 'description', 'url_proyect', 'url_pdf'];
 
     public function scopeIncluded(Builder $query)
     {
-        if (empty($this->allowIncluded) || empty(request('included'))) { 
+        if (empty($this->allowIncluded) || empty(request('included'))) {
             return;
         }
-        $relations  = explode(',', request('included')); 
-        $allowIncluded = collect($this->allowIncluded); 
-        foreach ($relations as $key => $relationship) { 
+        $relations  = explode(',', request('included'));
+        $allowIncluded = collect($this->allowIncluded);
+        foreach ($relations as $key => $relationship) {
             if (!$allowIncluded->contains($relationship)) {
                 unset($relations[$key]);
             }
         }
-        $query->with($relations); 
+        $query->with($relations);
     }
 
     public function scopeFilter(Builder $query)
@@ -77,7 +63,7 @@ class Portfolio extends Model
         $allowSort = collect($this->allowSort);
         foreach ($sortFields as $sortField) {
             $direction = 'asc';
-            if(substr($sortField, 0,1)=='-'){ 
+            if(substr($sortField, 0,1)=='-'){
                 $direction = 'desc';
                 $sortField = substr($sortField,1);
             }

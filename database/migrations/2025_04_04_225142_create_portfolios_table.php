@@ -18,8 +18,9 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('url_proyect');
             $table->string('url_pdf')->nullable();
+            $table->string('cover_image')->nullable();
             $table->timestamps();
-    
+
             $table->foreign('unemployed_id')->references('id')->on('unemployeds')->onDelete('cascade');
         });
     }
