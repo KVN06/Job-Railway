@@ -63,10 +63,7 @@ class JobOffer extends Model
             ->withTimestamps();
     }
 
-    public function notifications(): HasMany
-    {
-        return $this->hasMany(Notification::class);
-    }
+    // Relación de notificaciones eliminada
 
     public function scopeActive(Builder $query): Builder
     {

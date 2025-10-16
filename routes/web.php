@@ -11,7 +11,6 @@ use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ClassifiedController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\GoogleController;
@@ -37,10 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/message/create', [MessageController::class, 'create'])->name('message-form');
     Route::post('/message/send', [MessageController::class, 'send_message'])->name('send-message');
 
-    // Notificaciones
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
-    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
+    // (Notificaciones removidas)
 
     // Configuración de usuario
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');

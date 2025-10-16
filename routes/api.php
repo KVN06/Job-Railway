@@ -11,7 +11,6 @@ use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\JobApplicationController;
 use App\Http\Controllers\Api\JobOfferController;
 use App\Http\Controllers\Api\MessageController;
-use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PortfolioController;
 use App\Http\Controllers\Api\TrainingController;
 use App\Http\Controllers\Api\TrainingUserController;
@@ -91,13 +90,7 @@ Route::prefix('message')->group(function () {
     Route::delete('/{id}', [MessageController::class, 'destroy']);
 });
 
-Route::prefix('notification')->group(function () {
-    Route::get('/', [NotificationController::class, 'index']);
-    Route::post('/', [NotificationController::class, 'store']);
-    Route::get('/{id}', [NotificationController::class, 'show']);
-    Route::put('/{id}', [NotificationController::class, 'update']);
-    Route::delete('/{id}', [NotificationController::class, 'destroy']);
-});
+// (Rutas de notificaciones removidas)
 
 Route::prefix('portfolio')->group(function () {
     Route::get('/', [PortfolioController::class, 'index']);

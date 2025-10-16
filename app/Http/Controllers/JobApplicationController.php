@@ -108,7 +108,7 @@ class JobApplicationController extends Controller
         ];
     $application->status = $map[$status] ?? 'pending';
     $application->save();
-    // Notificar al candidato (puedes usar Notification aquí)
+    // Notificación eliminada
     // $application->unemployed->user->notify(new StatusChangedNotification($application));
     return back()->with('success', 'Estado actualizado.');
     }
