@@ -1,80 +1,84 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+﻿# Job Railway API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Backend API built with Laravel to manage job offers, applications, companies, and candidates. The project now ships without any frontend assets; every response is JSON.
 
-## About Laravel
+- **Production**: [https://job-railway-production.up.railway.app](https://job-railway-production.up.railway.app)
+- **API Base URL**: [https://job-railway-production.up.railway.app/api](https://job-railway-production.up.railway.app/api)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Authentication and user management (register, login, password recovery) backed by Laravel Sanctum tokens.
+- CRUD endpoints for job offers, applications, companies, unemployed profiles, trainings, portfolios, classifieds, messages, and comments.
+- Authorization policies and form requests to protect data by role (company vs candidate).
+- Favorites, application status tracking, and interview scheduling support.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Local Requirements
 
-## Project notes
+- PHP 8.2 or newer
+- Composer 2.x
+- MySQL 8 (or compatible)
+- Redis extension (optional) if you enable queue or cache drivers that depend on it
 
-- Las ofertas laborales ahora requieren que la empresa esté autenticada y sea propietaria de la oferta para crear, editar o eliminar registros.
-- Se validan los campos críticos mediante *Form Requests*, garantizando ubicaciones opcionales, salarios numéricos y categorías existentes.
-- Las categorías de ofertas se sincronizan de forma segura durante la creación y actualización.
+## Local Setup
 
-### Ejecutar pruebas
+```bash
+git clone https://github.com/KVN06/Job-Railway.git
+cd Job-Railway
+cp .env.example .env
+composer install
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve --host=127.0.0.1 --port=8000
+```
+
+The API will be available at `http://127.0.0.1:8000/api`. To list the routes exposed by the backend:
+
+```bash
+php artisan route:list --path=api
+```
+
+## Key Environment Variables
+
+- `APP_URL`, `ASSET_URL`: public URLs (for production use `https://job-railway-production.up.railway.app`).
+- `DB_*`: database credentials; Railway uses the internal host `mysql.railway.internal`.
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`: Google OAuth setup.
+- `MAIL_*`: transactional email configuration (Elastic Email in production).
+- `NIXPACKS_BUILD_CMD`, `NIXPACKS_START_CMD`: commands executed by Railway when building and starting the container.
+
+Review the production `.env` file for the full list of variables currently in use.
+
+## Railway Deployment
+
+The backend is live on Railway at `job-railway-production.up.railway.app`. Recommended setup:
+
+1. Create a Railway service and link this repository.
+2. Copy the production environment variables into the Railway Environment tab.
+3. Set the custom commands:
+   - **Build Command**: `composer install --no-dev --optimize-autoloader && php artisan key:generate --force && php artisan config:clear && php artisan config:cache && php artisan route:clear && php artisan route:cache && php artisan view:clear && php artisan storage:link && php artisan migrate --force && php artisan db:seed`
+   - **Start Command**: `php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=${PORT}`
+4. Deploy. Each restart will run migrations and seeders to keep the database synchronized.
+
+## Core Endpoints
+
+- `POST /api/login`, `POST /api/register`, `POST /api/logout`, `GET /api/me`
+- `GET|POST /api/job-offer`, `GET|PUT|DELETE /api/job-offer/{id}`
+- `GET|POST /api/job-application`, `GET|PUT|DELETE /api/job-application/{id}`
+- `GET|POST /api/company`, `GET|PUT|DELETE /api/company/{id}`
+- `GET|POST /api/unemployed`, `GET|PUT|DELETE /api/unemployed/{id}`
+- `GET|POST /api/training`, `GET|PUT|DELETE /api/training/{id}`
+- `GET|POST /api/portfolio`, `GET|PUT|DELETE /api/portfolio/{id}`
+- `GET|POST /api/message`, `GET|PUT|DELETE /api/message/{id}`
+- `GET|POST /api/classified`, `GET|PUT|DELETE /api/classified/{id}`
+- `GET|POST /api/favorite`, `GET|PUT|DELETE /api/favorite/{id}`
+
+Attach `Authorization: Bearer {token}` on Sanctum protected endpoints.
+
+## Tests
 
 ```bash
 php artisan test
 ```
 
-Las pruebas cubren los casos de acceso invitado, usuarios desempleados y empresas para la creación de ofertas laborales.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT. See `LICENSE` for details.
